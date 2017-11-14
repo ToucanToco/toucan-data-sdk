@@ -1,0 +1,6 @@
+#########################
+##  BASE REQUIREMENTS  ##
+#########################
+
+requests
+-e https://github.com/ToucanToco/toucan-client.git@master#egg=toucan_client

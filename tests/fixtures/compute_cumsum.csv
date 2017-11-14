@@ -1,0 +1,7 @@
+blob,City,Country,Region,Date,population,population_cumsum
+C,Lille,France,Nord,201701,20,20
+A,Lille,France,Nord,201702,15,35
+A,Montreuil,France,Idf,201701,12,12
+B,Montreuil,France,Idf,201702,10,22
+A,Paris,France,Idf,201701,200,200
+A,Paris,France,Idf,201702,220,420
