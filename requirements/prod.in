@@ -3,4 +3,4 @@
 #########################
 
 requests
--e https://github.com/ToucanToco/toucan-client.git@master#egg=toucan_client
+-e git+https://github.com/ToucanToco/toucan-client.git@f/remove_etl_utils#egg=toucan_client
