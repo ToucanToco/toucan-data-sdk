@@ -1,6 +1,5 @@
 import shutil
 from collections import namedtuple
-from unittest.mock import MagicMock
 
 import os
 import pytest
@@ -9,9 +8,9 @@ from toucan_data_sdk.sdk import ToucanDataSdk
 
 
 @pytest.fixture(name='client', scope='function')
-def gen_client():
+def gen_client(mocker):
     resp = namedtuple('Response', ['content'])(content=1)
-    client = MagicMock()
+    client = mocker.MagicMock()
     client.sdk.get.return_value = resp
     return client
 
