@@ -33,7 +33,7 @@ def gen_data_sdk(client):
         shutil.rmtree(ToucanDataSdk.EXTRACTION_CACHE_PATH)
 
 
-def test_cache(sdk, mocker):
+def test_cache(sdk):
     # Cache is empty -> fill it
     dfs = sdk.dfs
     assert sdk.client.sdk.get.call_count == 1
@@ -57,7 +57,7 @@ def test_cache(sdk, mocker):
     assert DF2.equals(dfs['df2'])
 
 
-def test_invalidate_cache(sdk, mocker):
+def test_invalidate_cache(sdk):
     # Cache is empty -> fill it
     dfs = sdk.dfs
     assert sdk.client.sdk.get.call_count == 1
