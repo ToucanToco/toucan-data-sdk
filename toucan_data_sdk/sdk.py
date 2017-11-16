@@ -66,9 +66,9 @@ class ToucanDataSdk:
 
     def invalidate_cache(self):
         self._dfs = None
-        self._backup_existing_cache()
+        self.backup_existing_cache()
 
-    def _backup_existing_cache(self):
+    def backup_existing_cache(self):
         if os.path.exists(self.EXTRACTION_CACHE_PATH):
             if os.path.exists(self.EXTRACTION_CACHE_PATH_BK):
                 try:
