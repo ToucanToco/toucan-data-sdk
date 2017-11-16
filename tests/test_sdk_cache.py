@@ -70,6 +70,7 @@ def test_invalidate_cache(sdk):
 
     # Invalidate cache
     sdk.invalidate_cache()
+    sdk.client.sdk.get.reset_mock()
 
     dfs = sdk.dfs
     assert sdk.client.sdk.get.call_count == 1
