@@ -44,8 +44,21 @@ def test_cache(sdk):
     assert DF.equals(dfs['df'])
     assert DF2.equals(dfs['df2'])
 
-    # Cache is filled, no request to the server should been made
+    # Cache is filled, no request to the server
     sdk.client.sdk.get.reset_mock()
+    _ = sdk.dfs
+    sdk.client.sdk.get.assert_not_called()
+
+    assert isinstance(dfs, dict)
+    assert 'df' in dfs
+    assert 'df2' in dfs
+
+    assert DF.equals(dfs['df'])
+    assert DF2.equals(dfs['df2'])
+
+    # Cache is filled, no request to the server
+    sdk.client.sdk.get.reset_mock()
+    sdk._dfs = None
     _ = sdk.dfs
     sdk.client.sdk.get.assert_not_called()
 
