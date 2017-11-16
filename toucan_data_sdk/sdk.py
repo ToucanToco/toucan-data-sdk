@@ -73,13 +73,13 @@ class ToucanDataSdk:
             if os.path.exists(self.EXTRACTION_CACHE_PATH_BK):
                 try:
                     shutil.rmtree(self.EXTRACTION_CACHE_PATH_BK)
-                except OSError as e:
+                except (OSError, IOError) as e:  # For Python 2.7+ compatibility
                     logger.error('failed to remove old backup: ' + str(e))
                     return
 
             try:
                 os.rename(self.EXTRACTION_CACHE_PATH, self.EXTRACTION_CACHE_PATH_BK)
-            except OSError as e:
+            except (OSError, IOError) as e:
                 logger.error('failed to backup current cache' + str(e))
 
     def _write_entry(self, file_name, data):
