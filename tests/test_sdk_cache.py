@@ -79,3 +79,53 @@ def test_invalidate_cache(sdk, mocker):
 
     assert DF.equals(dfs['df'])
     assert DF2.equals(dfs['df2'])
+
+
+def test_backup_existing_cache(sdk, mocker):
+    mock_path_exists = mocker.patch('os.path.exists')
+    mock_rmtree = mocker.patch('shutil.rmtree')
+    mock_rename = mocker.patch('os.rename')
+
+    # 1. No cache, nothing to do
+    mock_path_exists.return_value = False
+    sdk.backup_existing_cache()
+
+    assert mock_path_exists.call_count == 1
+    assert mock_rmtree.call_count == 0
+    assert mock_rename.call_count == 0
+
+    mock_path_exists.reset_mock()
+
+    # 2. Cache exists and previous backup exists
+    mock_path_exists.return_value = True
+    sdk.backup_existing_cache()
+
+    assert mock_path_exists.call_count == 2
+    assert mock_rmtree.call_count == 1
+    assert mock_rename.call_count == 1
+
+    mock_path_exists.reset_mock()
+    mock_rmtree.reset_mock()
+    mock_rename.reset_mock()
+
+    # 3.1 Cache exists and previous backup exists, errors
+    mock_path_exists.return_value = True
+    mock_rmtree.side_effect = IOError('rmtree failed')
+    sdk.backup_existing_cache()
+
+    assert mock_path_exists.call_count == 2
+    assert mock_rmtree.call_count == 1
+    assert mock_rename.call_count == 0
+
+    mock_path_exists.reset_mock()
+    mock_rmtree.reset_mock()
+    mock_rename.reset_mock()
+
+    # 3.2 Cache exists and previous backup exists, errors
+    mock_path_exists.side_effect = [True, False]
+    mock_rename.side_effect = IOError('rename failed')
+    sdk.backup_existing_cache()
+
+    assert mock_path_exists.call_count == 2
+    assert mock_rmtree.call_count == 0
+    assert mock_rename.call_count == 1
