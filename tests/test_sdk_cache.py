@@ -1,15 +1,12 @@
+from collections import namedtuple
 import copy
 import shutil
-from collections import namedtuple
-from unittest.mock import MagicMock
 
 import os
 import pandas as pd
 import pytest
 
 from tests.utils import default_zip_file
-from toucan_client.client import SmallAppRequester
-
 from toucan_data_sdk import ToucanDataSdk
 
 DF = pd.DataFrame({'a': [1, 2, 3], 'b': [4, 5, 6]})
@@ -19,10 +16,10 @@ BASE_ROUTE = 'fake.route/my-small-app'
 
 
 @pytest.fixture(name='client', scope='function')
-def gen_client():
+def gen_client(mocker):
     resp = namedtuple('Response', ['content'])(content=copy.copy(ZIP_CONTENT))
-    client = MagicMock()
-    client.sdk.get = MagicMock(return_value=resp)
+    client = mocker.MagicMock()
+    client.sdk.get = mocker.MagicMock(return_value=resp)
     return client
 
 
