@@ -1,6 +1,7 @@
 import io
 import logging
 import os
+import shutil
 import zipfile
 
 import pandas as pd
@@ -11,6 +12,7 @@ logger = logging.getLogger(__name__)
 
 class ToucanDataSdk:
     EXTRACTION_CACHE_PATH = 'extraction_cache'
+    EXTRACTION_CACHE_PATH_BK = 'extraction_cache.bk'
 
     def __init__(self, client):
         self.client = client
@@ -20,12 +22,12 @@ class ToucanDataSdk:
     def dfs(self):
         if self._dfs is None:
             if os.path.exists(self.EXTRACTION_CACHE_PATH):
-                self.__dict__['_dfs'] = self.read_cache()
+                self._dfs = self.read_cache()
                 logger.info('DataFrames extracted from cache')
             else:
                 resp = self.client.sdk.get()
                 dfs = self.cache_dfs(resp.content)
-                self.__dict__['_dfs'] = dfs
+                self._dfs = dfs
                 logger.info('Data fetched and cached')
         return self._dfs
 
@@ -63,7 +65,22 @@ class ToucanDataSdk:
         }
 
     def invalidate_cache(self):
-        self.__dict__['_dfs'] = None
+        self._dfs = None
+        self.backup_existing_cache()
+
+    def backup_existing_cache(self):
+        if os.path.exists(self.EXTRACTION_CACHE_PATH):
+            if os.path.exists(self.EXTRACTION_CACHE_PATH_BK):
+                try:
+                    shutil.rmtree(self.EXTRACTION_CACHE_PATH_BK)
+                except (OSError, IOError) as e:  # For Python 2.7+ compatibility
+                    logger.error('failed to remove old backup: ' + str(e))
+                    return
+
+            try:
+                os.rename(self.EXTRACTION_CACHE_PATH, self.EXTRACTION_CACHE_PATH_BK)
+            except (OSError, IOError) as e:
+                logger.error('failed to backup current cache' + str(e))
 
     def _write_entry(self, file_name, data):
         """
