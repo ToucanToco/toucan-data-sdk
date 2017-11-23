@@ -9,8 +9,14 @@ from toucan_client import ToucanClient
 from toucan_data_sdk import ToucanDataSdk
 from toucan_data_sdk.utils import add_missing_row
 
+# Setup client
+# Auth example
+# from requests.auth import HTTPBasicAuth
+# auth = HTTPBasicAuth('id', 'password')
+client = ToucanClient('base_url', auth=auth)  # e.g. https://<api_route>/<small_app>
+client.stage = 'staging'
+
 # Get DataFrames
-client = ToucanClient('base_url')
 sdk = ToucanDataSdk(client)
 dfs = sdk.dfs
 
