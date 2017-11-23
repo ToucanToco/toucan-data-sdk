@@ -20,7 +20,6 @@ client = ToucanClient('base_url', auth=auth)  # e.g. https://<api_route>/<small_
 client.stage = 'staging'
 
 # Get DataFrames
-client = ToucanClient('base_url')
 sdk = ToucanDataSdk(client)
 dfs = sdk.dfs
 
