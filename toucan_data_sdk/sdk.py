@@ -5,7 +5,6 @@ import tempfile
 import zipfile
 
 import joblib
-import pandas as pd
 
 
 logger = logging.getLogger(__name__)
@@ -87,7 +86,7 @@ class ToucanDataSdk:
 
     def cache_exists(self):
         return os.path.exists(self.EXTRACTION_CACHE_PATH) and \
-               os.path.isdir(self.EXTRACTION_CACHE_PATH)
+            os.path.isdir(self.EXTRACTION_CACHE_PATH)
 
     def backup_cache(self):
         if os.path.exists(self.EXTRACTION_CACHE_PATH):

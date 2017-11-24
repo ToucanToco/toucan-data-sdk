@@ -4,7 +4,6 @@ import zipfile
 
 import joblib
 import pandas as pd
-from pandas import DataFrame
 
 
 DF = pd.DataFrame({'a': [1, 2, 3], 'b': [4, 5, 6]})
@@ -33,13 +32,3 @@ def default_zip_file(df, df2):
             tmp2.close()
         memory_file.seek(0)
         return memory_file.getvalue()
-
-
-def default_hdf_store_content():
-    with tempfile.NamedTemporaryFile() as tmp_file:
-        with pd.HDFStore(tmp_file.name) as store:
-            store['df'] = DF.copy()
-            store['df2'] = DF2.copy()
-        tmp_file.flush()
-        tmp_file.seek(0)
-        return tmp_file.read()
