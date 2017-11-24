@@ -2,7 +2,7 @@ import io
 import tempfile
 import zipfile
 
-import os
+import joblib
 import pandas as pd
 from pandas import DataFrame
 
@@ -18,7 +18,7 @@ def default_zip_file(df, df2):
         with zipfile.ZipFile(memory_file, mode='w') as zfile:
             tmp = tempfile.NamedTemporaryFile()
             with open(tmp.name, mode='wb'):
-                df.to_feather(tmp.name)
+                joblib.dump(df, tmp.name)
             with open(tmp.name, mode='rb') as f:
                 content = f.read()
                 zfile.writestr('df', content)
@@ -26,7 +26,7 @@ def default_zip_file(df, df2):
 
             tmp2 = tempfile.NamedTemporaryFile()
             with open(tmp2.name, mode='wb'):
-                df2.to_feather(tmp2.name)
+                joblib.dump(df2, tmp2.name)
             with open(tmp2.name, mode='rb') as f:
                 content = f.read()
                 zfile.writestr('df2', content)
