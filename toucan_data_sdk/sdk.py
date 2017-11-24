@@ -1,11 +1,10 @@
-import io
 import logging
 import os
 import shutil
 import tempfile
 import zipfile
 
-import pandas as pd
+import joblib
 
 
 logger = logging.getLogger(__name__)
@@ -57,7 +56,7 @@ class ToucanDataSdk:
         """
         file_path = os.path.join(self.EXTRACTION_CACHE_PATH, file_name)
         logger.info('Reading cache entry: {}'.format(file_path))
-        return pd.read_feather(file_path)
+        return joblib.load(file_path)
 
     def write(self, data):
         """
@@ -82,12 +81,12 @@ class ToucanDataSdk:
             df (DataFrame):
         """
         file_path = os.path.join(self.EXTRACTION_CACHE_PATH, file_name)
-        df.to_feather(file_path)
+        joblib.dump(df, filename=file_path)
         logger.info('Cache entry added: {}'.format(file_path))
 
     def cache_exists(self):
         return os.path.exists(self.EXTRACTION_CACHE_PATH) and \
-               os.path.isdir(self.EXTRACTION_CACHE_PATH)
+            os.path.isdir(self.EXTRACTION_CACHE_PATH)
 
     def backup_cache(self):
         if os.path.exists(self.EXTRACTION_CACHE_PATH):
@@ -113,8 +112,12 @@ def extract_zip(tmp_file):
     with zipfile.ZipFile(tmp_file.name, mode='r') as z_file:
         names = z_file.namelist()
         for name in names:
-            with io.BytesIO(z_file.read(name)) as content:
-                dfs[name] = pd.read_feather(content)
+            content = z_file.read(name)
+            with tempfile.NamedTemporaryFile() as tmp_file:
+                tmp_file.write(content)
+                tmp_file.flush()
+                tmp_file.seek(0)
+                dfs[name] = joblib.load(tmp_file.name)
     return dfs
 
 

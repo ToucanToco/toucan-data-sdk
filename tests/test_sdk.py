@@ -4,6 +4,7 @@ from collections import namedtuple
 
 import os
 
+import joblib
 import pytest
 
 from tests.utils import DF, DF2
@@ -76,8 +77,8 @@ def test_read(sdk, mocker):
         sdk.EXTRACTION_CACHE_PATH = extraction_dir
         os.makedirs(extraction_dir)
 
-        DF.to_feather(os.path.join(extraction_dir, 'a'))
-        DF2.to_feather(os.path.join(extraction_dir, 'b'))
+        joblib.dump(DF, os.path.join(extraction_dir, 'a'))
+        joblib.dump(DF2, os.path.join(extraction_dir, 'b'))
 
         dfs = sdk.read()
         assert 'a' in dfs

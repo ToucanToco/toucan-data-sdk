@@ -6,8 +6,7 @@ import pytest
 from tests.utils import (
     default_zip_file,
     DF,
-    DF2,
-    default_hdf_store_content)
+    DF2)
 from toucan_data_sdk.sdk import extract_zip, extract, DataSdkError
 
 

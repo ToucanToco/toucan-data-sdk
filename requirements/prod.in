@@ -1,6 +1,0 @@
-#########################
-##  BASE REQUIREMENTS  ##
-#########################
-
-requests
-toucan_client
