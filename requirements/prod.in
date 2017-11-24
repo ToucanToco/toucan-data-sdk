@@ -2,6 +2,7 @@
 ##  BASE REQUIREMENTS  ##
 #########################
 
--e git+https://github.com/ToucanToco/toucan-client.git@master#egg=toucan_client
+toucan_client
 requests
 pandas
+joblib

@@ -4,14 +4,18 @@
 #
 #    pip-compile --output-file prod.txt prod.in
 #
--e git+https://github.com/ToucanToco/toucan-client.git@master#egg=toucan_client
 certifi==2017.11.5        # via requests
 chardet==3.0.4            # via requests
+feather-format==0.4.0     # via toucan-client
 idna==2.6                 # via requests
-numpy==1.13.3             # via pandas
+joblib==0.11
+numpy==1.13.3             # via pandas, pyarrow
 pandas==0.21.0
+pyarrow==0.7.1            # via feather-format
 python-dateutil==2.6.1    # via pandas
 pytz==2017.3              # via pandas
 requests==2.18.4
-six==1.11.0               # via python-dateutil
+six==1.11.0               # via pyarrow, python-dateutil
+toucan-client==0.0.5
+typing==3.6.2             # via toucan-client
 urllib3==1.22             # via requests
