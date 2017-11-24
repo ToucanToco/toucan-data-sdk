@@ -1,8 +1,0 @@
-#########################
-##  BASE REQUIREMENTS  ##
-#########################
-
-toucan_client
-requests
-pandas
-joblib

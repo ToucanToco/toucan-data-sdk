@@ -1,7 +1,0 @@
--r prod.txt
-
-pycodestyle
-pytest
-pytest-cov
-pytest-mock
-pytest-pep8
