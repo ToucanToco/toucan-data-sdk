@@ -5,6 +5,10 @@
 [![CircleCI](https://img.shields.io/circleci/project/github/ToucanToco/toucan-data-sdk.svg)](https://circleci.com/gh/ToucanToco/toucan-data-sdk)
 [![codecov](https://codecov.io/gh/ToucanToco/toucan-data-sdk/branch/master/graph/badge.svg)](https://codecov.io/gh/ToucanToco/toucan-data-sdk)
 
+# Toucan Data SDK
+
+Develop your Toucan Toco data pipeline from the confort of your favorite environment.
+
 # Installation
 
 `pip install toucan_data_sdk`
@@ -12,20 +16,20 @@
 # Usage
 
 ```python
+import getpass
+from requests.auth import HTTPBasicAuth
 from toucan_client import ToucanClient
 from toucan_data_sdk import ToucanDataSdk
 from toucan_data_sdk.utils import add_missing_row
 
-# Setup client
-# Auth example
-# from requests.auth import HTTPBasicAuth
-# auth = HTTPBasicAuth('id', 'password')
-client = ToucanClient('base_url', auth=auth)  # e.g. https://<api_route>/<small_app>
-client.stage = 'staging'
+instance_url = 'https://api-demo.toucantoco.com/demo'
+username = 'toucantoco'
 
-# Get DataFrames
-sdk = ToucanDataSdk(client)
-dfs = sdk.dfs
+auth = HTTPBasicAuth(username, getpass.getpass())
+client = ToucanClient(instance_url, auth=auth)
+client.stage = 'staging'
+sdk = ToucanDataSdk(client)   # instantiate client
+dfs = sdk.dfs                 # get DataFrames
 
 # Use some utils functions
 df = dfs['some_key']
