@@ -23,7 +23,7 @@ from toucan_data_sdk import ToucanDataSdk
 from toucan_data_sdk.utils import add_missing_row
 
 instance_url = 'https://api-demo.toucantoco.com/demo'
-username = 'toucantoco'
+username = '####'
 
 auth = HTTPBasicAuth(username, getpass.getpass())
 client = ToucanClient(instance_url, auth=auth)
