@@ -26,6 +26,7 @@ class ToucanDataSdk:
                 logger.info('DataFrames extracted from cache')
             else:
                 resp = self.client.sdk.post()
+                resp.raise_for_status()
                 self._dfs = self.write(resp.content)
                 logger.info('Data fetched and cached')
         return self._dfs

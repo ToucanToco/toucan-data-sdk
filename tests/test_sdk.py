@@ -1,11 +1,11 @@
 import shutil
 import tempfile
-from collections import namedtuple
 
 import os
 
 import joblib
 import pytest
+from requests import HTTPError
 
 from tests.utils import DF, DF2
 from toucan_data_sdk.sdk import ToucanDataSdk
@@ -13,7 +13,13 @@ from toucan_data_sdk.sdk import ToucanDataSdk
 
 @pytest.fixture(name='client', scope='function')
 def gen_client(mocker):
-    resp = namedtuple('Response', ['content'])(content=10)
+    class Response:
+        content = 10
+
+        def raise_for_status(self):
+            pass
+
+    resp = Response()
     client = mocker.MagicMock()
     client.sdk.post.return_value = resp
     return client
@@ -22,6 +28,27 @@ def gen_client(mocker):
 @pytest.fixture(name='sdk', scope='function')
 def gen_data_sdk(client):
     yield ToucanDataSdk(client)
+    if os.path.exists(ToucanDataSdk.EXTRACTION_CACHE_PATH):
+        shutil.rmtree(ToucanDataSdk.EXTRACTION_CACHE_PATH)
+
+
+@pytest.fixture(name='client_error', scope='function')
+def gen_client_error(mocker):
+    class Response:
+        content = 10
+
+        def raise_for_status(self):
+            raise HTTPError()
+
+    resp = Response()
+    client = mocker.MagicMock()
+    client.sdk.post.return_value = resp
+    return client
+
+
+@pytest.fixture(name='sdk_error', scope='function')
+def gen_data_sdk_error(client_error):
+    yield ToucanDataSdk(client_error)
     if os.path.exists(ToucanDataSdk.EXTRACTION_CACHE_PATH):
         shutil.rmtree(ToucanDataSdk.EXTRACTION_CACHE_PATH)
 
@@ -69,6 +96,12 @@ def test_dfs(sdk, mocker):
     mock_cache_exists.return_value = False
     mock_write.return_value = 3
     assert sdk.dfs == 2
+
+
+def test_dfs_http_error(sdk_error):
+    """It should use the cache properly"""
+    with pytest.raises(HTTPError):
+        _ = sdk_error.dfs
 
 
 def test_read(sdk, mocker):
