@@ -1,7 +1,6 @@
+import os
 import shutil
 import tempfile
-
-import os
 
 import joblib
 import pytest
@@ -104,7 +103,7 @@ def test_dfs_http_error(sdk_error):
         _ = sdk_error.dfs
 
 
-def test_read(sdk, mocker):
+def test_read(sdk):
     with tempfile.TemporaryDirectory() as tmp_dir:
         extraction_dir = os.path.join(tmp_dir, sdk.EXTRACTION_CACHE_PATH)
         sdk.EXTRACTION_CACHE_PATH = extraction_dir

@@ -11,7 +11,7 @@ DF2 = pd.DataFrame({'a': ['a', 'b'], 'b': ['c', 'd']})
 
 
 def default_zip_file(df, df2):
-    # type: (DataFrame, DataFrame) -> bytes
+    # type: (pd.DataFrame, pd.DataFrame) -> bytes
     """Return zip file with two DF saved using joblib."""
     with io.BytesIO() as memory_file:
         with zipfile.ZipFile(memory_file, mode='w') as zfile:

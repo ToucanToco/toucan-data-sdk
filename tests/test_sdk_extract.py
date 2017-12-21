@@ -11,7 +11,7 @@ from toucan_data_sdk.sdk import extract_zip, extract, DataSdkError
 
 
 @pytest.fixture(name='zip_content', scope='function')
-def gen_zipfile(mocker):
+def gen_zipfile():
     return copy.deepcopy(default_zip_file(DF, DF2))
 
 
