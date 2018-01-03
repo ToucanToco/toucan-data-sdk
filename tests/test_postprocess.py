@@ -627,38 +627,3 @@ def test_waterfall_not_implemented(sample_data):
         waterfall(df, **kwargs)
     assert str(exc_info.value) == 'We will add support for upperGroup only ' \
                                   'on you request, please contact the devs'
-
-
-def test_add_total_breakdown(sample_data):
-    """ It should add a breakdown category """
-    df = pd.DataFrame([
-        {'gender': 'male', 'sport': 'bicycle', 'number': 17},
-        {'gender': 'female', 'sport': 'basketball', 'number': 17},
-        {'gender': 'male', 'sport': 'basketball', 'number': 3},
-        {'gender': 'female', 'sport': 'football', 'number': 7},
-        {'gender': 'female', 'sport': 'running', 'number': 30},
-        {'gender': 'male', 'sport': 'running', 'number': 20},
-        {'gender': 'male', 'sport': 'football', 'number': 21},
-        {'gender': 'female', 'sport': 'bicycle', 'number': 17}
-    ])
-
-    expected = pd.DataFrame([
-        {'breakdown': 'total', 'gender': nan, 'number': 50, 'sport': 'running'},
-        {'breakdown': 'total', 'gender': nan, 'number': 34, 'sport': 'bicycle'},
-        {'breakdown': nan, 'gender': 'female', 'number': 30, 'sport': 'running'},
-        {'breakdown': 'total', 'gender': nan, 'number': 28, 'sport': 'football'},
-        {'breakdown': nan, 'gender': 'male', 'number': 21, 'sport': 'football'},
-        {'breakdown': nan, 'gender': 'male', 'number': 20, 'sport': 'running'},
-        {'breakdown': 'total', 'gender': nan, 'number': 20, 'sport': 'basketball'},
-        {'breakdown': nan, 'gender': 'male', 'number': 17, 'sport': 'bicycle'},
-        {'breakdown': nan, 'gender': 'female', 'number': 17, 'sport': 'basketball'},
-        {'breakdown': nan, 'gender': 'female', 'number': 17, 'sport': 'bicycle'},
-        {'breakdown': nan, 'gender': 'female', 'number': 7, 'sport': 'football'},
-        {'breakdown': nan, 'gender': 'male', 'number': 3, 'sport': 'basketball'}
-    ])
-
-    res = add_total_breakdown(df, ['sport'], 'breakdown', 'total',
-                              limitResults={'sortBy': {'value': 'number'},
-                                            'ids': ['sport'],
-                                            'limitTo': 5})
-    assert res.reset_index(drop=True).equals(expected)

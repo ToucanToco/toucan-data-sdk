@@ -475,47 +475,4 @@ def waterfall(df, date, value, start, end, upperGroup,  # noqa:C901
 
     return ret
 
-
-def add_total_breakdown(df, ids, breakdown, label, limitResults=None):
-    """
-    Adds a Total breakdown category depending on the parameters
-    Args:
-        df (pd.DataFrame): DataFrame to transform
-        ids (list): names of the columns to group by
-        breakdown (str): name of the breakdown column
-        label (str): name to give to the Total breakdown
-        limitResults (dict): Optional, limit the number of result for each group
-            - sortBy (dict): Optional, use this if values need to be sorted before limiting
-                - value (str): the name of the column to sort by
-                - desc (bool): Default True, sort direction
-            - limitTo (str): Number of result to limit
-            - ids (list): Names of the columns to group by. Each group will
-            will be limited to 'limitTo' results
-    Returns:
-        pd.DataFrame: array with total values added
-    """
-    total_df = df.groupby(ids, as_index=False).sum()
-    total_df[breakdown] = label
-    df = pd.concat([df, total_df])
-
-    if limitResults is not None:
-        if 'sortBy' in limitResults:
-            try:
-                ascending = not limitResults['sortBy']['desc']
-            except KeyError:
-                ascending = False
-            df.sort_values(
-                limitResults['sortBy']['value'],
-                ascending=ascending,
-                inplace=True
-            )
-        df = df.groupby(
-            limitResults['ids'], as_index=False
-        ).head(limitResults['limitTo'])
-
-    return df
-
-
-# DO NOT REMOVE as long as these names are used in some front configs
-addTotalBreakdown = add_total_breakdown
 query = query_df
