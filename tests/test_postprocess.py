@@ -8,8 +8,7 @@ from toucan_data_sdk.utils.postprocess import (
     replace, rename, melt, top, pivot,
     pivot_by_group, argmax, fillna,
     query_df, add, subtract, multiply,
-    divide, cumsum, percentage, waterfall,
-    add_total_breakdown
+    divide, cumsum, percentage, waterfall
 )
 
 
