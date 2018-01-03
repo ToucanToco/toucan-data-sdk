@@ -16,7 +16,7 @@ from .postprocess import (
     melt, top, pivot, pivot_by_group,
     argmax, fillna, query_df,
     add, subtract, multiply, divide, cumsum,
-    percentage, waterfall, add_total_breakdown
+    percentage, waterfall
 )
 from .roll_up import roll_up
 from .two_values_melt import two_values_melt
