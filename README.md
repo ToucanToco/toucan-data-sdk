@@ -19,18 +19,13 @@ Develop your Toucan Toco data pipeline from the confort of your favorite environ
 
 ```python
 import getpass
-from requests.auth import HTTPBasicAuth
-from toucan_client import ToucanClient
 from toucan_data_sdk import ToucanDataSdk
 
 instance_url = 'https://api-demo.toucantoco.com/demo'
-username = '####'
+auth = ('<username>', getpass.getpass())
 
-auth = HTTPBasicAuth(username, getpass.getpass())
-client = ToucanClient(instance_url, auth=auth)
-client.stage = 'staging'
-sdk = ToucanDataSdk(client)   # instantiate client
-dfs = sdk.dfs                 # get DataFrames
+sdk = ToucanDataSdk(instance_url, auth=auth)
+dfs = sdk.dfs
 ```
 
 # API
