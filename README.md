@@ -15,12 +15,13 @@ Develop your Toucan Toco data pipeline from the confort of your favorite environ
 
 # Usage
 
+## Get data sources
+
 ```python
 import getpass
 from requests.auth import HTTPBasicAuth
 from toucan_client import ToucanClient
 from toucan_data_sdk import ToucanDataSdk
-from toucan_data_sdk.utils import add_missing_row
 
 instance_url = 'https://api-demo.toucantoco.com/demo'
 username = '####'
@@ -30,10 +31,6 @@ client = ToucanClient(instance_url, auth=auth)
 client.stage = 'staging'
 sdk = ToucanDataSdk(client)   # instantiate client
 dfs = sdk.dfs                 # get DataFrames
-
-# Use some utils functions
-df = dfs['some_key']
-df = add_missing_row(df, id_cols=['NAME'], reference_col='MONTH')
 ```
 
 # API
@@ -51,6 +48,26 @@ as DataFrames,
 
 Invalidates the cache. Next time you will access to the sdk property, a 
 request will be sent to the client.
+
+### Utils
+
+cf. https://docs.toucantoco.com/concepteur/data-sources/00-generalities.html#utility-functions
+
+For example:
+
+```python
+from toucan_data_sdk.utils import add_missing_row
+```
+
+# Development
+
+## Makefile
+
+Use the makefile to `test`, `build`...
+
+```shell
+$ make test
+```
 
 # Development
 
