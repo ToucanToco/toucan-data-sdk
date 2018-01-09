@@ -10,7 +10,6 @@ from tests.utils import DF, DF2
 from toucan_data_sdk.sdk import ToucanDataSdk
 
 
-@pytest.fixture(name='client', scope='function')
 def gen_client(mocker):
     class Response:
         content = 10
@@ -25,13 +24,14 @@ def gen_client(mocker):
 
 
 @pytest.fixture(name='sdk', scope='function')
-def gen_data_sdk(client):
-    yield ToucanDataSdk(client)
+def gen_data_sdk(mocker):
+    sdk = ToucanDataSdk('some_url', auth=('', ''))
+    sdk.client = gen_client(mocker)
+    yield sdk
     if os.path.exists(ToucanDataSdk.EXTRACTION_CACHE_PATH):
         shutil.rmtree(ToucanDataSdk.EXTRACTION_CACHE_PATH)
 
 
-@pytest.fixture(name='client_error', scope='function')
 def gen_client_error(mocker):
     class Response:
         content = 10
@@ -46,8 +46,10 @@ def gen_client_error(mocker):
 
 
 @pytest.fixture(name='sdk_error', scope='function')
-def gen_data_sdk_error(client_error):
-    yield ToucanDataSdk(client_error)
+def gen_data_sdk_error(mocker):
+    sdk = ToucanDataSdk('some_url', auth=('', ''))
+    sdk.client = gen_client_error(mocker)
+    yield sdk
     if os.path.exists(ToucanDataSdk.EXTRACTION_CACHE_PATH):
         shutil.rmtree(ToucanDataSdk.EXTRACTION_CACHE_PATH)
 

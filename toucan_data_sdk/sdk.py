@@ -5,6 +5,7 @@ import tempfile
 import zipfile
 
 import joblib
+from toucan_client import ToucanClient
 
 
 logger = logging.getLogger(__name__)
@@ -14,8 +15,9 @@ class ToucanDataSdk:
     EXTRACTION_CACHE_PATH = 'extraction_cache'
     EXTRACTION_CACHE_PATH_BK = 'extraction_cache.bk'
 
-    def __init__(self, client):
-        self.client = client
+    def __init__(self, small_app_url, auth, stage="staging"):
+        self.client = ToucanClient(small_app_url, auth=auth)
+        self.client.stage = stage
         self._dfs = None
 
     @property
