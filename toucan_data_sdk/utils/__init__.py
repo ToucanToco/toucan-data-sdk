@@ -14,7 +14,7 @@ from .compute_ffill_by_group import compute_ffill_by_group
 from .postprocess import (
     replace, rename,
     melt, top, pivot, pivot_by_group,
-    argmax, fillna, query_df,
+    argmax, fillna, query_df, query,
     add, subtract, multiply, divide, cumsum,
     percentage, waterfall
 )
