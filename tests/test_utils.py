@@ -13,7 +13,8 @@ from toucan_data_sdk.utils import (
     add_missing_row,
     compute_ffill_by_group,
     aggregate_for_requesters,
-    clean_dataframe)
+    clean_dataframe,
+    randomize_values)
 from toucan_data_sdk.utils.compute_evolution import DuplicateRowsError
 from toucan_data_sdk.utils.helpers import ParamsValueError
 
@@ -162,7 +163,7 @@ def test_compute_evolution_error_params():
         )
 
     assert "Duplicate declaration of column(s) {'Year'} in the parameters" == \
-           e_info.value.args[0]
+           str(e_info.value)
 
 
 def test_compute_evolution_error_method():
@@ -495,3 +496,27 @@ def test_clean_dataframe():
     assert set(df.columns) == {'date-of-birth', 'surname', 'age', 'sex'}
     assert df['date-of-birth'].dtype == 'int'
     assert df['sex'].dtype == 'category'
+
+
+def test_randomize_values():
+    """It should output a serie with values in the required bounds"""
+    values = pd.Series([0, 1, 2, 3, 4, 5])
+    inf_bound = 0.85
+    sup_bound = 1.15
+    min_values = values * inf_bound
+    max_values = values * sup_bound
+
+    randomized = randomize_values(values, inf_bound, sup_bound)
+
+    in_bounds = (randomized <= max_values) & (randomized >= min_values)
+
+    assert in_bounds.all()
+
+
+def test_randomize_values_bounds_error():
+    """It should raise a ParamsValueError when the bounds are incorrect"""
+
+    with pytest.raises(ParamsValueError) as e_info:
+        randomize_values(pd.Series([0, 1]), 1.1, 0.2)
+
+    assert str(e_info.value) == "The inferior bound should be inferior to the superior bound."
