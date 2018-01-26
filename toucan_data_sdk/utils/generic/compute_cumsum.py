@@ -1,6 +1,9 @@
 import pandas as pd
 
-from toucan_data_sdk.utils.helpers import check_params_columns_duplicate
+from toucan_data_sdk.utils.helpers import (
+    check_params_columns_duplicate,
+    ParamsValueError
+)
 
 
 def compute_cumsum(
@@ -8,6 +11,7 @@ def compute_cumsum(
     id_cols,
     reference_cols,
     value_cols,
+    new_value_cols=None,
     cols_to_keep=None
 ):
     """
@@ -50,10 +54,18 @@ def compute_cumsum(
     """
     if cols_to_keep is None:
         cols_to_keep = []
+
+    if new_value_cols is None:
+        new_value_cols = value_cols
+    if len(value_cols) != len(new_value_cols):
+        raise ParamsValueError('`value_cols` and `new_value_cols` needs '
+                               'to have the same number of elements')
+
     check_params_columns_duplicate(id_cols + reference_cols + cols_to_keep + value_cols)
+
     levels = list(range(0, len(id_cols)))
 
     df = df.groupby(id_cols + reference_cols + cols_to_keep).sum()
-    df = df.groupby(level=levels)[value_cols].cumsum().reset_index()
+    df[new_value_cols] = df.groupby(level=levels)[value_cols].cumsum()
 
-    return df
+    return df.reset_index()
