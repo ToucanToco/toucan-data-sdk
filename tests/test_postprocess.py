@@ -162,6 +162,18 @@ def test_top():
     for i in range(len(expected)):
         assert wa[i] == expected[i]
 
+    kwargs = {
+        "group": ['variable', "Category"],
+        "value": 'value',
+        "limit": '-2',
+        "order": "desc"
+    }
+    df = top(data, **kwargs)
+    wa = [{k: v for k, v in zip(df.columns, row)} for row in df.values]
+    assert wa[0].keys() == expected[0].keys()
+    for i in range(len(expected)):
+        assert wa[i] == expected[i]
+
     # ~~~ bad group ~~~
     kwargs = {
         "group": ['apple'],

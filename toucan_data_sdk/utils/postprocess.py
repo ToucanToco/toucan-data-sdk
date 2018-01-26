@@ -84,6 +84,7 @@ def top(df, value, limit, order='asc', group=None):
                  Use a negative number -x to retrieve the last x results.
     """
     ascending = order != 'desc'
+    limit = int(limit)
     filter_func = 'nlargest' if (limit > 0) ^ ascending else 'nsmallest'
 
     def _top(df):
