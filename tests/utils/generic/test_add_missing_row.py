@@ -1,8 +1,9 @@
 import math
 import os
 import pandas as pd
+import pytest
 from toucan_data_sdk.utils.generic import add_missing_row
-
+from toucan_data_sdk.utils.helpers import ParamsValueError
 
 fixtures_base_dir = 'tests/fixtures'
 
@@ -124,3 +125,44 @@ def test_add_missing_row_keep_cols():
     assert len(new_df.loc[mask, 'month']) == 1
     assert new_df.loc[mask, 'month'].iloc[0] == 'octobre'
     assert math.isnan(new_df.loc[mask, 'value'].iloc[0])
+
+
+def test_add_missing_row_index_date_range():
+    """
+    It should add missing row compare to a date_range
+    """
+    input_df = pd.read_csv(os.path.join(fixtures_base_dir, 'add_missing_row.csv'))
+    input_df['Year'] = input_df['Year'].astype(str)
+    complete_index = {
+        'type': 'date',
+        'format': '%Y',
+        'start': '2010',
+        'end': '2013',
+        'freq': {
+            'years': 1
+        }
+    }
+    new_df = add_missing_row(
+        input_df,
+        id_cols=['City', 'Country', 'Region'],
+        reference_col='Year',
+        complete_index=complete_index
+    )
+
+    assert len(new_df) == 16
+
+
+def test_add_missing_row_index_date_error():
+    """
+    It should add missing row compare to a date_range
+    """
+    input_df = pd.read_csv(os.path.join(fixtures_base_dir, 'add_missing_row.csv'))
+    with pytest.raises(ParamsValueError) as e_info:
+        add_missing_row(
+            input_df,
+            id_cols=['City', 'Country', 'Region'],
+            reference_col='Year',
+            complete_index={'type': 'my_date'}
+        )
+
+    assert "Unknown complete index type: my_date" == str(e_info.value)
