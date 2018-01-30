@@ -1,7 +1,7 @@
-blob,City,Country,Region,Date,population,population_cumsum
-C,Lille,France,Nord,201701,20,20
-A,Lille,France,Nord,201702,15,35
-A,Montreuil,France,Idf,201701,12,12
-B,Montreuil,France,Idf,201702,10,22
-A,Paris,France,Idf,201701,200,200
-A,Paris,France,Idf,201702,220,420
+blob,City,Country,Region,Date,population,population_cumsum,size,size_cumsum
+C,Lille,France,Nord,201701,20,20,5,5
+A,Lille,France,Nord,201702,15,35,7,12
+A,Montreuil,France,Idf,201701,12,12,80,80
+B,Montreuil,France,Idf,201702,10,22,85,165
+A,Paris,France,Idf,201701,200,200,1000,1000
+A,Paris,France,Idf,201702,220,420,200,1200

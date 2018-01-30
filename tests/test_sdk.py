@@ -6,7 +6,7 @@ import joblib
 import pytest
 from requests import HTTPError
 
-from tests.utils import DF, DF2
+from tests.tools import DF, DF2
 from toucan_data_sdk.sdk import ToucanDataSdk
 
 

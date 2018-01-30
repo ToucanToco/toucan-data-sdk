@@ -1,8 +1,8 @@
-Date,Year,City,Country,Region,population,populationA-1,evolution,evolution_pct,evolution_nantes
-2011-12-01,2011,Montreuil,France,Idf,12,10,2,0.2,-88
-2010-12-01,2010,Montreuil,France,Idf,10,,,,-90
-2010-12-01,2010,Lille,France,Nord,20,,,,-80
-2010-12-01,2010,Paris,France,Idf,200,,,,100
-2011-12-01,2011,Paris,France,Idf,220,200,20,0.1,120
-2011-12-01,2011,Lille,France,Nord,7,20,-13,-0.65,-93
-2011-12-01,2011,Nantes,France,Normandie,100,,,,0
+Date,Partial_Date,Year,City,Country,Region,population,populationA-1,evolution,evolution_pct,evolution_nantes
+2011-12-01,2011-12,2011,Montreuil,France,Idf,12,10,2,0.2,-88
+2010-12-01,2010-12,2010,Montreuil,France,Idf,10,,,,-90
+2010-12-01,2010-12,2010,Lille,France,Nord,20,,,,-80
+2010-12-01,2010-12,2010,Paris,France,Idf,200,,,,100
+2011-12-01,2011-12,2011,Paris,France,Idf,220,200,20,0.1,120
+2011-12-01,2011-12,2011,Lille,France,Nord,7,20,-13,-0.65,-93
+2011-12-01,2011-12,2011,Nantes,France,Normandie,100,,,,0

@@ -3,7 +3,7 @@ import tempfile
 
 import pytest
 
-from tests.utils import (
+from tests.tools import (
     default_zip_file,
     DF,
     DF2)

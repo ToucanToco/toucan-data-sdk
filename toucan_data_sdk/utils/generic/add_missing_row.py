@@ -1,6 +1,9 @@
 import pandas as pd
 
-from toucan_data_sdk.utils.helpers import check_params_columns_duplicate
+from toucan_data_sdk.utils.helpers import (
+    check_params_columns_duplicate,
+    ParamsValueError
+)
 
 
 def add_missing_row(df, id_cols, reference_col, complete_index=None, method=None, keep_cols=None):
@@ -9,7 +12,7 @@ def add_missing_row(df, id_cols, reference_col, complete_index=None, method=None
     - `id_cols` are the columns id to group,
     - `reference_col` is the column with groups missing values
     - `complete_index` (optional) a set of values used to add missing rows,
-       by default use the function `unique` on reference_col
+       by default use the function `unique` on reference_col. Can be dict for date_range
     - `method` (optional) method to choose values to keep.
        E.g between min and max value of the group.
     - `keep_cols` (optional) is the columns link to the reference_col to keep.
@@ -41,7 +44,7 @@ def add_missing_row(df, id_cols, reference_col, complete_index=None, method=None
         df (pd.DataFrame):
         id_cols (list(str)):
         reference_col (str):
-        complete_index (tuple):
+        complete_index (tuple/dict):
         method (str):
         keep_cols (list(str)):
     """
@@ -61,8 +64,22 @@ def add_missing_row(df, id_cols, reference_col, complete_index=None, method=None
     names = id_cols + cols_for_index
     new_df = df.set_index(names)
     index_values = df.groupby(id_cols).sum().index.values
+
     if complete_index is None:
         complete_index = df.groupby(cols_for_index).sum().index.values
+    elif isinstance(complete_index, dict):
+        if complete_index['type'] == 'date':
+            freq = complete_index['freq']
+            date_format = complete_index['format']
+            start = complete_index['start']
+            end = complete_index['end']
+            if isinstance(freq, dict):
+                freq = pd.DateOffset(**{k: int(v) for k, v in freq.items()})
+            complete_index = pd.date_range(start=start, end=end, freq=freq)
+            complete_index = complete_index.strftime(date_format)
+        else:
+            raise ParamsValueError(f'Unknown complete index type: '
+                                   f'{complete_index["type"]}')
 
     if not isinstance(index_values[0], tuple):
         index_values = [(x,) for x in index_values]
