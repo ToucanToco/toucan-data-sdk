@@ -2,7 +2,7 @@ import pandas as pd
 import itertools
 
 
-def aggregate_for_requesters(
+def multiple_aggregations(
     df,
     id_cols,
     requesters,

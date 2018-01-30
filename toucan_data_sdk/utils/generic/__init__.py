@@ -2,7 +2,7 @@
 # https://drive.google.com/drive/folders/0B56th7Lb-9vScy0tMlpIeGNxQ0E
 
 from .add_missing_row import add_missing_row
-from .aggregate_for_requesters import aggregate_for_requesters
+from .multiple_aggregations import multiple_aggregations
 from .clean import clean_dataframe
 from .compute_cumsum import compute_cumsum
 from .compute_evolution import (
