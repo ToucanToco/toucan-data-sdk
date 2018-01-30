@@ -1,5 +1,5 @@
 import pandas as pd
-from toucan_data_sdk.utils.generic import aggregate_for_requesters
+from toucan_data_sdk.utils.generic import multiple_aggregations
 
 
 def test_aggregate_requesters():
@@ -12,7 +12,7 @@ def test_aggregate_requesters():
         {'year': 2017, 'filter1': 'B', 'filter2': pd.np.nan, 'value': 2},
         {'year': 2017, 'filter1': 'B', 'filter2': 'C', 'value': 8},
     ])
-    res = aggregate_for_requesters(
+    res = multiple_aggregations(
         df,
         ['year'],
         {'filter1': 'All 1', 'filter2': 'All 2'},
@@ -22,7 +22,7 @@ def test_aggregate_requesters():
     mask = (res['filter1'] == 'All 1') & (res['filter2'] == 'C')
     assert res[mask]['value'][0] == 9
 
-    res = aggregate_for_requesters(
+    res = multiple_aggregations(
         df,
         ['year'],
         {'filter1': 'All 1', 'filter2': 'All 2'},
