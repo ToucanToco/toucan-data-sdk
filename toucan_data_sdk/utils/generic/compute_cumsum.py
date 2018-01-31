@@ -19,6 +19,7 @@ def compute_cumsum(
     - `id_cols` are the columns id to create each group,
     - `reference_cols` are the columns to order the cumsum,
     - `value_cols` are the columns to cumsum,
+    - `new_value_cols`are the new columns with the result cumsum
     - `cols_to_keep` are other column to keep in the dataframe. This option can
      be used if there is only one row by group [id_cols + reference_cols]
 
