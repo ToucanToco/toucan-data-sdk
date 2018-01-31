@@ -6,7 +6,8 @@ from toucan_data_sdk.utils.helpers import (
 )
 
 
-def add_missing_row(df, id_cols, reference_col, complete_index=None, method=None, cols_to_keep=None):
+def add_missing_row(df, id_cols, reference_col, complete_index=None, method=None,
+                    cols_to_keep=None):
     """
     Add missing row to a df base on a reference column
     - `id_cols` are the columns id to group,
