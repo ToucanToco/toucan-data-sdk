@@ -108,7 +108,7 @@ def test_add_missing_row_between_and_before():
     assert result == expected
 
 
-def test_add_missing_row_keep_cols():
+def test_add_missing_row_cols_to_keep():
     """
     It should add missing row compare to a reference column and keep an other column
     """
@@ -119,7 +119,7 @@ def test_add_missing_row_keep_cols():
         input_df,
         id_cols=['group'],
         reference_col='date',
-        keep_cols=['month']
+        cols_to_keep=['month']
     )
     mask = (new_df['group'] == 'B') & (new_df['date'] == 20161001)
     assert len(new_df.loc[mask, 'month']) == 1

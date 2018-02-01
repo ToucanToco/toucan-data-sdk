@@ -6,7 +6,8 @@ from toucan_data_sdk.utils.helpers import (
 )
 
 
-def add_missing_row(df, id_cols, reference_col, complete_index=None, method=None, keep_cols=None):
+def add_missing_row(df, id_cols, reference_col, complete_index=None, method=None,
+                    cols_to_keep=None):
     """
     Add missing row to a df base on a reference column
     - `id_cols` are the columns id to group,
@@ -15,7 +16,7 @@ def add_missing_row(df, id_cols, reference_col, complete_index=None, method=None
        by default use the function `unique` on reference_col. Can be dict for date_range
     - `method` (optional) method to choose values to keep.
        E.g between min and max value of the group.
-    - `keep_cols` (optional) is the columns link to the reference_col to keep.
+    - `cols_to_keep` (optional) is the columns link to the reference_col to keep.
 
     For example :
 
@@ -48,10 +49,10 @@ def add_missing_row(df, id_cols, reference_col, complete_index=None, method=None
         method (str):
         keep_cols (list(str)):
     """
-    if keep_cols is None:
+    if cols_to_keep is None:
         cols_for_index = [reference_col]
     else:
-        cols_for_index = [reference_col] + keep_cols
+        cols_for_index = [reference_col] + cols_to_keep
     check_params_columns_duplicate(id_cols + cols_for_index)
 
     if method == 'between' or method == 'between_and_after':
