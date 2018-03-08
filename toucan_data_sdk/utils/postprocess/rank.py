@@ -87,8 +87,7 @@ def rank(df, value_cols, group_cols=None, rank_cols_names=None, method='min', as
         df[rank_cols_names] = df[value_cols].rank(method=method, ascending=ascending)
     else:
         df[rank_cols_names] = (df.groupby(group_cols, as_index=False)[value_cols]
-                                 .rank(method=method, ascending=ascending)
-                                 .reset_index(drop=True))
+                                 .rank(method=method, ascending=ascending))
 
     if method != 'average':
         df[rank_cols_names] = df[rank_cols_names].astype('int')
