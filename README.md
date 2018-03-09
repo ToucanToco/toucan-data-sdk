@@ -21,11 +21,11 @@ Develop your Toucan Toco data pipeline from the confort of your favorite environ
 import getpass
 from toucan_data_sdk import ToucanDataSdk
 
-instance_url = 'https://api-demo.toucantoco.com/demo'
+instance_url = 'https://api-demo.toucantoco.com'
 auth = ('<username>', getpass.getpass())
 
-sdk = ToucanDataSdk(instance_url, auth=auth)
-dfs = sdk.dfs
+sdk = ToucanDataSdk(instance_url, small_app='demo', auth=auth)
+dfs = sdk.get_dfs()
 ```
 
 # API
@@ -35,13 +35,13 @@ dfs = sdk.dfs
 ### ToucanDataSdk.sdk
 
 * property,
-* uses the client to send a request to the back end to send the data sources 
+* uses the client to send a request to the back end to send the data sources
 as DataFrames,
 * uses an internal cache.
 
 ### ToucanDataSdk.invalidate_cache()
 
-Invalidates the cache. Next time you will access to the sdk property, a 
+Invalidates the cache. Next time you will access to the sdk property, a
 request will be sent to the client.
 
 ### Utils

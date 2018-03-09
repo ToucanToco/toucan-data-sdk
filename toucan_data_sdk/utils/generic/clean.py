@@ -1,21 +1,4 @@
-import re
-from unicodedata import normalize
-
-
-def _slugify(text, delim='-'):
-    """ Generate an ASCII-only slug """
-    _punctuation_re = re.compile(r'[\t !"#$%&\'()*\-/<=>?@\[\\\]^_`{|},.\n]+')
-
-    result = []
-    for word in _punctuation_re.split(text.lower()):
-        word = normalize('NFKD', word) \
-            .encode('ascii', 'ignore') \
-            .decode('utf-8')
-
-        if word:
-            result.append(word)
-
-    return delim.join(result)
+from toucan_data_sdk.utils.helpers import slugify
 
 
 def get_category_cols(df, threshold):
@@ -28,15 +11,15 @@ def get_int_cols(df):
     return [col for col in float_df.columns if all(x.is_integer() for x in float_df[col])]
 
 
-def clean_dataframe(df, slugify=True, threshold=50, rename_cols=None):
+def clean_dataframe(df, is_slugify=True, threshold=50, rename_cols=None):
     """
     This method is used to:
     - slugify the column names (if slugify is set to True)
     - convert columns to 'category' (if len(unique) < threshold) or 'int'
     - clean the dataframe and rename if necessary
     """
-    if slugify:
-        df = df.rename(columns=_slugify)
+    if is_slugify:
+        df = df.rename(columns=slugify)
 
     df = df.dropna(axis=1, how='all')
     for column in get_category_cols(df, threshold=threshold):

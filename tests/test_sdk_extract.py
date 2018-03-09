@@ -31,7 +31,7 @@ def test_extract_zip(zip_content):
         tmp_file.flush()
         tmp_file.seek(0)
 
-        dfs = extract_zip(tmp_file)
+        dfs = extract_zip(tmp_file.name)
         assert 'df' in dfs
         assert 'df2' in dfs
         assert DF.equals(dfs['df'])
@@ -51,7 +51,7 @@ def test_extract(df, df2, mocker):
 
     # 2. Is not a zip file
     mock_is_zip_file = mocker.patch('zipfile.is_zipfile')
-    mock_is_zip_file.side_effect = RuntimeError('test')
+    mock_is_zip_file.return_value = False
 
     with pytest.raises(DataSdkError):
         extract(zip_content)
