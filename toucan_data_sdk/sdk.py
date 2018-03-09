@@ -6,48 +6,84 @@ import zipfile
 
 import joblib
 from toucan_client import ToucanClient
+from toucan_data_sdk.utils.helpers import slugify
 
 
 logger = logging.getLogger(__name__)
 
 
 class ToucanDataSdk:
-    EXTRACTION_CACHE_PATH = 'extraction_cache'
-    EXTRACTION_CACHE_PATH_BK = 'extraction_cache.bk'
+    def __init__(self, instance_url, auth, small_app=None, stage="staging"):
+        instance_url = instance_url.strip().rstrip('/')
+        small_app_url = instance_url + (('/' + small_app) if small_app else '')
+        self.client = ToucanClient(small_app_url, auth=auth, stage=stage)
+        self.EXTRACTION_CACHE_PATH = os.path.join(
+            'extraction_cache',
+            slugify(instance_url, delim='_'),
+            small_app
+        )
 
-    def __init__(self, small_app_url, auth, stage="staging"):
-        self.client = ToucanClient(small_app_url, auth=auth)
-        self.client.stage = stage
-        self._dfs = None
+    def get_dfs(self, domains=None):
+        if domains is not None and isinstance(domains, list):
+            dfs = {}
+            domains_cache = [domain for domain in domains
+                             if self.cache_exists(domain)]
+            domains_sdk = list(set(domains) - set(domains_cache))
 
-    @property
-    def dfs(self):
-        if self._dfs is None:
+            if len(domains_cache) > 0:
+                dfs.update(self.read_from_cache(domains_cache))
+            if len(domains_sdk) > 0:
+                dfs.update(self.read_from_sdk(domains_sdk))
+        else:
             if self.cache_exists():
-                self._dfs = self.read()
-                logger.info('DataFrames extracted from cache')
+                dfs = self.read_from_cache()
             else:
-                resp = self.client.sdk.post()
-                resp.raise_for_status()
-                self._dfs = self.write(resp.content)
-                logger.info('Data fetched and cached')
-        return self._dfs
+                dfs = self.read_from_sdk()
 
-    def invalidate_cache(self):
-        self._dfs = None
-        self.backup_cache()
+        return dfs
 
-    def read(self):
+    def invalidate_cache(self, domains=None):
+        if domains is not None and isinstance(domains, list):
+            for domain in domains:
+                try:
+                    os.remove(os.path.join(self.EXTRACTION_CACHE_PATH, domain))
+                except OSError:
+                    pass
+        else:
+            try:
+                shutil.rmtree(self.EXTRACTION_CACHE_PATH)
+            except (OSError, IOError) as e:  # For Python 2.7+ compatibility
+                logger.error('failed to remove cache for : ' + str(e))
+
+    def get_augment(self):
+        return self.client.config.augment.get().text
+
+    def query_basemaps(self, query):
+        if isinstance(query, dict):
+            return self.client.basemaps.post(json=query).json()
+        else:
+            raise InvalidQueryError(f'Query {query} should be a dict, {type(query)} found.')
+
+    def read_from_sdk(self, domains=None):
+        # Extract all domains if domains_sdk is null
+        resp = self.client.sdk.post(json={'domains': domains})
+        resp.raise_for_status()
+        dfs = self.write(resp.content)
+        logger.info(f'Data {domains} fetched and cached')
+        return dfs
+
+    def read_from_cache(self, domains=None):
         """
         Returns:
             dict: Dict[str, DataFrame]
         """
-        logger.info(
-            'Reading data from cache ({})'.format(self.EXTRACTION_CACHE_PATH))
-        return {
-            name: self.read_entry(name)
-            for name in os.listdir(self.EXTRACTION_CACHE_PATH)
-        }
+        logger.info('Reading data from cache ({})'.format(self.EXTRACTION_CACHE_PATH))
+        if domains is not None and isinstance(domains, list):
+            dfs = {domain: self.read_entry(domain) for domain in domains}
+        else:
+            dfs = {name: self.read_entry(name)
+                   for name in os.listdir(self.EXTRACTION_CACHE_PATH)}
+        return dfs
 
     def read_entry(self, file_name):
         """
@@ -87,40 +123,33 @@ class ToucanDataSdk:
         joblib.dump(df, filename=file_path)
         logger.info('Cache entry added: {}'.format(file_path))
 
-    def cache_exists(self):
-        return os.path.exists(self.EXTRACTION_CACHE_PATH) and \
-            os.path.isdir(self.EXTRACTION_CACHE_PATH)
-
-    def backup_cache(self):
-        if os.path.exists(self.EXTRACTION_CACHE_PATH):
-            if os.path.exists(self.EXTRACTION_CACHE_PATH_BK):
-                try:
-                    shutil.rmtree(self.EXTRACTION_CACHE_PATH_BK)
-                except (OSError, IOError) as e:  # For Python 2.7+ compatibility
-                    logger.error('failed to remove old backup: ' + str(e))
-                    return
-
-            try:
-                os.rename(self.EXTRACTION_CACHE_PATH, self.EXTRACTION_CACHE_PATH_BK)
-            except (OSError, IOError) as e:
-                logger.error('failed to backup current cache' + str(e))
+    def cache_exists(self, domain=None):
+        if domain is not None:
+            path = os.path.join(self.EXTRACTION_CACHE_PATH, domain)
+            return os.path.exists(path) and os.path.isfile(path)
+        else:
+            path = self.EXTRACTION_CACHE_PATH
+            return os.path.exists(path) and os.path.isdir(path)
 
 
-def extract_zip(tmp_file):
+def extract_zip(zip_file_path):
     """
     Returns:
         dict: Dict[str, DataFrame]
     """
     dfs = {}
-    with zipfile.ZipFile(tmp_file.name, mode='r') as z_file:
+    with zipfile.ZipFile(zip_file_path, mode='r') as z_file:
         names = z_file.namelist()
         for name in names:
             content = z_file.read(name)
-            with tempfile.NamedTemporaryFile() as tmp_file:
-                tmp_file.write(content)
-                tmp_file.flush()
-                tmp_file.seek(0)
-                dfs[name] = joblib.load(tmp_file.name)
+            _, tmp_file_path = tempfile.mkstemp()
+            try:
+                with open(tmp_file_path, 'wb') as tmp_file:
+                    tmp_file.write(content)
+
+                dfs[name] = joblib.load(tmp_file_path)
+            finally:
+                shutil.rmtree(tmp_file_path, ignore_errors=True)
     return dfs
 
 
@@ -133,32 +162,22 @@ def extract(data):
         dict: Dict[str, DataFrame]
 
     """
-    with tempfile.NamedTemporaryFile() as tmp_file:
-        tmp_file.write(data)
-        tmp_file.flush()
-        tmp_file.seek(0)
+    _, tmp_file_path = tempfile.mkstemp()
+    try:
+        with open(tmp_file_path, 'wb') as tmp_file:
+            tmp_file.write(data)
 
-        if is_zipfile(tmp_file):
-            return extract_zip(tmp_file)
+        if zipfile.is_zipfile(tmp_file_path):
+            return extract_zip(tmp_file_path)
         else:
             raise DataSdkError('Unsupported file type')
-
-
-def is_zipfile(tmp_file):
-    """
-    Args:
-        tmp_file (tempfile.TemporaryFile):
-
-    Returns:
-        bool:
-    """
-    try:
-        return zipfile.is_zipfile(tmp_file.name)
-    except Exception:
-        return False
     finally:
-        tmp_file.seek(0)
+        shutil.rmtree(tmp_file_path, ignore_errors=True)
 
 
 class DataSdkError(Exception):
+    pass
+
+
+class InvalidQueryError(Exception):
     pass

@@ -7,7 +7,7 @@ import pytest
 from requests import HTTPError
 
 from tests.tools import DF, DF2
-from toucan_data_sdk.sdk import ToucanDataSdk
+from toucan_data_sdk.sdk import ToucanDataSdk, InvalidQueryError
 
 
 def gen_client(mocker):
@@ -25,11 +25,15 @@ def gen_client(mocker):
 
 @pytest.fixture(name='sdk', scope='function')
 def gen_data_sdk(mocker):
-    sdk = ToucanDataSdk('some_url', auth=('', ''))
+    sdk = ToucanDataSdk(
+        instance_url='https://api-myinstance.toucantoco.com',
+        small_app='demo',
+        auth=('', '')
+    )
     sdk.client = gen_client(mocker)
     yield sdk
-    if os.path.exists(ToucanDataSdk.EXTRACTION_CACHE_PATH):
-        shutil.rmtree(ToucanDataSdk.EXTRACTION_CACHE_PATH)
+    if os.path.exists(sdk.EXTRACTION_CACHE_PATH):
+        shutil.rmtree(sdk.EXTRACTION_CACHE_PATH)
 
 
 def gen_client_error(mocker):
@@ -47,11 +51,11 @@ def gen_client_error(mocker):
 
 @pytest.fixture(name='sdk_error', scope='function')
 def gen_data_sdk_error(mocker):
-    sdk = ToucanDataSdk('some_url', auth=('', ''))
+    sdk = ToucanDataSdk('some_url', small_app='demo', auth=('', ''))
     sdk.client = gen_client_error(mocker)
     yield sdk
-    if os.path.exists(ToucanDataSdk.EXTRACTION_CACHE_PATH):
-        shutil.rmtree(ToucanDataSdk.EXTRACTION_CACHE_PATH)
+    if os.path.exists(sdk.EXTRACTION_CACHE_PATH):
+        shutil.rmtree(sdk.EXTRACTION_CACHE_PATH)
 
 
 @pytest.fixture(name='tmp_dir', scope='module')
@@ -77,35 +81,58 @@ def test_dfs(sdk, mocker):
     """It should use the cache properly"""
     mock_cache_exists = mocker.patch(
         'toucan_data_sdk.sdk.ToucanDataSdk.cache_exists')
-    mock_read = mocker.patch(
-        'toucan_data_sdk.sdk.ToucanDataSdk.read')
-    mock_write = mocker.patch(
-        'toucan_data_sdk.sdk.ToucanDataSdk.write')
+    mock_read_cache = mocker.patch(
+        'toucan_data_sdk.sdk.ToucanDataSdk.read_from_cache')
+    mock_read_sdk = mocker.patch(
+        'toucan_data_sdk.sdk.ToucanDataSdk.read_from_sdk')
 
     # 1. Cache directory exists
     mock_cache_exists.return_value = True
-    mock_read.return_value = 1
-    assert sdk.dfs == 1
+    mock_read_cache.return_value = {"domain_1": 1}
+    assert sdk.get_dfs() == {"domain_1": 1}
 
     # 2. Cache directory does not exist
+    mock_read_cache.reset_mock()
     mock_cache_exists.return_value = False
-    mock_write.return_value = 2
-    sdk._dfs = None
-    assert sdk.dfs == 2
+    mock_read_sdk.return_value = {"domain_2": 1}
+    assert sdk.get_dfs() == {"domain_2": 1}
+    mock_read_cache.assert_not_called()
 
-    # 3. Cache directory does not exist, keep last set value
+    # 3. Cache directory exists with one domain
+    mock_cache_exists.return_value = True
+    mock_read_cache.return_value = {"domain_1": 1}
+    assert sdk.get_dfs(['a']) == {"domain_1": 1}
+
+    # 4. Cache directory doesn't exists with one domain
+    mock_read_cache.reset_mock()
     mock_cache_exists.return_value = False
-    mock_write.return_value = 3
-    assert sdk.dfs == 2
+    mock_read_sdk.return_value = {"domain_2": 1}
+    assert sdk.get_dfs(['a']) == {"domain_2": 1}
+    mock_read_cache.assert_not_called()
+
+
+def test_dfs_complex(sdk, mocker):
+    """It should use the cache properly"""
+    mock_cache_exists = mocker.patch(
+        'toucan_data_sdk.sdk.ToucanDataSdk.cache_exists')
+    mock_read_cache = mocker.patch(
+        'toucan_data_sdk.sdk.ToucanDataSdk.read_from_cache')
+    mock_read_sdk = mocker.patch(
+        'toucan_data_sdk.sdk.ToucanDataSdk.read_from_sdk')
+
+    mock_cache_exists.side_effect = [True, False]
+    mock_read_cache.return_value = {"domain_1": 1}
+    mock_read_sdk.return_value = {"domain_2": 1}
+    assert sdk.get_dfs(['a', 'b']) == {"domain_1": 1, "domain_2": 1}
 
 
 def test_dfs_http_error(sdk_error):
     """It should use the cache properly"""
     with pytest.raises(HTTPError):
-        _ = sdk_error.dfs
+        _ = sdk_error.get_dfs()
 
 
-def test_read(sdk):
+def test_read_from_cache(sdk):
     with tempfile.TemporaryDirectory() as tmp_dir:
         extraction_dir = os.path.join(tmp_dir, sdk.EXTRACTION_CACHE_PATH)
         sdk.EXTRACTION_CACHE_PATH = extraction_dir
@@ -114,11 +141,23 @@ def test_read(sdk):
         joblib.dump(DF, os.path.join(extraction_dir, 'a'))
         joblib.dump(DF2, os.path.join(extraction_dir, 'b'))
 
-        dfs = sdk.read()
+        dfs = sdk.read_from_cache()
         assert 'a' in dfs
         assert 'b' in dfs
         assert DF.equals(dfs['a'])
         assert DF2.equals(dfs['b'])
+
+        dfs = sdk.read_from_cache(['a'])
+        assert 'a' in dfs
+        assert 'b' not in dfs
+        assert DF.equals(dfs['a'])
+
+
+def test_read_from_sdk(sdk, mocker):
+    mock_write = mocker.patch('toucan_data_sdk.sdk.ToucanDataSdk.write')
+    mock_write.return_value = {'df': DF, 'df2': DF2}
+    dfs = sdk.read_from_sdk()
+    assert dfs == {'df': DF, 'df2': DF2}
 
 
 def test_write(sdk, mocker):
@@ -136,119 +175,50 @@ def test_write(sdk, mocker):
         assert 'b' in os.listdir(extraction_dir)
 
 
-def test_cache(sdk, mocker):
-    mock_read = mocker.patch('toucan_data_sdk.sdk.ToucanDataSdk.read')
-    mock_write = mocker.patch('toucan_data_sdk.sdk.ToucanDataSdk.write')
-    mock_path_exists = mocker.patch('os.path.exists')
-    mock_is_dir = mocker.patch('os.path.isdir')
+def test_invalidate_cache(sdk):
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        extraction_dir = os.path.join(tmp_dir, sdk.EXTRACTION_CACHE_PATH)
+        sdk.EXTRACTION_CACHE_PATH = extraction_dir
+        os.makedirs(extraction_dir)
+        joblib.dump(DF, os.path.join(extraction_dir, 'a'))
+        joblib.dump(DF2, os.path.join(extraction_dir, 'b'))
 
-    # Cache is empty -> fill it
-    mock_path_exists.return_value = False
-    mock_write.return_value = {'df': DF, 'df2': DF2}
+        assert sdk.cache_exists()
+        sdk.invalidate_cache()
+        assert not sdk.cache_exists()
 
-    dfs = sdk.dfs
-    assert sdk.client.sdk.post.call_count == 1
-    assert isinstance(dfs, dict)
-    assert 'df' in dfs
-    assert 'df2' in dfs
+        os.makedirs(extraction_dir)
+        joblib.dump(DF, os.path.join(extraction_dir, 'a'))
+        joblib.dump(DF2, os.path.join(extraction_dir, 'b'))
 
-    assert DF.equals(dfs['df'])
-    assert DF2.equals(dfs['df2'])
-
-    # Cache is filled, no request to the server
-    mock_path_exists.return_value = True
-    mock_is_dir.return_value = True
-    mock_read.return_value = {'df': DF, 'df2': DF2}
-
-    sdk.client.sdk.post.reset_mock()
-    _ = sdk.dfs
-    sdk.client.sdk.post.assert_not_called()
-
-    assert isinstance(dfs, dict)
-    assert 'df' in dfs
-    assert 'df2' in dfs
-
-    assert DF.equals(dfs['df'])
-    assert DF2.equals(dfs['df2'])
-
-    mocker.stopall()
+        assert sdk.cache_exists('a')
+        sdk.invalidate_cache(['a'])
+        assert not sdk.cache_exists('a')
+        assert sdk.cache_exists('b')
+        assert sdk.cache_exists()
 
 
-def test_invalidate_cache(sdk, mocker):
-    mock_write = mocker.patch('toucan_data_sdk.sdk.ToucanDataSdk.write')
-    mock_write.return_value = {'df': DF, 'df2': DF2}
+def test_invalidate_cache_exception(sdk):
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        sdk.invalidate_cache()
 
-    # Cache is empty -> fill it
-    dfs = sdk.dfs
-    assert sdk.client.sdk.post.call_count == 1
-    assert isinstance(dfs, dict)
-    assert 'df' in dfs
-    assert 'df2' in dfs
+        extraction_dir = os.path.join(tmp_dir, sdk.EXTRACTION_CACHE_PATH)
+        sdk.EXTRACTION_CACHE_PATH = extraction_dir
+        os.makedirs(extraction_dir)
+        joblib.dump(DF, os.path.join(extraction_dir, 'a'))
 
-    assert DF.equals(dfs['df'])
-    assert DF2.equals(dfs['df2'])
-
-    # Invalidate cache
-    sdk.invalidate_cache()
-    sdk.client.sdk.post.reset_mock()
-
-    dfs = sdk.dfs
-    assert sdk.client.sdk.post.call_count == 1
-    assert isinstance(dfs, dict)
-    assert 'df' in dfs
-    assert 'df2' in dfs
-
-    assert DF.equals(dfs['df'])
-    assert DF2.equals(dfs['df2'])
+        assert sdk.cache_exists()
+        sdk.invalidate_cache(['b', 'a'])
+        assert not sdk.cache_exists('a')
 
 
-def test_backup_existing_cache(sdk, mocker):
-    mock_path_exists = mocker.patch('os.path.exists')
-    mock_rmtree = mocker.patch('shutil.rmtree')
-    mock_rename = mocker.patch('os.rename')
+def test_augment(sdk):
+    sdk.client.config.augment.get().text = 'yo'
+    assert sdk.get_augment() == 'yo'
 
-    # 1. No cache, nothing to do
-    mock_path_exists.return_value = False
-    sdk.backup_cache()
 
-    assert mock_path_exists.call_count == 1
-    assert mock_rmtree.call_count == 0
-    assert mock_rename.call_count == 0
-
-    mock_path_exists.reset_mock()
-
-    # 2. Cache exists and previous backup exists
-    mock_path_exists.return_value = True
-    sdk.backup_cache()
-
-    assert mock_path_exists.call_count == 2
-    assert mock_rmtree.call_count == 1
-    assert mock_rename.call_count == 1
-
-    mock_path_exists.reset_mock()
-    mock_rmtree.reset_mock()
-    mock_rename.reset_mock()
-
-    # 3.1 Cache exists and previous backup exists, error
-    mock_path_exists.return_value = True
-    mock_rmtree.side_effect = IOError('rmtree failed')
-    sdk.backup_cache()
-
-    assert mock_path_exists.call_count == 2
-    assert mock_rmtree.call_count == 1
-    assert mock_rename.call_count == 0
-
-    mock_path_exists.reset_mock()
-    mock_rmtree.reset_mock()
-    mock_rename.reset_mock()
-
-    # 3.2 Cache exists and previous backup exists, other error
-    mock_path_exists.side_effect = [True, False]
-    mock_rename.side_effect = IOError('rename failed')
-    sdk.backup_cache()
-
-    assert mock_path_exists.call_count == 2
-    assert mock_rmtree.call_count == 0
-    assert mock_rename.call_count == 1
-
-    mocker.stopall()
+def test_basemaps(sdk):
+    sdk.client.basemaps.post().json.return_value = {'lala': 'lo'}
+    assert sdk.query_basemaps({}) == {'lala': 'lo'}
+    with pytest.raises(InvalidQueryError):
+        sdk.query_basemaps('yo')

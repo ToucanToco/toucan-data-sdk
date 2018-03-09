@@ -22,10 +22,9 @@ import getpass
 from toucan_data_sdk import ToucanDataSdk
 
 instance_url = 'https://api-demo.toucantoco.com'
-small_app = 'demo'
 auth = ('<username>', getpass.getpass())
 
-sdk = ToucanDataSdk(instance_url, small_app=small_app, auth=auth)
+sdk = ToucanDataSdk(instance_url, small_app='demo', auth=auth)
 dfs = sdk.get_dfs()
 ```
 
@@ -33,15 +32,17 @@ dfs = sdk.get_dfs()
 
 ## ToucanDataSdk class
 
-### ToucanDataSdk.get_dfs()
+### ToucanDataSdk.sdk
 
-Uses the client to send a request to the backend to send the data sources 
-as DataFrames (uses an internal cache).
+* property,
+* uses the client to send a request to the back end to send the data sources
+as DataFrames,
+* uses an internal cache.
 
 ### ToucanDataSdk.invalidate_cache()
 
-Invalidates the cache. Next time you will `get_dfs`, a 
-request will be sent to the backend.
+Invalidates the cache. Next time you will access to the sdk property, a
+request will be sent to the client.
 
 ### Utils
 
