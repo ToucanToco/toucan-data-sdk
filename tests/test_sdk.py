@@ -36,6 +36,18 @@ def gen_data_sdk(mocker):
         shutil.rmtree(sdk.EXTRACTION_CACHE_PATH)
 
 
+@pytest.fixture(name='sdk_old', scope='function')
+def gen_data_sdk_old(mocker):
+    sdk_old = ToucanDataSdk(
+        instance_url='https://api-myinstance.toucantoco.com/demo',
+        auth=('', '')
+    )
+    sdk_old.client = gen_client(mocker)
+    yield sdk_old
+    if os.path.exists(sdk_old.EXTRACTION_CACHE_PATH):
+        shutil.rmtree(sdk_old.EXTRACTION_CACHE_PATH)
+
+
 def gen_client_error(mocker):
     class Response:
         content = 10
@@ -222,3 +234,18 @@ def test_basemaps(sdk):
     assert sdk.query_basemaps({}) == {'lala': 'lo'}
     with pytest.raises(InvalidQueryError):
         sdk.query_basemaps('yo')
+
+
+def test_sdk_compatibility(sdk_old, mocker):
+    """It should use the cache properly"""
+    mock_cache_exists = mocker.patch(
+        'toucan_data_sdk.sdk.ToucanDataSdk.cache_exists')
+    mock_read_cache = mocker.patch(
+        'toucan_data_sdk.sdk.ToucanDataSdk.read_from_cache')
+    mock_read_sdk = mocker.patch(
+        'toucan_data_sdk.sdk.ToucanDataSdk.read_from_sdk')
+
+    # 1. Cache directory exists
+    mock_cache_exists.return_value = True
+    mock_read_cache.return_value = {"domain_1": 1}
+    assert sdk_old.get_dfs() == {"domain_1": 1}

@@ -15,6 +15,8 @@ logger = logging.getLogger(__name__)
 class ToucanDataSdk:
     def __init__(self, instance_url, auth, small_app=None, stage="staging"):
         instance_url = instance_url.strip().rstrip('/')
+        if small_app is None:
+            small_app = instance_url.split('/')[-1]
         small_app_url = instance_url + (('/' + small_app) if small_app else '')
         self.client = ToucanClient(small_app_url, auth=auth, stage=stage)
         self.EXTRACTION_CACHE_PATH = os.path.join(
