@@ -121,6 +121,7 @@ def test_dfs(sdk, mocker):
     mock_read_sdk.return_value = {"domain_2": 1}
     assert sdk.get_dfs(['a']) == {"domain_2": 1}
     mock_read_cache.assert_not_called()
+    assert sdk.small_app_url == 'https://api-myinstance.toucantoco.com/demo'
 
 
 def test_dfs_complex(sdk, mocker):
@@ -249,3 +250,4 @@ def test_sdk_compatibility(sdk_old, mocker):
     mock_cache_exists.return_value = True
     mock_read_cache.return_value = {"domain_1": 1}
     assert sdk_old.get_dfs() == {"domain_1": 1}
+    assert sdk_old.small_app_url == 'https://api-myinstance.toucantoco.com/demo'
