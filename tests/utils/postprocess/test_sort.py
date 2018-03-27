@@ -1,5 +1,5 @@
 import pandas as pd
-from toucan_data_sdk.utils.postprocess import sort_values
+from toucan_data_sdk.utils.postprocess import sort
 
 
 def test_sort_values():
@@ -12,9 +12,9 @@ def test_sort_values():
     ])
 
     expected = [450, 250, 300, 100]
-    output = sort_values(data, ['Category', 'value'], order='desc')
+    output = sort(data, ['Category', 'value'], order='desc')
     assert output['value'].tolist() == expected
 
     expected = [100, 300, 250, 450]
-    output = sort_values(data, ['Category', 'value'])
+    output = sort(data, ['Category', 'value'])
     assert output['value'].tolist() == expected

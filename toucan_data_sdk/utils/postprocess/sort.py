@@ -1,4 +1,4 @@
-def sort_values(df, columns, order='asc'):
+def sort(df, columns, order='asc'):
     """
     Sort DataFrame
     :param df: DataFrame
