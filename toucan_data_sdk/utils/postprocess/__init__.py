@@ -11,5 +11,5 @@ from .rank import rank
 from .rename import rename
 from .replace import replace
 from .sort import sort_values
-from .top import top
+from .top import top, top_group
 from .waterfall import waterfall
