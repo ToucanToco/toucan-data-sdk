@@ -17,8 +17,9 @@ class ToucanDataSdk:
         instance_url = instance_url.strip().rstrip('/')
         if small_app is None:
             small_app = instance_url.split('/')[-1]
-        small_app_url = instance_url + (('/' + small_app) if small_app else '')
-        self.client = ToucanClient(small_app_url, auth=auth, stage=stage)
+            instance_url = '/'.join(instance_url.split('/')[:-1])
+        self.small_app_url = instance_url + (('/' + small_app) if small_app else '')
+        self.client = ToucanClient(self.small_app_url, auth=auth, stage=stage)
         self.EXTRACTION_CACHE_PATH = os.path.join(
             'extraction_cache',
             slugify(instance_url, delim='_'),
@@ -59,6 +60,9 @@ class ToucanDataSdk:
 
     def get_augment(self):
         return self.client.config.augment.get().text
+
+    def get_etl(self):
+        return self.client.config.etl.get().json()
 
     def query_basemaps(self, query):
         if isinstance(query, dict):
