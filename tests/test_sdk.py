@@ -230,6 +230,11 @@ def test_augment(sdk):
     assert sdk.get_augment() == 'yo'
 
 
+def test_etl(sdk):
+    sdk.client.config.etl.get().json.return_value = {'yo': 'del'}
+    assert sdk.get_etl() == {'yo': 'del'}
+
+
 def test_basemaps(sdk):
     sdk.client.basemaps.post().json.return_value = {'lala': 'lo'}
     assert sdk.query_basemaps({}) == {'lala': 'lo'}

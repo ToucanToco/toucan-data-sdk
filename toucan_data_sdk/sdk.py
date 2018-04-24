@@ -61,6 +61,9 @@ class ToucanDataSdk:
     def get_augment(self):
         return self.client.config.augment.get().text
 
+    def get_etl(self):
+        return self.client.config.etl.get().json()
+
     def query_basemaps(self, query):
         if isinstance(query, dict):
             return self.client.basemaps.post(json=query).json()
