@@ -1,6 +1,3 @@
-import pandas as pd
-
-
 def replace(df, column, dst_column=None, **kwargs):
     """
     Replace values of a column (uses pandas.Series.replace)

@@ -7,6 +7,7 @@ import pytest
 from toucan_data_sdk.utils.helpers import (
     get_param_value_from_func_call,
     get_func_sourcecode,
+    clean_cachedir_old_entries
 )
 
 
@@ -64,3 +65,8 @@ def test_get_func_sourcecode(mocker):
 
     func_code = get_func_sourcecode(new_module.get_answer)
     assert func_code.strip().endswith('return 42')
+
+
+def test_clean_cachedir_old_entries():
+    with pytest.raises(ValueError):
+        clean_cachedir_old_entries(cachedir='', func_name='', limit=0)

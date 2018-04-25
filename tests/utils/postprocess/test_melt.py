@@ -1,5 +1,4 @@
 import pandas as pd
-import pytest
 
 from toucan_data_sdk.utils.postprocess import melt
 

@@ -1,4 +1,3 @@
-import pytest
 import pandas as pd
 
 from toucan_data_sdk.utils.data_specs import (

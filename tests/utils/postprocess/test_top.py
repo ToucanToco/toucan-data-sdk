@@ -85,7 +85,7 @@ def test_top_group():
     kwargs = {
         "group": ["Periode"],
         "value": 'Valeurs',
-        "agregate_by": ["Label"],
+        "aggregate_by": ["Label"],
         "limit": 2,
         "order": "desc"
 
@@ -105,7 +105,7 @@ def test_top_group():
     kwargs = {
         "group": None,
         "value": 'Valeurs',
-        "agregate_by": ["Label"],
+        "aggregate_by": ["Label"],
         "limit": 2,
         "order": "desc"
 
@@ -125,7 +125,7 @@ def test_top_group():
     kwargs = {
         "group": ["Periode"],
         "value": 'Valeurs',
-        "agregate_by": ["Label"],
+        "aggregate_by": ["Label"],
         "limit": 2,
         "function": "mean",
         "order": "desc"

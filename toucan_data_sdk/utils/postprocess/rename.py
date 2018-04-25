@@ -1,6 +1,3 @@
-import pandas as pd
-
-
 def rename(df, values=None, columns=None, locale=None):
     """
     Replaces data values and column names according to locale

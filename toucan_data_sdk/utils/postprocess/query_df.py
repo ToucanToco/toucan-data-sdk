@@ -12,4 +12,5 @@ def query_df(df, query):
     df = df.query(query)
     return df
 
+
 query = query_df

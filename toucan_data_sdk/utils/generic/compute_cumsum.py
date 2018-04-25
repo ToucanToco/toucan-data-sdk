@@ -1,5 +1,3 @@
-import pandas as pd
-
 from toucan_data_sdk.utils.helpers import (
     check_params_columns_duplicate,
     ParamsValueError
@@ -19,7 +17,7 @@ def compute_cumsum(
     - `id_cols` are the columns id to create each group,
     - `reference_cols` are the columns to order the cumsum,
     - `value_cols` are the columns to cumsum,
-    - `new_value_cols`are the new columns with the result cumsum
+    - `new_value_cols` are the new columns with the result cumsum
     - `cols_to_keep` are other column to keep in the dataframe. This option can
      be used if there is only one row by group [id_cols + reference_cols]
 
@@ -49,8 +47,9 @@ def compute_cumsum(
     Args:
         df (pd.DataFrame):
         id_cols (list(str)):
-        reference_cols (list(str))
+        reference_cols (list(str)):
         value_cols (list(str)):
+        new_value_cols (list(str)):
         cols_to_keep (list(str)):
     """
     if cols_to_keep is None:

@@ -1,4 +1,5 @@
 test:
+	flake8 toucan_data_sdk tests
 	PYTHONPATH=. pytest tests
 
 clean:

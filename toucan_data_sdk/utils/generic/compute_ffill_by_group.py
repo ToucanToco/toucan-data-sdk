@@ -1,5 +1,3 @@
-import pandas as pd
-
 from toucan_data_sdk.utils.helpers import check_params_columns_duplicate
 
 

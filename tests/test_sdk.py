@@ -142,7 +142,7 @@ def test_dfs_complex(sdk, mocker):
 def test_dfs_http_error(sdk_error):
     """It should use the cache properly"""
     with pytest.raises(HTTPError):
-        _ = sdk_error.get_dfs()
+        sdk_error.get_dfs()
 
 
 def test_read_from_cache(sdk):
@@ -248,8 +248,7 @@ def test_sdk_compatibility(sdk_old, mocker):
         'toucan_data_sdk.sdk.ToucanDataSdk.cache_exists')
     mock_read_cache = mocker.patch(
         'toucan_data_sdk.sdk.ToucanDataSdk.read_from_cache')
-    mock_read_sdk = mocker.patch(
-        'toucan_data_sdk.sdk.ToucanDataSdk.read_from_sdk')
+    mocker.patch('toucan_data_sdk.sdk.ToucanDataSdk.read_from_sdk')
 
     # 1. Cache directory exists
     mock_cache_exists.return_value = True
