@@ -23,3 +23,15 @@ def convert_datetime_to_str(df, selector, format):
     """
     df[selector] = df[selector].dt.strftime(format)
     return df
+
+
+def cast(df, column, type):
+    """
+    Convert column's type into type
+    :param df: Dataframe
+    :param column: name of the column to format
+    :param type: desired type of the column
+    :return: df
+    """
+    df[column] = df[column].astype(type)
+    return df

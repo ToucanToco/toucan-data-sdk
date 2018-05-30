@@ -1,6 +1,6 @@
 test:
 	flake8 toucan_data_sdk tests
-	PYTHONPATH=. pytest tests
+	pytest tests -x --cov-fail-under=100 --cov=toucan_data_sdk
 
 clean:
 	find . -name \*.pyc -delete

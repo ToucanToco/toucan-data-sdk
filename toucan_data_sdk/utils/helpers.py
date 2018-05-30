@@ -4,9 +4,9 @@ import re
 import shutil
 from pathlib import Path
 from typing import List
-from unicodedata import normalize
 
 import joblib
+from slugify import slugify as _slugify
 
 
 def get_orig_function(f):
@@ -93,20 +93,9 @@ def check_params_columns_duplicate(cols_name: List[str]) -> bool:
         return True
 
 
-def slugify(text, delim='-'):
-    """ Generate an ASCII-only slug """
-    _punctuation_re = re.compile(r'[\t !"#$%&\':()*\-/<=>?@\[\\\]^_`{|},.\n]+')
-
-    result = []
-    for word in _punctuation_re.split(text.lower()):
-        word = normalize('NFKD', word) \
-            .encode('ascii', 'ignore') \
-            .decode('utf-8')
-
-        if word:
-            result.append(word)
-
-    return delim.join(result)
+def slugify(name, separator='-'):
+    """Returns a slugified name (we allow _ to be used)"""
+    return _slugify(name, regex_pattern=re.compile('[^-_a-z0-9]+'), separator=separator)
 
 
 def resolve_dependencies(func_name, dependencies):

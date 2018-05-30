@@ -22,7 +22,7 @@ class ToucanDataSdk:
         self.client = ToucanClient(self.small_app_url, auth=auth, stage=stage)
         self.EXTRACTION_CACHE_PATH = os.path.join(
             'extraction_cache',
-            slugify(instance_url, delim='_'),
+            slugify(instance_url, separator='_'),
             small_app
         )
 
