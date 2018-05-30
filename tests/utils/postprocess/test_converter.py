@@ -1,8 +1,11 @@
 import pandas as pd
+import pytest
+from numpy import nan
 
 from toucan_data_sdk.utils.postprocess import (
     convert_datetime_to_str,
-    convert_str_to_datetime
+    convert_str_to_datetime,
+    cast
 )
 
 
@@ -40,3 +43,45 @@ def test_convert_datetime_to_str():
     expected_result = ['2016-01', '2016-01', '2017-05']
     df = convert_datetime_to_str(df, **config)
     assert list(df.date) == expected_result
+
+
+def test_cast():
+    """ It should convert columns from one type to another"""
+    df = pd.DataFrame([
+        {'name': 'Pika', 'year': '2017', 'value': '12.7'},
+        {'name': 'Chu', 'year': '2018', 'value': 3.1},
+        {'name': 'Nani', 'year': 2015, 'value': '13'},
+        {'name': 'Zbruh', 'year': '2012', 'value': 14}
+    ])
+
+    # Basic tests
+    config = {
+        'column': 'year',
+        'type': 'int'
+    }
+    new_df = cast(df, **config)
+    assert new_df['year'].tolist() == [2017, 2018, 2015, 2012]
+    assert new_df[['name', 'value']].equals(df[['name', 'value']])
+
+    config = {
+        'column': 'value',
+        'type': 'float'
+    }
+    new_df = cast(df, **config)
+    assert new_df['value'].tolist() == [12.7, 3.1, 13.0, 14.0]
+
+    config = {
+        'column': 'year',
+        'type': 'str'
+    }
+    new_df = cast(df, **config)
+    assert new_df['year'].tolist() == ['2017', '2018', '2015', '2012']
+
+    # Add bad values
+    df = df.append({'name': 'BadBoy', 'year': nan, 'value': ''}, ignore_index=True)
+    config = {
+        'column': 'year',
+        'type': 'int',
+    }
+    with pytest.raises(ValueError):
+        cast(df, **config)
