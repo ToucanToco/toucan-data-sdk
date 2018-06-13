@@ -78,3 +78,6 @@ venv.bak/
 # mypy
 .mypy_cache/
 
+#mac explorer
+toucan_data_sdk/utils/.DS_Store
+
