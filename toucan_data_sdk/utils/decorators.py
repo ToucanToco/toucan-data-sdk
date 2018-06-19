@@ -55,7 +55,7 @@ from .helpers import (
 )
 
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 
 
 def catch(logger):
@@ -85,23 +85,23 @@ def _get_dfs(*args, **kwargs):
     return [value for value in values if isinstance(value, pd.DataFrame)]
 
 
-@catch(logger)
+@catch(_logger)
 def _get_dfs_shapes(*args, **kwargs):
     return [df.shape for df in _get_dfs(*args, **kwargs)]
 
 
-@catch(logger)
+@catch(_logger)
 def _log_shapes(logger, func_name, input_shapes, output_shapes):
     logger.info("{} - {} -> {}".format(func_name, input_shapes, output_shapes))
 
 
-@catch(logger)
+@catch(_logger)
 def _log_time(logger, func_name, start, end):
     duration = (end - start) * 1000
     logger.info("{0} - time: {1:0.1f} ms".format(func_name, duration))
 
 
-@catch(logger)
+@catch(_logger)
 def _log_message(logger, func_name, message):
     logger.info("{} - {}".format(func_name, message))
 
@@ -153,6 +153,33 @@ def log_shapes(logger):
             return result
         return wrapper
     return decorator
+
+
+def log(logger=None, start_message='Starting...', end_message='Done...'):
+    """
+    Basic log decorator
+    Can be used as :
+    - @log (with default logger)
+    - @log(mylogger)
+    - @log(start_message='Hello !", logger=mylogger, end_message='Bye !')
+    """
+    def actual_log(f, real_logger=logger):
+        logger = real_logger or _logger
+
+        @wraps(f)
+        def timed(*args, **kwargs):
+            logger.info(f'{f.__name__} - {start_message}')
+            start = time.time()
+            res = f(*args, **kwargs)
+            end = time.time()
+            logger.info(f'{f.__name__} - {end_message} (took {end - start:.2f}s)')
+            return res
+
+        return timed
+
+    if callable(logger):
+        return actual_log(logger, real_logger=None)
+    return actual_log
 
 
 def domain(domain_name):

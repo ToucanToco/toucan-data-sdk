@@ -10,6 +10,7 @@ from .query_df import query, query_df
 from .rank import rank
 from .rename import rename
 from .replace import replace
+from .round_values import round_values
 from .sort import sort
 from .top import top, top_group
 from .waterfall import waterfall
