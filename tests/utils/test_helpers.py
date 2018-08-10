@@ -69,4 +69,4 @@ def test_get_func_sourcecode(mocker):
 
 def test_clean_cachedir_old_entries():
     with pytest.raises(ValueError):
-        clean_cachedir_old_entries(cachedir='', func_name='', limit=0)
+        clean_cachedir_old_entries(cachedir=None, func_name='', limit=0)

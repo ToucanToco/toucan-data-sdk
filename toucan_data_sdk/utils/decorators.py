@@ -332,7 +332,7 @@ def cache(  # noqa: C901
                 result = f(**tmp_extra_kwargs)
 
             if limit is not None:
-                clean_cachedir_old_entries(f.cachedir, func.__name__, limit)
+                clean_cachedir_old_entries(f.store_backend, func.__name__, limit)
 
             return result
 
@@ -351,7 +351,7 @@ def setup_cachedir(cachedir, mmap_mode=None, bytes_limit=None):
         cache.memories = {}
 
     memory = joblib.Memory(
-        cachedir=cachedir,
+        location=cachedir,
         verbose=0,
         mmap_mode=mmap_mode,
         bytes_limit=bytes_limit,

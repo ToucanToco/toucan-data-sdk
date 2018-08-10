@@ -5,7 +5,7 @@ import shutil
 from pathlib import Path
 from typing import List
 
-import joblib
+from joblib._store_backends import StoreBackendBase
 from slugify import slugify as _slugify
 
 
@@ -116,7 +116,7 @@ def resolve_dependencies(func_name, dependencies):
     return sorted(func_deps)
 
 
-def clean_cachedir_old_entries(cachedir: str, func_name: str, limit: int) -> int:
+def clean_cachedir_old_entries(cachedir: StoreBackendBase, func_name: str, limit: int) -> int:
     """Remove old entries from the cache"""
     if limit < 1:
         raise ValueError("'limit' must be greater or equal to 1")
@@ -130,8 +130,8 @@ def clean_cachedir_old_entries(cachedir: str, func_name: str, limit: int) -> int
     return len(cache_entries_to_remove)
 
 
-def get_cachedir_entries(cachedir: str, func_name: str) -> list:
-    entries = joblib.memory._get_cache_items(cachedir)
+def get_cachedir_entries(cachedir: StoreBackendBase, func_name: str) -> list:
+    entries = cachedir.get_items()
     return [e for e in entries if Path(e.path).parent.name == func_name]
 
 
