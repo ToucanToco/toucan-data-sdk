@@ -2,6 +2,7 @@ from .argmax import argmax
 from .converter import convert_str_to_datetime, convert_datetime_to_str, cast
 from .cumsum import cumsum
 from .fillna import fillna
+from .groupby import groupby
 from .math import multiply, divide, add, subtract
 from .melt import melt
 from .percentage import percentage
