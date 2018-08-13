@@ -2,7 +2,8 @@ import pandas as pd
 
 
 def roll_up(df, levels, groupby_vars, extra_groupby_cols=[],
-            var_name='type', value_name='value', agg_func='sum'):
+            var_name='type', value_name='value', agg_func='sum',
+            drop_levels=None):
     """
     Move the hierarchy from the columns name to the rows (like a melt).
     Add higher level hierarchy information with pandas aggregation function.
@@ -21,6 +22,8 @@ def roll_up(df, levels, groupby_vars, extra_groupby_cols=[],
         var_name (str): Same as a pandas melt() var_name
         value_name (str): Same as a pandas melt() value_name
         agg_func (str): pandas aggregation function to apply to the groupby.
+        drop_levels (list): the names of the levels that may you want to discard
+            from the output
 
     Returns:
         DataFrame:
@@ -30,6 +33,9 @@ def roll_up(df, levels, groupby_vars, extra_groupby_cols=[],
     groupby_cols_cpy = list(levels)
     levels_cpy = list(levels)
     levels_cpy.reverse()
+    if drop_levels is None:
+        drop_levels = []
+    previous_level = None
     for top_level in levels_cpy:
         # Aggregation
         gb_df = getattr(
@@ -40,6 +46,9 @@ def roll_up(df, levels, groupby_vars, extra_groupby_cols=[],
         gb_df[var_name] = top_level
         gb_df[value_name] = gb_df[top_level]
         dfs.append(gb_df)
+        if previous_level in drop_levels:
+            del dfs[-2]
+        previous_level = top_level
 
         # Remove one level each time in the groupby: lowest level column needs
         # a groupby with every levels, the next level needs every one except
