@@ -3,7 +3,7 @@ import os
 import shutil
 import tempfile
 import zipfile
-
+import pandas as pd
 import joblib
 from toucan_client import ToucanClient
 from toucan_data_sdk.utils.helpers import slugify
@@ -26,7 +26,7 @@ class ToucanDataSdk:
             small_app
         )
 
-    def get_dfs(self, domains=None):
+    def get_input_domains(self, domains=None):
         if domains is not None and isinstance(domains, list):
             dfs = {}
             domains_cache = [domain for domain in domains
@@ -44,6 +44,23 @@ class ToucanDataSdk:
                 dfs = self.read_from_sdk()
 
         return dfs
+
+    # alias
+    get_dfs = get_input_domains
+
+    def get_output_domain(self, domain):
+        # first page
+        data = self.client.output_domain[domain].post().json()
+        rows = data['result']
+        last_doc_id = data['lastDocId']
+
+        # next pages
+        while last_doc_id:
+            data = self.client.output_domain[domain][last_doc_id].post().json()
+            rows += data['result']
+            last_doc_id = data['lastDocId']
+
+        return pd.DataFrame.from_dict(rows).drop(columns='_id')
 
     def invalidate_cache(self, domains=None):
         if domains is not None and isinstance(domains, list):
