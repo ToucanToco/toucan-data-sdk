@@ -255,3 +255,25 @@ def test_sdk_compatibility(sdk_old, mocker):
     mock_read_cache.return_value = {"domain_1": 1}
     assert sdk_old.get_dfs() == {"domain_1": 1}
     assert sdk_old.small_app_url == 'https://api-myinstance.toucantoco.com/demo'
+
+
+def test_get_output_domain(sdk):
+    sdk.client.output_domain['my_domain'].post().json.return_value = {
+        'result': [{'_id': {'$oid': '5b449af2291ebbd9087f6260'}, 'toto': 2010,
+                    'label': 'Maladie', 'value': 4.2, 'domain': '0_201_1'},
+                   {'_id': {'$oid': '5b449af2291ebbd9087f6261'}, 'toto': 2010,
+                    'label': 'Accident Travail', 'value': 1.2, 'domain': '0_201_1'},
+                   {'_id': {'$oid': '5b449af2291ebbd9087f6262'}, 'toto': 2010,
+                    'label': 'Invalidité', 'value': 1.3, 'domain': '0_201_1'}],
+        'lastDocId': 'ab31cd'
+    }
+    sdk.client.output_domain['my_domain']['ab31cd'].post().json.return_value = {
+        'result': [{'_id': {'$oid': '5b449af2291ebbd9087f6260'}, 'toto': 2011,
+                    'label': 'Maladie', 'value': 4.1, 'domain': '0_201_1'},
+                   {'_id': {'$oid': '5b449af2291ebbd9087f6261'}, 'toto': 2011,
+                    'label': 'Invalidité', 'value': 3.7, 'domain': '0_201_1'}],
+        'lastDocId': None
+    }
+    df = sdk.get_output_domain('my_domain')
+    assert set(df) == {'toto', 'label', 'value', 'domain'}
+    assert df.shape == (5, 4)
