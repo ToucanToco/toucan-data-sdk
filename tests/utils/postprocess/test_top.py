@@ -1,6 +1,5 @@
 import pandas as pd
 from toucan_data_sdk.utils.postprocess import top, top_group
-from collections import OrderedDict
 
 
 def test_top():
@@ -75,12 +74,12 @@ def test_top_group():
     })
 
     # ~~~ with filters ~~~
-    expected = pd.DataFrame(OrderedDict({
+    expected = {
         'Periode': ['mois', 'mois', 'semaine', 'semaine', 'semaine'],
         'Label': ['G3', 'G1', 'G5', 'G3', 'G3'],
         'Categories': ['C1', 'C1', 'C1', 'C2', 'C3'],
         'Valeurs': [9, 6, 8, 2, 5]
-    }))
+    }
 
     kwargs = {
         "group": ["Periode"],
@@ -95,12 +94,12 @@ def test_top_group():
     assert pd.DataFrame(expected).equals(df)
 
     # ~~~ without groups ~~~
-    expected = pd.DataFrame(OrderedDict({
+    expected = {
         'Label': ['G3', 'G3', 'G3', 'G5'],
         'Categories': ['C1', 'C2', 'C3', 'C1'],
-        'Periode': ['mois', 'semaine', 'semaine', 'semaine'],
-        'Valeurs': [9, 2, 5, 8]
-    }))
+        'Valeurs': [9, 2, 5, 8],
+        'Periode': ['mois', 'semaine', 'semaine', 'semaine']
+    }
 
     kwargs = {
         "group": None,
@@ -115,12 +114,12 @@ def test_top_group():
     assert pd.DataFrame(expected).equals(df)
 
     # ~~~ with group and function = mean ~~~
-    expected = pd.DataFrame(OrderedDict({
+    expected = {
         'Periode': ['mois', 'mois', 'semaine', 'semaine'],
         'Label': ['G3', 'G1', 'G5', 'G4'],
         'Categories': ['C1', 'C1', 'C1', 'C2'],
         'Valeurs': [9, 6, 8, 4]
-    }))
+    }
 
     kwargs = {
         "group": ["Periode"],
