@@ -74,7 +74,7 @@ def catch(logger):
             try:
                 return func(*args, **kwargs)
             except Exception:
-                logger.warning("Exception raised in decorator: {}".format(func.__name__))
+                logger.warning(f"Exception raised in decorator: {func.__name__}")
 
         return wrapper
     return decorator
@@ -92,18 +92,18 @@ def _get_dfs_shapes(*args, **kwargs):
 
 @catch(_logger)
 def _log_shapes(logger, func_name, input_shapes, output_shapes):
-    logger.info("{} - {} -> {}".format(func_name, input_shapes, output_shapes))
+    logger.info(f"{func_name} - {input_shapes} -> {output_shapes}")
 
 
 @catch(_logger)
 def _log_time(logger, func_name, start, end):
     duration = (end - start) * 1000
-    logger.info("{0} - time: {1:0.1f} ms".format(func_name, duration))
+    logger.info(f"{func_name} - time: {duration:0.1f} ms")
 
 
 @catch(_logger)
 def _log_message(logger, func_name, message):
-    logger.info("{} - {}".format(func_name, message))
+    logger.info(f"{func_name} - {message}")
 
 
 def log_message(logger, message=""):
@@ -285,7 +285,7 @@ def cache(  # noqa: C901
             for func_name in dependencies:
                 function = cache.funcs_references[func_name]
                 if function is None:
-                    raise Exception("Can't get source code of function '{}'".format(func_name))
+                    raise Exception(f"Can't get source code of function '{func_name}'")
                 source_code = get_func_sourcecode(function)
                 concatenated_source_code += source_code
             md5_hash = md5(str.encode(concatenated_source_code)).hexdigest()

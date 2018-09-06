@@ -100,7 +100,7 @@ class ToucanDataSdk:
         Returns:
             dict: Dict[str, DataFrame]
         """
-        logger.info('Reading data from cache ({})'.format(self.EXTRACTION_CACHE_PATH))
+        logger.info(f'Reading data from cache ({self.EXTRACTION_CACHE_PATH})')
         if domains is not None and isinstance(domains, list):
             dfs = {domain: self.read_entry(domain) for domain in domains}
         else:
@@ -117,7 +117,7 @@ class ToucanDataSdk:
             pd.DataFrame:
         """
         file_path = os.path.join(self.EXTRACTION_CACHE_PATH, file_name)
-        logger.info('Reading cache entry: {}'.format(file_path))
+        logger.info(f'Reading cache entry: {file_path}')
         return joblib.load(file_path)
 
     def write(self, data):
@@ -144,7 +144,7 @@ class ToucanDataSdk:
         """
         file_path = os.path.join(self.EXTRACTION_CACHE_PATH, file_name)
         joblib.dump(df, filename=file_path)
-        logger.info('Cache entry added: {}'.format(file_path))
+        logger.info(f'Cache entry added: {file_path}')
 
     def cache_exists(self, domain=None):
         if domain is not None:

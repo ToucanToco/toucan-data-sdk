@@ -1,0 +1,37 @@
+version: 2
+
+jobs:
+  main:
+    docker:
+      - image: circleci/python:3.7
+    steps:
+      - checkout
+      - run: sudo pip install tox codecov
+      - run: tox -e flake8,coverage
+      - run: codecov --token=f8d82f5b-1379-4fa2-a011-77e83724ce46
+  py36:
+    docker:
+      - image: circleci/python:3.6
+    steps:
+      - checkout
+      - run: sudo pip install tox
+      - run: tox -e py36
+  py37:
+    docker:
+      - image: circleci/python:3.7
+    steps:
+      - checkout
+      - run: sudo pip install tox
+      - run: tox -e py37
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - main
+      - py36:
+          requires:
+            - main
+      - py37:
+          requires:
+            - main
