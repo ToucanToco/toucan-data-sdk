@@ -208,7 +208,7 @@ rjust = _generate_width_str_postprocess('rjust', doc)
 # :param limit: (default: None) limit number of splits in output
 # :return: the transformed dataframe
 ###################################################################################################
-def _generate_strip_str_postprocess(method_name, docstring):
+def _generate_split_str_postprocess(method_name, docstring):
     def f(df, column, *, dst_columns, sep=' ', limit=None):
         method = getattr(df[column].str, method_name)
         df_split = method(pat=sep, n=limit, expand=True)
@@ -228,11 +228,11 @@ def _generate_strip_str_postprocess(method_name, docstring):
 
 
 doc = 'Split each string in the caller’s values by given pattern, propagating NaN values'
-split = _generate_strip_str_postprocess('split', doc)
+split = _generate_split_str_postprocess('split', doc)
 
 doc = 'Split each string `column` by the given delimiter string, ' \
       'starting at the end of the string and working to the front'
-rsplit = _generate_strip_str_postprocess('rsplit', doc)
+rsplit = _generate_split_str_postprocess('rsplit', doc)
 
 
 ###################################################################################################
