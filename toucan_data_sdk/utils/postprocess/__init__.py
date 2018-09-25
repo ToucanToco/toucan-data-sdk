@@ -3,7 +3,7 @@ from .converter import convert_str_to_datetime, convert_datetime_to_str, cast
 from .cumsum import cumsum
 from .fillna import fillna
 from .groupby import groupby
-from .math import multiply, divide, add, subtract
+from .math import multiply, divide, add, subtract, formula
 from .melt import melt
 from .percentage import percentage
 from .pivot import pivot, pivot_by_group
