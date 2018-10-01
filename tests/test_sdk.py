@@ -89,15 +89,14 @@ def gen_tmp_file2(tmp_dir):
     tmp_file.close()
 
 
-def test_dfs(sdk, mocker):
+def test_datasources(sdk, mocker):
     """It should use the cache properly"""
     mock_cache_exists = mocker.patch(
         'toucan_data_sdk.sdk.ToucanDataSdk.cache_exists')
     mock_read_cache = mocker.patch(
         'toucan_data_sdk.sdk.ToucanDataSdk.read_from_cache')
     mock_read_sdk = mocker.patch(
-        'toucan_data_sdk.sdk.ToucanDataSdk.read_from_sdk')
-
+        'toucan_data_sdk.sdk.ToucanDataSdk.read_datasources_from_sdk')
     # 1. Cache directory exists
     mock_cache_exists.return_value = True
     mock_read_cache.return_value = {"domain_1": 1}
@@ -131,7 +130,7 @@ def test_dfs_complex(sdk, mocker):
     mock_read_cache = mocker.patch(
         'toucan_data_sdk.sdk.ToucanDataSdk.read_from_cache')
     mock_read_sdk = mocker.patch(
-        'toucan_data_sdk.sdk.ToucanDataSdk.read_from_sdk')
+        'toucan_data_sdk.sdk.ToucanDataSdk.read_datasources_from_sdk')
 
     mock_cache_exists.side_effect = [True, False]
     mock_read_cache.return_value = {"domain_1": 1}
@@ -167,9 +166,9 @@ def test_read_from_cache(sdk):
 
 
 def test_read_from_sdk(sdk, mocker):
-    mock_write = mocker.patch('toucan_data_sdk.sdk.ToucanDataSdk.write')
-    mock_write.return_value = {'df': DF, 'df2': DF2}
-    dfs = sdk.read_from_sdk()
+    mock_extract = mocker.patch('toucan_data_sdk.sdk.extract')
+    mock_extract.return_value = {'df': DF, 'df2': DF2}
+    dfs = sdk.read_datasources_from_sdk()
     assert dfs == {'df': DF, 'df2': DF2}
 
 
@@ -248,7 +247,7 @@ def test_sdk_compatibility(sdk_old, mocker):
         'toucan_data_sdk.sdk.ToucanDataSdk.cache_exists')
     mock_read_cache = mocker.patch(
         'toucan_data_sdk.sdk.ToucanDataSdk.read_from_cache')
-    mocker.patch('toucan_data_sdk.sdk.ToucanDataSdk.read_from_sdk')
+    mocker.patch('toucan_data_sdk.sdk.ToucanDataSdk.read_datasources_from_sdk')
 
     # 1. Cache directory exists
     mock_cache_exists.return_value = True
@@ -257,7 +256,7 @@ def test_sdk_compatibility(sdk_old, mocker):
     assert sdk_old.small_app_url == 'https://api-myinstance.toucantoco.com/demo'
 
 
-def test_get_output_domain(sdk):
+def test_get_domain(sdk):
     sdk.client.output_domain['my_domain'].post().json.return_value = {
         'result': [{'_id': {'$oid': '5b449af2291ebbd9087f6260'}, 'toto': 2010,
                     'label': 'Maladie', 'value': 4.2, 'domain': '0_201_1'},
@@ -274,6 +273,66 @@ def test_get_output_domain(sdk):
                     'label': 'Invalidité', 'value': 3.7, 'domain': '0_201_1'}],
         'lastDocId': None
     }
-    df = sdk.get_output_domain('my_domain')
-    assert set(df) == {'toto', 'label', 'value', 'domain'}
-    assert df.shape == (5, 4)
+    dfs = sdk.get_domains(['my_domain'])
+    assert set(dfs['my_domain']) == {'toto', 'label', 'value', 'domain'}
+    assert dfs['my_domain'].shape == (5, 4)
+
+
+def test_get_domains(sdk):
+    sdk.client.output_domain['bla'].post().json.side_effect = [
+        {
+            'result': [{'_id': {'$oid': '5b449af2291ebbd9087f6260'}, 'toto': 2010,
+                        'domain': '0_201_1'}],
+            'lastDocId': 'ab31cd'
+        },
+        {
+            'result': [
+                {'_id': {'$oid': '5b449af2291ebbd9087f6260'}, 'tutu': 2011,
+                 'domain': '0_201_2'}],
+            'lastDocId': None
+        }
+    ]
+    sdk.client.output_domain['bla']['ab31cd'].post().json.return_value = {
+        'result': [{'_id': {'$oid': '5b449af2291ebbd9087f6260'}, 'titi': 2011,
+                    'domain': '0_201_1'}],
+        'lastDocId': None
+    }
+    sdk.client.metadata.get().json.return_value = [
+        {'domain': 'a_domain'}, {'domain': 'b_domain'}
+    ]
+    dfs = sdk.get_domains()
+    assert set(dfs['a_domain']) == {'toto', 'titi', 'domain'}
+    assert set(dfs['b_domain']) == {'tutu', 'domain'}
+    assert dfs['a_domain'].shape == (2, 3)
+    assert dfs['b_domain'].shape == (1, 2)
+
+
+def test_domain_cache(mocker, sdk):
+    mock_cache_exists = mocker.patch(
+        'toucan_data_sdk.sdk.ToucanDataSdk.cache_exists')
+    mock_read_cache = mocker.patch(
+        'toucan_data_sdk.sdk.ToucanDataSdk.read_from_cache')
+    mock_cache_exists.return_value = True
+    mock_read_cache.return_value = {"domain_1": 1}
+    assert sdk.get_domains('domain_1') == {"domain_1": 1}
+
+
+def test_traceback(sdk):
+    class Response:
+        def __init__(self, ok):
+            self.ok = ok
+            filename = './tests/fixtures/deleteme-exception.dump'
+            with open(filename, 'rb') as f:
+                self.content = f.read()
+
+        def json(self):
+            return {'test': "yo"}
+
+    sdk.client.tracebacks.latest.get.return_value = Response(True)
+    tb_values = sdk.load_latest_traceback()
+    assert 'linechart' in tb_values
+    assert tb_values['VAR'] == 1
+
+    sdk.client.tracebacks.latest.get.return_value = Response(False)
+    tb = sdk.load_latest_traceback()
+    assert {'test': "yo"} == tb
