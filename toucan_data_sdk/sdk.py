@@ -6,7 +6,8 @@ import zipfile
 import pandas as pd
 import joblib
 from toucan_client import ToucanClient
-from toucan_data_sdk.utils.helpers import slugify
+from .utils.helpers import slugify
+from .utils.traceback import load_traceback
 
 
 logger = logging.getLogger(__name__)
@@ -26,7 +27,7 @@ class ToucanDataSdk:
             small_app
         )
 
-    def get_input_domains(self, domains=None):
+    def get_datasources(self, domains=None):
         if domains is not None and isinstance(domains, list):
             dfs = {}
             domains_cache = [domain for domain in domains
@@ -36,31 +37,27 @@ class ToucanDataSdk:
             if len(domains_cache) > 0:
                 dfs.update(self.read_from_cache(domains_cache))
             if len(domains_sdk) > 0:
-                dfs.update(self.read_from_sdk(domains_sdk))
+                dfs.update(self.read_datasources_from_sdk(domains_sdk))
         else:
             if self.cache_exists():
                 dfs = self.read_from_cache()
             else:
-                dfs = self.read_from_sdk()
-
+                dfs = self.read_datasources_from_sdk()
         return dfs
 
     # alias
-    get_dfs = get_input_domains
+    get_dfs = get_datasources
 
-    def get_output_domain(self, domain):
-        # first page
-        data = self.client.output_domain[domain].post().json()
-        rows = data['result']
-        last_doc_id = data['lastDocId']
-
-        # next pages
-        while last_doc_id:
-            data = self.client.output_domain[domain][last_doc_id].post().json()
-            rows += data['result']
-            last_doc_id = data['lastDocId']
-
-        return pd.DataFrame.from_dict(rows).drop(columns='_id')
+    def get_domains(self, domains=None):
+        if domains is None:
+            domains = [meta["domain"] for meta in self.client.metadata.get().json()]
+        domains_cache = [domain for domain in domains if self.cache_exists(domain)]
+        domains_sdk = [domain for domain in domains if domain not in domains_cache]
+        if len(domains_cache) > 0:
+            dfs = self.read_from_cache(domains_cache)
+        if len(domains_sdk) > 0:
+            dfs = self.read_domains_from_sdk(domains_sdk)
+        return dfs
 
     def invalidate_cache(self, domains=None):
         if domains is not None and isinstance(domains, list):
@@ -87,12 +84,31 @@ class ToucanDataSdk:
         else:
             raise InvalidQueryError(f'Query {query} should be a dict, {type(query)} found.')
 
-    def read_from_sdk(self, domains=None):
+    def read_datasources_from_sdk(self, domains=None):
         # Extract all domains if domains_sdk is null
         resp = self.client.sdk.post(json={'domains': domains})
         resp.raise_for_status()
-        dfs = self.write(resp.content)
+        dfs = extract(resp.content)
+        self.write(dfs)
         logger.info(f'Data {domains} fetched and cached')
+        return dfs
+
+    def read_domains_from_sdk(self, domains):
+        dfs = {}
+        for domain in domains:
+            # first page
+            data = self.client.output_domain[domain].post().json()
+            rows = data['result']
+            last_doc_id = data['lastDocId']
+
+            # next pages
+            while last_doc_id:
+                data = self.client.output_domain[domain][last_doc_id].post().json()
+                rows += data['result']
+                last_doc_id = data['lastDocId']
+            df = pd.DataFrame.from_dict(rows).drop(columns='_id')
+            dfs[domain] = df
+        self.write(dfs)
         return dfs
 
     def read_from_cache(self, domains=None):
@@ -120,7 +136,7 @@ class ToucanDataSdk:
         logger.info(f'Reading cache entry: {file_path}')
         return joblib.load(file_path)
 
-    def write(self, data):
+    def write(self, dfs):
         """
         Args:
             data (str | byte):
@@ -131,20 +147,10 @@ class ToucanDataSdk:
         if not os.path.exists(self.EXTRACTION_CACHE_PATH):
             os.makedirs(self.EXTRACTION_CACHE_PATH)
 
-        dfs = extract(data)
         for name, df in dfs.items():
-            self.write_entry(name, df)
-        return dfs
-
-    def write_entry(self, file_name, df):
-        """
-        Args:
-            file_name (str):
-            df (DataFrame):
-        """
-        file_path = os.path.join(self.EXTRACTION_CACHE_PATH, file_name)
-        joblib.dump(df, filename=file_path)
-        logger.info(f'Cache entry added: {file_path}')
+            file_path = os.path.join(self.EXTRACTION_CACHE_PATH, name)
+            joblib.dump(df, filename=file_path)
+            logger.info(f'Cache entry added: {file_path}')
 
     def cache_exists(self, domain=None):
         if domain is not None:
@@ -153,6 +159,15 @@ class ToucanDataSdk:
         else:
             path = self.EXTRACTION_CACHE_PATH
             return os.path.exists(path) and os.path.isdir(path)
+
+    def load_latest_traceback(self):
+        tb = self.client.tracebacks.latest.get()
+        if tb.ok is False:
+            return tb.json()
+        else:
+            with open('.tb.dump', 'wb') as f:
+                f.write(tb.content)
+            return load_traceback('.tb.dump')
 
 
 def extract_zip(zip_file_path):
