@@ -48,8 +48,8 @@ def get_func_sourcecode(func):
     If the function comes from a module which has been created dynamically
     (not from the filesystem), then it tries to read the sourcecode on the
     filesystem anyway.
-    /!\ can do weird things if the filesystem code slightly differs from
-        the original module code.
+    WARNING: can do weird things if the filesystem code slightly differs from
+             the original module code.
     """
 
     def getsource(func):

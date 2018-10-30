@@ -11,7 +11,7 @@ def _from_pickled_dict(d):
         try:
             f = io.BytesIO(obj)
             return joblib.load(f)
-        except Exception as e:
+        except Exception:
             return None
     unpickled = {k: from_picklable(v) for k, v in d.items()}
     unpickling_failed = {k: v for k, v in unpickled.items() if v is None}

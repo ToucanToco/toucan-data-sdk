@@ -3,7 +3,7 @@ import operator as _operator
 import re
 
 ALLOWED_FORMULA_CHARACTERS = '()+-/*%.'
-FORMULA_REGEX = '(' + '|'.join([f'\{x}' for x in ALLOWED_FORMULA_CHARACTERS]) + ')'
+FORMULA_REGEX = '(' + '|'.join([f'\\{x}' for x in ALLOWED_FORMULA_CHARACTERS]) + ')'
 
 
 def _basic_math_operation(df, new_column, column_1, column_2, op):
