@@ -1,5 +1,5 @@
 from .argmax import argmax
-from .converter import convert_str_to_datetime, convert_datetime_to_str, cast
+from .converter import convert_str_to_datetime, convert_datetime_to_str, cast, change_date_format
 from .cumsum import cumsum
 from .fillna import fillna
 from .groupby import groupby

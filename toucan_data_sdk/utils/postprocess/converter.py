@@ -1,25 +1,10 @@
 import logging
-from functools import wraps
 
 import pandas as pd
 
 logger = logging.getLogger(__name__)
 
 
-def handle_deprecated(f):
-    @wraps(f)
-    def wrapper(*args, **kwargs):
-        if 'selector' in kwargs:
-            logger.warning('The parameter `selector` is deprecated. '
-                           'Please switch the name to `column`.')
-            selector = kwargs.pop('selector')
-            kwargs['column'] = kwargs.get('column', selector)
-        return f(*args, **kwargs)
-
-    return wrapper
-
-
-@handle_deprecated
 def convert_str_to_datetime(df, *, column=None, format=None):
     """
     Convert string column into datetime column
@@ -32,7 +17,6 @@ def convert_str_to_datetime(df, *, column=None, format=None):
     return df
 
 
-@handle_deprecated
 def convert_datetime_to_str(df, *, column=None, format=None):
     """
     Convert datetime column into string column
@@ -42,6 +26,21 @@ def convert_datetime_to_str(df, *, column=None, format=None):
     :return: df
     """
     df[column] = df[column].dt.strftime(format)
+    return df
+
+
+def change_date_format(df, *, column, output_format, input_format=None, new_column=None):
+    """
+    Convert datetime column into string column
+    :param df: Dataframe
+    :param column: name of the column to format
+    :param output_format: format of the output values
+    :param input_format: format of the input values (If None, let the parser detect it)
+    :param new_column: name of the output column
+    :return: df
+    """
+    new_column = new_column or column
+    df[new_column] = pd.to_datetime(df[column], format=input_format).dt.strftime(output_format)
     return df
 
 
