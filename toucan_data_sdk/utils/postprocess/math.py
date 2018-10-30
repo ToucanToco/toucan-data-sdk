@@ -1,6 +1,8 @@
+import logging
 import operator as _operator
-
 import re
+
+logger = logging.getLogger(__name__)
 
 ALLOWED_FORMULA_CHARACTERS = '()+-/*%.'
 FORMULA_REGEX = '(' + '|'.join([f'\\{x}' for x in ALLOWED_FORMULA_CHARACTERS]) + ')'
@@ -59,7 +61,7 @@ def is_float(x):
         return True
 
 
-def formula(df, *, dst_column, formula):
+def formula(df, *, new_column, formula):
     """Compute math formula for df and put the result in `column`"""
     splitted = [x.strip() for x in re.split(FORMULA_REGEX, formula) if x.strip()]
     expression_splitted = []
@@ -75,7 +77,7 @@ def formula(df, *, dst_column, formula):
                 raise FormulaError(f'"{x}" is not a valid column name')
             expression_splitted.append(f'df["{x}"]')
     expression = ''.join(expression_splitted)
-    df[dst_column] = eval(expression)
+    df[new_column] = eval(expression)
     return df
 
 

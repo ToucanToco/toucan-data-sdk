@@ -1,6 +1,6 @@
 import sys
-import types
 import textwrap
+import types
 
 import pytest
 

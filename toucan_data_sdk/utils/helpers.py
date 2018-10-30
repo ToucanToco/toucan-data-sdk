@@ -7,6 +7,9 @@ from typing import List
 
 from joblib._store_backends import StoreBackendBase
 from slugify import slugify as _slugify
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def get_orig_function(f):

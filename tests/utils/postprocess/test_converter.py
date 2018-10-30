@@ -10,10 +10,9 @@ from toucan_data_sdk.utils.postprocess import (
 )
 
 
-@pytest.mark.parametrize('config', [{'selector': 'date', 'format': '%Y-%m'},  # deprecated
-                                    {'column': 'date', 'format': '%Y-%m'}])
-def test_convert_str_to_datetime(config):
+def test_convert_str_to_datetime():
     """ It should replace data in the dataframe """
+    config = {'column': 'date', 'format': '%Y-%m'}
     df = pd.DataFrame([
         {'date': '2016-01', 'city': "Rennes"},
         {'date': '2016-01', 'city': "Nantes"},
@@ -28,10 +27,9 @@ def test_convert_str_to_datetime(config):
     assert list(df.date) == expected_result
 
 
-@pytest.mark.parametrize('config', [{'selector': 'date', 'format': '%Y-%m'},  # deprecated
-                                    {'column': 'date', 'format': '%Y-%m'}])
-def test_convert_datetime_to_str(config):
+def test_convert_datetime_to_str():
     """ It should replace data in the dataframe """
+    config = {'column': 'date', 'format': '%Y-%m'}
     df = pd.DataFrame([
         {'date': pd.Timestamp('20160101'), 'city': "Rennes"},
         {'date': pd.Timestamp('20160106'), 'city': "Nantes"},

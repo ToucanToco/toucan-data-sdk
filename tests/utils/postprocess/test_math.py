@@ -83,33 +83,34 @@ def test_bad_arg():
 def test_formula():
     df = pd.DataFrame({'a': [1, 3], 'b': [2, 4], 'other col': [3, 5],
                        'yet another1': [2, 2]})
+
     with pytest.raises(FormulaError) as exc_info:
-        formula(df, dst_column='c', formula='a, + b')
+        formula(df, new_column='c', formula='a, + b')
     assert str(exc_info.value) == '"a," is not valid. Allowed entries are numbers, ' \
                                   'column names and math symbols ' \
                                   '(among "(", ")", "+", "-", "/", "*", "%", ".")'
 
     with pytest.raises(FormulaError) as exc_info:
-        formula(df, dst_column='c', formula='import ipdb')
+        formula(df, new_column='c', formula='import ipdb')
     assert str(exc_info.value) == '"import ipdb" is not a valid column name'
 
-    res = formula(df, dst_column='c', formula='a + b')
+    res = formula(df, new_column='c', formula='a + b')
     assert res['c'].tolist() == [3, 7]
 
-    res = formula(df, dst_column='c', formula='.5*a - b')
+    res = formula(df, new_column='c', formula='.5*a - b')
     assert res['c'].tolist() == [-1.5, -2.5]
 
-    res = formula(df, dst_column='c', formula='a + other col')
+    res = formula(df, new_column='c', formula='a + other col')
     assert res['c'].tolist() == [4, 8]
 
-    res = formula(df, dst_column='c', formula='a + other col / 2')
+    res = formula(df, new_column='c', formula='a + other col / 2')
     assert res['c'].tolist() == [2.5, 5.5]
 
-    res = formula(df, dst_column='c', formula='a + other col // 2')
+    res = formula(df, new_column='c', formula='a + other col // 2')
     assert res['c'].tolist() == [2, 5]
 
-    res = formula(df, dst_column='c', formula='(a + other col)/  2.')
+    res = formula(df, new_column='c', formula='(a + other col)/  2.')
     assert res['c'].tolist() == [2, 4]
 
-    res = formula(df, dst_column='c', formula='(a + b ) % 3')
+    res = formula(df, new_column='c', formula='(a + b ) % 3')
     assert res['c'].tolist() == [0, 1]
