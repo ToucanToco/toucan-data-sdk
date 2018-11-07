@@ -1,4 +1,3 @@
-
 def round_values(df, params):
     """
     This function replace numeric column values inplace by the rounded value.

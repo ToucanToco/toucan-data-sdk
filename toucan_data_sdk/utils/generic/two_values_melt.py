@@ -65,5 +65,4 @@ def two_values_melt(df, first_value_vars, second_value_vars, var_name,
 
     on_cols = list(melt_first_value)
     on_cols.remove(value_name_first)
-    return pd.merge(melt_first_value, melt_second_value, on=on_cols,
-                    how='outer')
+    return pd.merge(melt_first_value, melt_second_value, on=on_cols, how='outer')

@@ -1,8 +1,4 @@
-import logging
-
 import pandas as pd
-
-logger = logging.getLogger(__name__)
 
 
 def convert_str_to_datetime(df, *, column=None, format=None):
@@ -17,15 +13,17 @@ def convert_str_to_datetime(df, *, column=None, format=None):
     return df
 
 
-def convert_datetime_to_str(df, *, column=None, format=None):
+def convert_datetime_to_str(df, *, column=None, format=None, new_column=None):
     """
     Convert datetime column into string column
     :param df: Dataframe
     :param column: name of the column to format
     :param format: format of the result values
+    :param new_column: name of the output
     :return: df
     """
-    df[column] = df[column].dt.strftime(format)
+    new_column = new_column or column
+    df[new_column] = df[column].dt.strftime(format)
     return df
 
 
@@ -44,7 +42,7 @@ def change_date_format(df, *, column, output_format, input_format=None, new_colu
     return df
 
 
-def cast(df, column, type):
+def cast(df, column, type, new_column=None):
     """
     Convert column's type into type
     :param df: Dataframe
@@ -52,5 +50,6 @@ def cast(df, column, type):
     :param type: desired type of the column
     :return: df
     """
-    df[column] = df[column].astype(type)
+    new_column = new_column or column
+    df[new_column] = df[column].astype(type)
     return df

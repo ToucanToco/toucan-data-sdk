@@ -4,7 +4,7 @@ import pytest
 from toucan_data_sdk.utils.postprocess import (
     add, subtract, multiply, divide, formula
 )
-from toucan_data_sdk.utils.postprocess.math import FormulaError
+from toucan_data_sdk.utils.postprocess.math import FormulaError, _parse_formula
 
 
 def test_math_operations_with_column():
@@ -80,15 +80,34 @@ def test_bad_arg():
     assert str(exc_info.value) == 'column_1 must be a string, an integer or a float'
 
 
+def test_parse_formula():
+    assert _parse_formula('a') == ['a']
+    assert _parse_formula('a+b') == ['a', '+', 'b']
+    assert _parse_formula('pika + chuuu') == ['pika', '+', 'chuuu']
+    assert _parse_formula('pika + (chuuu/10)') == ['pika', '+', '(', 'chuuu', '/', '10', ')']
+    assert _parse_formula('pika + (chu uu/10)') == ['pika', '+', '(', 'chu uu', '/', '10', ')']
+    assert _parse_formula('pika + (chu_uu/10)') == ['pika', '+', '(', 'chu_uu', '/', '10', ')']
+    assert _parse_formula('pika + ("chu-uu"/10)') == ['pika', '+', '(', 'chu-uu', '/', '10', ')']
+    assert _parse_formula('a + b*3.1') == ['a', '+', 'b', '*', '3', '.', '1']
+    assert _parse_formula('a + "b*3.1"') == ['a', '+', 'b*3.1']
+    assert _parse_formula('("and-another" - yet_another) / (and - another)') == [
+        '(', 'and-another', '-', 'yet_another', ')', '/', '(', 'and', '-', 'another', ')'
+    ]
+    assert _parse_formula("pika + ('chu-uu'/10)") == ['pika', '+', '(', 'chu-uu', '/', '10', ')']
+    assert _parse_formula('pika + (\'chu-uu\'/10)') == ['pika', '+', '(', 'chu-uu', '/', '10', ')']
+    assert _parse_formula("pika + (\"chu-uu\"/10)") == ['pika', '+', '(', 'chu-uu', '/', '10', ')']
+    with pytest.raises(FormulaError) as e:
+        _parse_formula('pika + ("chu-uu/10)')
+    assert str(e.value) == 'Missing closing quote in formula'
+
+
 def test_formula():
     df = pd.DataFrame({'a': [1, 3], 'b': [2, 4], 'other col': [3, 5],
-                       'yet another1': [2, 2]})
+                       'yet_another': [2, 2], 'and-another': [2, 2]})
 
     with pytest.raises(FormulaError) as exc_info:
         formula(df, new_column='c', formula='a, + b')
-    assert str(exc_info.value) == '"a," is not valid. Allowed entries are numbers, ' \
-                                  'column names and math symbols ' \
-                                  '(among "(", ")", "+", "-", "/", "*", "%", ".")'
+    assert str(exc_info.value) == '"a," is not a valid column name'
 
     with pytest.raises(FormulaError) as exc_info:
         formula(df, new_column='c', formula='import ipdb')
@@ -114,3 +133,15 @@ def test_formula():
 
     res = formula(df, new_column='c', formula='(a + b ) % 3')
     assert res['c'].tolist() == [0, 1]
+
+    res = formula(df, new_column='c', formula='yet_another + b')
+    assert res['c'].tolist() == [4, 6]
+
+    res = formula(df, new_column='c', formula='(yet_another + b ) % 3')
+    assert res['c'].tolist() == [1, 0]
+
+    with pytest.raises(FormulaError):
+        formula(df, new_column='c', formula='and-another - yet_another')
+
+    res = formula(df, new_column='c', formula='"and-another" - yet_another')
+    assert res['c'].tolist() == [0, 0]

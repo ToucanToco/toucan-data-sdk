@@ -29,63 +29,57 @@ def test_convert_str_to_datetime():
 
 def test_convert_datetime_to_str():
     """ It should replace data in the dataframe """
-    config = {'column': 'date', 'format': '%Y-%m'}
     df = pd.DataFrame([
         {'date': pd.Timestamp('20160101'), 'city': "Rennes"},
         {'date': pd.Timestamp('20160106'), 'city': "Nantes"},
         {'date': pd.Timestamp('20170501'), 'city': "Paris"},
     ])
     expected_result = ['2016-01', '2016-01', '2017-05']
-    df = convert_datetime_to_str(df, **config)
-    assert list(df.date) == expected_result
+
+    config = {'column': 'date', 'format': '%Y-%m'}
+    new_df = convert_datetime_to_str(df.copy(), **config)
+    assert new_df['date'].tolist() == expected_result
+
+    # with new_column
+    config['new_column'] = 'date_str'
+    new_df = convert_datetime_to_str(df.copy(), **config)
+    assert new_df['date'][0] == pd.Timestamp('20160101')
+    assert new_df['date_str'].tolist() == expected_result
 
 
 def test_change_date_format():
     """ It should replace data in the dataframe """
+    df = pd.DataFrame([
+        {'date': pd.Timestamp('20160101'), 'city': "Rennes"},
+        {'date': pd.Timestamp('20160106'), 'city': "Nantes"},
+        {'date': pd.Timestamp('20170501'), 'city': "Paris"},
+    ])
 
     expected_result = ['01/01/2016', '06/01/2016', '01/05/2017']
 
-    # wihtout format
-    df = pd.DataFrame([
-        {'date': pd.Timestamp('20160101'), 'city': "Rennes"},
-        {'date': pd.Timestamp('20160106'), 'city': "Nantes"},
-        {'date': pd.Timestamp('20170501'), 'city': "Paris"},
-    ])
-
+    # without format
     config = {
         'column': 'date',
         'output_format': '%d/%m/%Y'}
-    df = change_date_format(df, **config)
-    assert list(df.date) == expected_result
+    new_df = change_date_format(df.copy(), **config)
+    assert list(new_df.date) == expected_result
 
     # without new_column
-    df = pd.DataFrame([
-        {'date': pd.Timestamp('20160101'), 'city': "Rennes"},
-        {'date': pd.Timestamp('20160106'), 'city': "Nantes"},
-        {'date': pd.Timestamp('20170501'), 'city': "Paris"},
-    ])
-
     config = {
         'column': 'date',
         'input_format': '%Y%m%d',
         'output_format': '%d/%m/%Y'}
-    df = change_date_format(df, **config)
-    assert list(df.date) == expected_result
+    new_df = change_date_format(df.copy(), **config)
+    assert list(new_df.date) == expected_result
 
     # with new_column
-    df = pd.DataFrame([
-        {'date': pd.Timestamp('20160101'), 'city': "Rennes"},
-        {'date': pd.Timestamp('20160106'), 'city': "Nantes"},
-        {'date': pd.Timestamp('20170501'), 'city': "Paris"},
-    ])
-
     config = {
         'column': 'date',
         'input_format': '%Y%m%d',
         'output_format': '%d/%m/%Y',
         'new_column': 'new_date'}
-    df = change_date_format(df, **config)
-    assert list(df.new_date) == expected_result
+    new_df = change_date_format(df.copy(), **config)
+    assert list(new_df.new_date) == expected_result
 
 
 def test_cast():
@@ -119,6 +113,16 @@ def test_cast():
     }
     new_df = cast(df, **config)
     assert new_df['year'].tolist() == ['2017', '2018', '2015', '2012']
+
+    # with new_column
+    config = {
+        'column': 'year',
+        'type': 'int',
+        'new_column': 'year_as_int'
+    }
+    new_df = cast(df, **config)
+    assert new_df['year_as_int'].tolist() == [2017, 2018, 2015, 2012]
+    assert new_df[['name', 'value']].equals(df[['name', 'value']])
 
     # Add bad values
     df = df.append({'name': 'BadBoy', 'year': nan, 'value': ''}, ignore_index=True)

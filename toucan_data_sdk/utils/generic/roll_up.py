@@ -55,4 +55,4 @@ def roll_up(df, levels, groupby_vars, extra_groupby_cols=[],
         # the lowest, etc. until the top level column that needs only itself
         # inside the groupby.
         groupby_cols_cpy.pop()
-    return pd.concat(dfs).reset_index()
+    return pd.concat(dfs, sort=False).reset_index()
