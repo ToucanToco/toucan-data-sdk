@@ -1,8 +1,4 @@
-import logging
-
 import pandas as pd
-
-logger = logging.getLogger(__name__)
 
 
 def convert_str_to_datetime(df, *, column=None, format=None):

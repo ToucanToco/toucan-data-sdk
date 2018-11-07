@@ -1,7 +1,4 @@
-import logging
 import operator as _operator
-
-logger = logging.getLogger(__name__)
 
 MATH_CHARACTERS = '()+-/*%.'
 

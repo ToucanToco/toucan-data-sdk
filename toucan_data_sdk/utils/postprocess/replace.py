@@ -1,8 +1,3 @@
-import logging
-
-logger = logging.getLogger(__name__)
-
-
 def replace(df, column, new_column=None, **kwargs):
     """
     Replace values of a column (uses pandas.Series.replace)

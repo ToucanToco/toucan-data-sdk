@@ -1,4 +1,3 @@
-
 def query_df(df, query):
     """
     Slice the data according to the provided query
