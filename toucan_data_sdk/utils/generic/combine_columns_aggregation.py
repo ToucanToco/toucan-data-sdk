@@ -27,4 +27,4 @@ def combine_columns_aggregation(
             df_tmp[key] = cols_for_combination[key]
         dfs_result.append(df_tmp)
 
-    return pd.concat(dfs_result)
+    return pd.concat(dfs_result, sort=False, ignore_index=True)

@@ -18,9 +18,9 @@ def test_combine_columns_aggregation():
         {'filter1': 'All 1', 'filter2': 'All 2'},
     )
     mask = (res['filter1'] == 'All 1') & (res['filter2'] == 'All 2')
-    assert res[mask]['value'][0] == 16
+    assert res.loc[mask, 'value'].values[0] == 16
     mask = (res['filter1'] == 'All 1') & (res['filter2'] == 'C')
-    assert res[mask]['value'][0] == 9
+    assert res.loc[mask, 'value'].values[0] == 9
 
     res = combine_columns_aggregation(
         df,
@@ -29,6 +29,6 @@ def test_combine_columns_aggregation():
         'max'
     )
     mask = (res['filter1'] == 'All 1') & (res['filter2'] == 'All 2')
-    assert res[mask]['value'][0] == 8
+    assert res.loc[mask, 'value'].values[0] == 8
     mask = (res['filter1'] == 'All 1') & (res['filter2'] == 'C')
-    assert res[mask]['value'][0] == 8
+    assert res.loc[mask, 'value'].values[0] == 8
