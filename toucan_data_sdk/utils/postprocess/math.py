@@ -1,3 +1,4 @@
+import logging
 import operator as _operator
 
 MATH_CHARACTERS = '()+-/*%.'
