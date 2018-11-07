@@ -35,3 +35,12 @@ def test_percentage():
     res = percentage(data, **kwargs)
     expected_col = [50, 85, 15, 25, 60, 40, 75, 50]
     assert res['number_percentage'].tolist() == expected_col
+
+    # ~~~ without new_columns ~~~
+    kwargs = {
+        'column': 'number',
+        'group_cols': ['sport']
+    }
+    res = percentage(data, **kwargs)
+    expected_col = [50, 85, 15, 25, 60, 40, 75, 50]
+    assert res['number'].tolist() == expected_col
