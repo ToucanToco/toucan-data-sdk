@@ -1,11 +1,9 @@
 import logging
 import operator as _operator
-import re
 
 logger = logging.getLogger(__name__)
 
-ALLOWED_FORMULA_CHARACTERS = '()+-/*%.'
-FORMULA_REGEX = '(' + '|'.join([f'\\{x}' for x in ALLOWED_FORMULA_CHARACTERS]) + ')'
+MATH_CHARACTERS = '()+-/*%.'
 
 
 def _basic_math_operation(df, new_column, column_1, column_2, op):
@@ -48,10 +46,6 @@ def divide(df, new_column, column_1, column_2):
     return _basic_math_operation(df, new_column, column_1, column_2, op='truediv')
 
 
-def is_words(s):
-    return all(x.isalpha() or x.isspace() for x in s)
-
-
 def is_float(x):
     try:
         float(x)
@@ -61,21 +55,42 @@ def is_float(x):
         return True
 
 
+def _parse_formula(formula_str):
+    splitted = []
+    current_word = ''
+    quote_to_match = None
+    for x in formula_str:
+        if x in ('"', "'") and not quote_to_match:
+            quote_to_match = x
+            continue
+        if x == quote_to_match:
+            splitted.append(current_word)
+            current_word = ''
+            quote_to_match = None
+            continue
+        if quote_to_match or x not in MATH_CHARACTERS:
+            current_word += x
+        else:
+            splitted.append(current_word)
+            current_word = ''
+            splitted.append(x)
+    splitted.append(current_word)
+    if quote_to_match is not None:
+        raise FormulaError('Missing closing quote in formula')
+    return [x.strip() for x in splitted if x.strip()]
+
+
 def formula(df, *, new_column, formula):
     """Compute math formula for df and put the result in `column`"""
-    splitted = [x.strip() for x in re.split(FORMULA_REGEX, formula) if x.strip()]
+    splitted = _parse_formula(formula)
     expression_splitted = []
     for x in splitted:
-        if not is_words(x):
-            if x not in ALLOWED_FORMULA_CHARACTERS and not is_float(x):
-                allowed = [f'"{x}"' for x in ALLOWED_FORMULA_CHARACTERS]
-                raise FormulaError(f'"{x}" is not valid. Allowed entries are numbers, column '
-                                   f'names and math symbols (among {", ".join(allowed)})')
+        if x in MATH_CHARACTERS or is_float(x):
             expression_splitted.append(x)
-        else:
-            if x not in df.columns:
-                raise FormulaError(f'"{x}" is not a valid column name')
+        elif x in df.columns:
             expression_splitted.append(f'df["{x}"]')
+        else:
+            raise FormulaError(f'"{x}" is not a valid column name')
     expression = ''.join(expression_splitted)
     df[new_column] = eval(expression)
     return df
