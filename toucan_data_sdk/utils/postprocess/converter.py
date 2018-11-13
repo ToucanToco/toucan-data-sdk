@@ -27,8 +27,8 @@ def convert_datetime_to_str(df, *, column=None, format=None, new_column=None):
     return df
 
 
-def change_date_format(df, *, column, output_format,
-                       input_format=None, new_column=None, new_utc=None):
+def change_date_format(df, *, column, output_format, input_format=None, new_column=None,
+                       new_time_zone=None):
     """
     Convert datetime column into string column
     :param df: Dataframe
@@ -36,13 +36,12 @@ def change_date_format(df, *, column, output_format,
     :param output_format: format of the output values
     :param input_format: format of the input values (If None, let the parser detect it)
     :param new_column: name of the output column
-    :param new_utc: (str) name of new utc
+    :param new_time_zone: name of new time zone (If None, no time zone conversion is done)
     :return: df
     """
     new_column = new_column or column
-    utc = new_utc or "UTC"  # by default greenwitch utc
     df[new_column] = (pd.to_datetime(df[column], format=input_format, utc=True)
-                      .dt.tz_convert(utc)
+                      .dt.tz_convert(new_time_zone)
                       .dt.strftime(output_format))
     return df
 
