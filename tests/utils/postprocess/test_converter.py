@@ -57,14 +57,14 @@ def test_change_date_format():
 
     expected_result = ['01/01/2016', '06/01/2016', '01/05/2017']
 
-    # without format
+    # without input_format
     config = {
         'column': 'date',
         'output_format': '%d/%m/%Y'}
     new_df = change_date_format(df.copy(), **config)
     assert list(new_df.date) == expected_result
 
-    # without new_column
+    # without new_column and input_format
     config = {
         'column': 'date',
         'input_format': '%Y%m%d',
@@ -72,7 +72,7 @@ def test_change_date_format():
     new_df = change_date_format(df.copy(), **config)
     assert list(new_df.date) == expected_result
 
-    # with new_column
+    # with input_format
     config = {
         'column': 'date',
         'input_format': '%Y%m%d',
@@ -80,6 +80,17 @@ def test_change_date_format():
         'new_column': 'new_date'}
     new_df = change_date_format(df.copy(), **config)
     assert list(new_df.new_date) == expected_result
+
+    # with utc (eh ouaaaais international mon pote)
+    df = pd.DataFrame([
+        {'date': "2018-11-13 08:00:02.091000+00:00", 'city': "Rennes"},
+        {'date': "2018-11-13 12:01:05.091000+00:00", 'city': "Nantes"},
+        {'date': "2018-11-13 10:12:09.091000+00:00", 'city': "Paris"},
+    ])
+    expected_result = ["09:00", "13:01", "11:12"]
+    config = {'column': 'date', 'output_format': '%H:%M', 'new_utc': "Europe/Paris"}
+    df_new = change_date_format(df.copy(), **config)
+    assert list(df_new.date) == expected_result
 
 
 def test_cast():
