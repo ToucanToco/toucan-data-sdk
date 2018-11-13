@@ -81,7 +81,7 @@ def test_change_date_format():
     new_df = change_date_format(df.copy(), **config)
     assert list(new_df.new_date) == expected_result
 
-    #with utc (eh ouaaaais international mon pote)
+    # with utc (eh ouaaaais international mon pote)
     df = pd.DataFrame([
         {'date': "2018-11-13 08:00:02.091000+00:00", 'city': "Rennes"},
         {'date': "2018-11-13 12:01:05.091000+00:00", 'city': "Nantes"},
