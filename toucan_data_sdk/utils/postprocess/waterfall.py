@@ -2,7 +2,7 @@ import pandas as pd
 
 
 def waterfall(df, date, value, start, end, upperGroup,  # noqa:C901
-              insideGroup=None, breakdown=None):
+              insideGroup=None, filters=None):
     """
     Return a line for each bars of a waterfall chart, totals, groups, subgroups.
     Compute the variation and variation rate for each line.
@@ -26,21 +26,28 @@ def waterfall(df, date, value, start, end, upperGroup,  # noqa:C901
         end (dict):
             - label: text displayed under the last master column
             - date: value in the date col that id lines for the second period
-        breakdown (list) : (not implemented)
+        filters (list or str) : list of column to filters on
         # fillValues (bool): (case when false is not implemented)
-
-    TODO:
-        * idea to implement breakdown, call waterfall() on data filtered by filter.
-        * crash gracefully if data or config is not coherent
-        * il y aura des cols en trop: les gérer
     """
 
     if len(df) == 0:
         return df
 
-    if breakdown is not None:
-        raise NotImplementedError(
-            'We will add breakdown support on your request, please contact the devs')
+    if filters is not None:
+        if isinstance(filters, str):
+            filters = [filters]
+
+        def sub_waterfall(df):
+            wa_df = waterfall(df, date, value, start, end, upperGroup, insideGroup)
+            for filters_col in filters:
+                wa_df[filters_col] = df[filters_col].values[0]
+            return wa_df
+
+        # filters df into a list of sub_df
+        list_of_sub_df = [df[(df[filters].values == i).all(axis=1)]
+                          for i in df[filters].drop_duplicates().values]
+
+        return pd.concat([sub_waterfall(df) for df in list_of_sub_df], sort=False)
 
     groups = {
         'upperGroup': {
