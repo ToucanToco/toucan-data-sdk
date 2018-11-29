@@ -1,3 +1,11 @@
+def drop_duplicates(df, columns):
+    """
+    Use only `columns` to identify duplicates and remove them.
+    Set `columns` to None to use all of the columns
+    """
+    return df.drop_duplicates(columns)
+
+
 def query_df(df, query):
     """
     Slice the data according to the provided query
