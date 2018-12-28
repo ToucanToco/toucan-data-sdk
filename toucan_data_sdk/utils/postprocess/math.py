@@ -1,4 +1,5 @@
 import operator as _operator
+from typing import List
 
 MATH_CHARACTERS = '()+-/*%.'
 
@@ -52,8 +53,22 @@ def is_float(x):
         return True
 
 
-def _parse_formula(formula_str):
-    splitted = []
+class Token(str):
+    """
+    A formula is a string like this '"2018  " - 2017 + (a - b)'
+    In order to parse it, we split it in different tokens and keep track if it was
+    quoted or not.
+    E.g. in the formula above, `2017` is a number whereas `"2018"` is a column name.
+    even though both are strings.
+    """
+    def __new__(cls, text, quoted=False):
+        string = super().__new__(cls, text.strip())
+        string.quoted = quoted
+        return string
+
+
+def _parse_formula(formula_str) -> List[Token]:
+    tokens = []
     current_word = ''
     quote_to_match = None
     for x in formula_str:
@@ -61,33 +76,35 @@ def _parse_formula(formula_str):
             quote_to_match = x
             continue
         if x == quote_to_match:
-            splitted.append(current_word)
+            tokens.append(Token(current_word, True))
             current_word = ''
             quote_to_match = None
             continue
         if quote_to_match or x not in MATH_CHARACTERS:
             current_word += x
         else:
-            splitted.append(current_word)
+            tokens.append(Token(current_word))
             current_word = ''
-            splitted.append(x)
-    splitted.append(current_word)
+            tokens.append(Token(x))
+    tokens.append(Token(current_word))
     if quote_to_match is not None:
         raise FormulaError('Missing closing quote in formula')
-    return [x.strip() for x in splitted if x.strip()]
+    return [t for t in tokens if t]
 
 
 def formula(df, *, new_column, formula):
     """Compute math formula for df and put the result in `column`"""
-    splitted = _parse_formula(formula)
+    tokens = _parse_formula(formula)
     expression_splitted = []
-    for x in splitted:
-        if x in MATH_CHARACTERS or is_float(x):
-            expression_splitted.append(x)
-        elif x in df.columns:
-            expression_splitted.append(f'df["{x}"]')
+    for t in tokens:
+        # To use a column name with only digits, it has to be quoted!
+        # Otherwise it is considered as a regular number
+        if not t.quoted and (t in MATH_CHARACTERS or is_float(t)):
+            expression_splitted.append(t)
+        elif t in df.columns:
+            expression_splitted.append(f'df["{t}"]')
         else:
-            raise FormulaError(f'"{x}" is not a valid column name')
+            raise FormulaError(f'"{t}" is not a valid column name')
     expression = ''.join(expression_splitted)
     df[new_column] = eval(expression)
     return df

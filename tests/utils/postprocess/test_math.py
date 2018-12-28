@@ -4,7 +4,7 @@ import pytest
 from toucan_data_sdk.utils.postprocess import (
     add, subtract, multiply, divide, formula
 )
-from toucan_data_sdk.utils.postprocess.math import FormulaError, _parse_formula
+from toucan_data_sdk.utils.postprocess.math import FormulaError, _parse_formula, Token
 
 
 def test_math_operations_with_column():
@@ -80,6 +80,16 @@ def test_bad_arg():
     assert str(exc_info.value) == 'column_1 must be a string, an integer or a float'
 
 
+def test_token():
+    t = Token('    ')
+    assert len(t) == 0
+    assert repr(t) == "''"
+    assert t == ''
+    t1 = Token(' a ', quoted=True)
+    t2 = Token('a')
+    assert t1 == t2
+
+
 def test_parse_formula():
     assert _parse_formula('a') == ['a']
     assert _parse_formula('a+b') == ['a', '+', 'b']
@@ -145,3 +155,13 @@ def test_formula():
 
     res = formula(df, new_column='c', formula='"and-another" - yet_another')
     assert res['c'].tolist() == [0, 0]
+
+
+def test_formula_number_columns():
+    df = pd.DataFrame({'2017': [3, 2], '2018': [8, -1]})
+
+    res = formula(df, new_column='evo', formula='2018 - 2017')
+    assert res['evo'].tolist() == [1, 1]
+
+    res = formula(df, new_column='evo', formula='"2018" - "2017"')
+    assert res['evo'].tolist() == [5, -3]
