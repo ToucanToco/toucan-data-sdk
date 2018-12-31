@@ -3,6 +3,7 @@ from .converter import convert_str_to_datetime, convert_datetime_to_str, cast, c
 from .cumsum import cumsum
 from .fillna import fillna
 from .filter import drop_duplicates, query, query_df
+from .filter_by_date import filter_by_date
 from .groupby import groupby
 from .math import multiply, divide, add, subtract, formula
 from .melt import melt
