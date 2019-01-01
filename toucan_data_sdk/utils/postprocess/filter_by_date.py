@@ -18,7 +18,7 @@ def _norm_date(datestr: str, date_fmt: str) -> datetime:
         `date_fmt`: expected output date format
 
     Returns:
-        The interpreted date as a datetime.datetime object. 
+        The interpreted date as a datetime.datetime object.
         If `datestr` doesn't match any of the known symbolic names, it just parses it.
 
     """
