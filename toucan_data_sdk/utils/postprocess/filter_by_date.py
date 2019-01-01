@@ -6,10 +6,10 @@ from datetime import date, datetime
 import pandas as pd
 
 
-def _norm_date(datestr: str, date_fmt: str):
+def _norm_date(datestr: str, date_fmt: str) -> datetime:
     """normalize symbolic date values (e.g. 'TODAY')
 
-    Convert a symbolic value in a valid date, formatted as `date_fmt`.
+    Convert a symbolic value in a valid date.
     Currenlty known symbolic values are 'TODAY', 'YESTERDAY' and 'TOMORROW'.
 
 
@@ -18,8 +18,8 @@ def _norm_date(datestr: str, date_fmt: str):
         `date_fmt`: expected output date format
 
     Returns:
-        The interpreted date as a string. If `datestr` doesn't match any of the
-        known symbolic names, it is left untouched.
+        The interpreted date as a datetime.datetime object. 
+        If `datestr` doesn't match any of the known symbolic names, it just parses it.
 
     """
     try:
