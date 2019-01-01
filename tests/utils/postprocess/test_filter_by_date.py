@@ -4,7 +4,6 @@ import pandas as pd
 from pandas.testing import assert_frame_equal
 import pytest
 
-
 from toucan_data_sdk.utils.postprocess import filter_by_date
 
 
@@ -49,6 +48,10 @@ def test_filter_date_invalid_calls(sample_data):
         filter_by_date(df, 'date', start='2018-01-01', stop='2018-01-01', delta='1d')
     with pytest.raises(TypeError):
         filter_by_date(df, 'date', stop='2018-01-01')
+    with pytest.raises(ValueError):
+        filter_by_date(df, 'date', start='2018-01-01', date_fmt='%m %Y')
+    with pytest.raises(ValueError):
+        filter_by_date(df, 'date', start='01 2018', date_fmt='%m %Y')
 
 
 def test_filter_by_date_start_only(sample_data):
@@ -157,5 +160,20 @@ def test_filter_by_date_stop_symbolic_tomorrow(sample_data):
     df = filter_by_date(df, 'date', stop='TOMORROW', delta='1d')
     expected = pd.DataFrame([
         {'date': TODAY, 'value': 8},
+    ])
+    assert_frame_equal_noindex(df, expected)
+
+
+def test_date_fmt():
+    """It should take date_fmt into account"""
+    df = pd.DataFrame([
+        {'date': '01 2018', 'value': 1},
+        {'date': '03 2018', 'value': 2},
+        {'date': '03 2018', 'value': 3}
+    ])
+    df = filter_by_date(df, date_col='date', date_fmt='%m %Y', start='02 2018', delta='90d')
+    expected = pd.DataFrame([
+        {'date': '03 2018', 'value': 2},
+        {'date': '03 2018', 'value': 3}
     ])
     assert_frame_equal_noindex(df, expected)

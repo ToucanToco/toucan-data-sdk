@@ -1,5 +1,6 @@
 """date filtering helpers."""
 
+from uuid import uuid4
 from datetime import date, datetime
 
 import pandas as pd
@@ -21,14 +22,11 @@ def _norm_date(datestr: str, date_fmt: str):
         known symbolic names, it is left untouched.
 
     """
-    upperdate = datestr.upper()
-    if upperdate == 'TODAY':
-        return date.today().strftime(date_fmt)
-    elif upperdate == 'YESTERDAY':
-        return (date.today() + pd.Timedelta(days=-1)).strftime(date_fmt)
-    elif upperdate == 'TOMORROW':
-        return (date.today() + pd.Timedelta(days=1)).strftime(date_fmt)
-    return datestr
+    try:
+        days = {'TODAY': 0, 'YESTERDAY': -1, 'TOMORROW': 1}[datestr.upper()]
+        return date.today() + pd.Timedelta(days=days)
+    except KeyError:
+        return datetime.strptime(datestr, date_fmt)
 
 
 def filter_by_date(df, date_col, date_fmt='%Y-%m-%d', start=None, stop=None, delta=None):
@@ -65,24 +63,28 @@ def filter_by_date(df, date_col, date_fmt='%Y-%m-%d', start=None, stop=None, del
     mask = None
     if start is None and stop is None:
         raise TypeError('either "start" or "stop" must be specified')
+    # add a new column that will hold actual date objects instead of strings.
+    # This column is just temporary and will be removed before returning the
+    # filtered dataframe.
+    filtercol = str(uuid4())
+    df[filtercol] = pd.to_datetime(df[date_col], format=date_fmt)
     if start is not None and stop is not None:
         if delta is not None:
             raise TypeError('if "start" and "stop" are specified, "delta" must be None')
-        mask = ((df[date_col] >= _norm_date(start, date_fmt)) &
-                (df[date_col] < _norm_date(stop, date_fmt)))
+        mask = ((df[filtercol] >= _norm_date(start, date_fmt)) &
+                (df[filtercol] < _norm_date(stop, date_fmt)))
     elif stop is None:
         start = _norm_date(start, date_fmt)
         if delta is None:
-            print('start=', start)
-            mask = df[date_col] == start
+            mask = df[filtercol] == start
         else:
-            stop = datetime.strptime(start, date_fmt) + pd.Timedelta(delta)
-            mask = (df[date_col] >= start) & (df[date_col] < stop.strftime('%Y-%m-%d'))
+            stop = start + pd.Timedelta(delta)
+            mask = (df[filtercol] >= start) & (df[filtercol] < stop)
     elif start is None:
         if delta is None:
             raise TypeError(
                 '"stop" without "start" nor "delta" is forbidden, use "start" instead')
         stop = _norm_date(stop, date_fmt)
-        start = datetime.strptime(stop, date_fmt) - pd.Timedelta(delta)
-        mask = (df[date_col] >= start.strftime(date_fmt)) & (df[date_col] < stop)
-    return df.loc[mask]
+        start = stop - pd.Timedelta(delta)
+        mask = (df[filtercol] >= start) & (df[filtercol] < stop)
+    return df.loc[mask].drop(filtercol, axis=1)
