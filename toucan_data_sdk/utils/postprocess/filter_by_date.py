@@ -130,4 +130,4 @@ def filter_by_date(df, date_col, date_fmt='%Y-%m-%d', start=None, stop=None, atd
         mask = df[filtercol] >= parse_date(start, date_fmt)
     elif start is None:
         mask = df[filtercol] < parse_date(stop, date_fmt)
-    return df.loc[mask].drop(filtercol, axis=1)
+    return df[mask].drop(filtercol, axis=1)
