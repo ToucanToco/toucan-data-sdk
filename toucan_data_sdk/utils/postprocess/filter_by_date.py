@@ -122,7 +122,6 @@ def filter_by_date(df, date_col, date_fmt='%Y-%m-%d', start=None, stop=None, atd
     filtercol = str(uuid4())
     df[filtercol] = pd.to_datetime(df[date_col], format=date_fmt)
     if atdate is not None:
-        print('atdate', parse_date(atdate, date_fmt))
         mask = df[filtercol] == parse_date(atdate, date_fmt)
     elif start is not None and stop is not None:
         mask = ((df[filtercol] >= parse_date(start, date_fmt)) &
