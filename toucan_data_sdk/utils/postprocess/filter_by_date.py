@@ -47,9 +47,9 @@ def parse_date(datestr: str, date_fmt: str) -> date:
     Example usage:
 
     >>> parse_date('2018-01-01', '%Y-%m-%d')
-    datetime.datetime(2018, 1, 1, 0, 0)
+    datetime.date(2018, 1, 1)
     >>> parse_date('(2018-01-01) + 1day', '%Y-%m-%d')
-    datetime.datetime(2018, 1, 2, 0, 0)
+    datetime.date(2018, 1, 2)
 
     Parameters:
         `datestr`: the date to parse, formatted as `date_fmt`

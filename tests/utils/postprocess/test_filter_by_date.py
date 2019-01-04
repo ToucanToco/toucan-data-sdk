@@ -41,7 +41,7 @@ def assert_frame_equal_noindex(left, right):
 
 
 def test_filter_date_invalid_calls(sample_data):
-    """It should forbid invalid start/stop/delta combinations"""
+    """It should forbid invalid start/stop/atdate combinations"""
     df = pd.DataFrame(sample_data)
     with pytest.raises(TypeError):
         # no filter specification
