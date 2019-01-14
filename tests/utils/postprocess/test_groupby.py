@@ -45,21 +45,3 @@ def test_two_group_cols_two_value_cols():
          {'ENTITY': 'B', 'YEAR': '2018', 'VALUE_1': 110, 'VALUE_2': 6.5}
          ])
     assert df.sort_index(axis=1).equals(df_expected.sort_index(axis=1))
-
-
-def test_groupby_append():
-    data_cols = ['ENTITY', 'YEAR', 'VALUE_1', 'VALUE_2']
-    aggs = {
-        'sum_value1': {'VALUE_1': 'sum'},
-        'max_value1': {'VALUE_1': 'max'},
-        'mean_value2': {'VALUE_2': 'mean'}
-    }
-    df = groupby(data.copy(), group_cols=['YEAR', 'ENTITY'], aggregations=aggs)
-    assert df.shape == (8, 7)
-    assert df[data_cols].equals(data[data_cols])
-    expected_appended = pd.DataFrame({
-        'sum_value1': [30, 30, 40, 40, 100, 100, 110, 110],
-        'max_value1': [20, 20, 30, 30, 60, 60, 60, 60],
-        'mean_value2': [2, 2, 4.5, 4.5, 3.5, 3.5, 6.5, 6.5]
-    })
-    assert df[['sum_value1', 'max_value1', 'mean_value2']].equals(expected_appended)
