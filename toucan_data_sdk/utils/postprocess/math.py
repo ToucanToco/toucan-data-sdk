@@ -112,3 +112,43 @@ def formula(df, *, new_column, formula):
 
 class FormulaError(Exception):
     """Raised when a formula is not valid"""
+
+
+def round_values(df, *, column, decimals, new_column=None):
+    """
+    Round each value of `column` and put the result in `new_column`
+    (if set to None, `column` will be replaced)
+
+    ENTITY  VALUE_1  VALUE_2
+       A     -1.512   -1.504
+       A      0.432     0.14
+
+    round_values(df, column='VALUE_1', new_column='Pika', decimals=1) returns:
+
+    ENTITY  VALUE_1  VALUE_2  Pika
+       A     -1.512   -1.504  -1.5
+       A      0.432     0.14   0.4
+    """
+    new_column = new_column or column
+    df[new_column] = df[column].round(decimals)
+    return df
+
+
+def absolute_values(df, *, column, new_column=None):
+    """
+    Take the absolute value of each value of `column` and put the result in `new_column`
+    (if set to None, `column` will be replaced)
+
+    ENTITY  VALUE_1  VALUE_2
+       A     -1.512   -1.504
+       A      0.432     0.14
+
+    compute_abs(df, column='VALUE_1', new_column='Pika') returns:
+
+    ENTITY  VALUE_1  VALUE_2   Pika
+       A     -1.512   -1.504  1.512
+       A      0.432     0.14  0.432
+    """
+    new_column = new_column or column
+    df[new_column] = abs(df[column])
+    return df

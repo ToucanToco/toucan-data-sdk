@@ -2,7 +2,7 @@ import pandas as pd
 import pytest
 
 from toucan_data_sdk.utils.postprocess import (
-    add, subtract, multiply, divide, formula
+    add, subtract, multiply, divide, formula, round_values, absolute_values
 )
 from toucan_data_sdk.utils.postprocess.math import FormulaError, _parse_formula, Token
 
@@ -165,3 +165,22 @@ def test_formula_number_columns():
 
     res = formula(df, new_column='evo', formula='"2018" - "2017"')
     assert res['evo'].tolist() == [5, -3]
+
+
+# ~~ round_values & absolute_values ~~~
+data = pd.DataFrame([
+    {'ENTITY': 'A', 'VALUE_1': -1.563, 'VALUE_2': -1.563},
+    {'ENTITY': 'A', 'VALUE_1': 0.423, 'VALUE_2': 0.423},
+    {'ENTITY': 'A', 'VALUE_1': 0, 'VALUE_2': 0},
+    {'ENTITY': 'A', 'VALUE_1': -1.612, 'VALUE_2': 1.612}
+])
+
+
+def test_round_values():
+    df = round_values(data.copy(), column='VALUE_1', decimals=1)
+    assert df['VALUE_1'].tolist() == [-1.6, 0.4, 0, -1.6]
+
+
+def test_absolute_values():
+    df = absolute_values(data.copy(), column='VALUE_1')
+    assert df['VALUE_1'].tolist() == [1.563, 0.423, 0, 1.612]
