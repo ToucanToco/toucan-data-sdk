@@ -59,16 +59,28 @@ def test_center(df):
 
 
 def test_split(df1):
-    df = split(df1.copy(), column='b', new_columns=['c', 'd', 'e'])
+    # new_columns set but not a list
+    with pytest.raises(ValueError) as e1:
+        split(df1.copy(), column='b', new_columns='new_col')
+    # new_columns is a list without enough items
+    with pytest.raises(ValueError) as e2:
+        split(df1.copy(), column='b', new_columns=['c', 'd'])
+    expected_error_message = "'new_columns' should be a list with at least 3 elements"
+    assert str(e1.value) == str(e2.value) == expected_error_message
 
+    df = split(df1.copy(), column='b', new_columns=['c', 'd', 'e'])
     assert df['c'].tolist() == ['2017', '2018', '2014', '2018']
     assert df['d'].tolist() == ['03', None, '03', '01']
     assert df['e'].tolist() == ['01', None, '12', '01']
 
-    df = split(df1, column='b', new_columns=['c', 'd', 'e'], limit=1)
+    df = split(df1.copy(), column='b', new_columns=['c', 'd', 'e'], limit=1)
     assert df['c'].tolist() == ['2017', '2018', '2014', '2018']
     assert df['d'].tolist() == ['03 01', None, '03 12', '01 01']
     assert 'e' not in df.columns
+
+    # new_columns not set -> create it
+    df = split(df1.copy(), column='b')
+    assert df.columns.tolist() == ['a', 'b', 'b_1', 'b_2', 'b_3']
 
 
 def test_partition(df1):

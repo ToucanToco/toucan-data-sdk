@@ -203,16 +203,21 @@ rjust = _generate_width_str_postprocess('rjust', doc)
 # All these functions have the same signature:
 # :param df: the dataframe
 # :param column: the column
-# :param new_column: the destination column (if not set, `column` will be used)
+# :param new_columns: the destination columns
+#        (if not set, columns `column_1`, ..., `column_n` will be created)
 # :param sep: (default: \' \') string or regular expression to split on
 # :param limit: (default: None) limit number of splits in output
 # :return: the transformed dataframe
 ###################################################################################################
 def _generate_split_str_postprocess(method_name, docstring):
-    def f(df, column, *, new_columns, sep=' ', limit=None):
+    def f(df, column, *, new_columns=None, sep=' ', limit=None):
         method = getattr(df[column].str, method_name)
         df_split = method(pat=sep, n=limit, expand=True)
         nb_cols = df_split.shape[1]
+        if new_columns and (not isinstance(new_columns, list) or nb_cols > len(new_columns)):
+            raise ValueError(f"'new_columns' should be a list with at least {nb_cols} elements")
+        if new_columns is None:
+            new_columns = [f'{column}_{i}' for i in range(1, nb_cols + 1)]
         df[new_columns[:nb_cols]] = df_split
         return df
 
@@ -220,7 +225,8 @@ def _generate_split_str_postprocess(method_name, docstring):
     f.__doc__ = f'{docstring}\n' \
                 f':param df: the dataframe\n' \
                 f':param column: the column\n' \
-                f':param new_column: the destination column (if not set, `column` will be used)\n' \
+                f':param new_columns: the destination colums\n' \
+                f'       (if not set, columns `column_1`, ..., `column_n` will be created)\n' \
                 f':param sep: (default: \' \') string or regular expression to split on\n' \
                 f':param limit: (default: None) limit number of splits in output\n' \
                 f':return: the transformed dataframe'
