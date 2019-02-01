@@ -22,10 +22,10 @@ def waterfall(df, date, value, start, end, upperGroup,  # noqa:C901
         value (str): name of the column that contains the vaue for each lines
         start (dict):
             - label: text displayed under the first master column
-            - date: value in the date col that id lines for the first period
+            - id: value in the date col that id lines for the first period
         end (dict):
             - label: text displayed under the last master column
-            - date: value in the date col that id lines for the second period
+            - id: value in the date col that id lines for the second period
         filters (list or str) : list of column to filters on
         # fillValues (bool): (case when false is not implemented)
     """
