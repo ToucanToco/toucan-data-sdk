@@ -15,12 +15,13 @@ def date_requester_generator(df, date_column, frequency, date_column_format=None
 
     Mandatory :
     -----------
-    - start_date (str) : start date in %Y-%m%d format
-    - end_date (str): end date in %Y-%m%d format
+    - df (DataFrame) : dataframe from which  start and end date will be compute
+    - date_column (str): name of column containing date in df
     - frequency (str) : http://pandas.pydata.org/pandas-docs/stable/timeseries.html#offset-aliases
 
     Optional :
     ----------
+    - date_column_format: format of the date in date_column
     - format: format of the date. !!! only use if granularity is None
         NB : same format in Toucan Toco
         Example : '%d/%m/%Y'
