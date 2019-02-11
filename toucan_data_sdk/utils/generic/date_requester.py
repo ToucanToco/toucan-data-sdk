@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-def date_requester_generator(start_date, end_date, frequency,
+def date_requester_generator(df, date_column, frequency, date_column_format=None,
                              format='%Y-%m-%d', granularities=None,
                              others_format=None, times_delta=None):
     """
@@ -42,6 +42,9 @@ def date_requester_generator(start_date, end_date, frequency,
         - values (str): time delta
             Examples : '+1 day' '+3 day' '-4 month'
     """
+
+    start_date = pd.to_datetime(df[date_column], format=date_column_format).min()
+    end_date = pd.to_datetime(df[date_column], format=date_column_format).max()
 
     granularities = granularities or {'date': format}
     others_format = others_format or {}
