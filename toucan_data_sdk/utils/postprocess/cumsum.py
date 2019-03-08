@@ -4,7 +4,7 @@ import logging
 
 def cumsum(df, new_column: str, column: str, index: list, date_column: str, date_format: str):
     """
-    DEPRECATED 
+    DEPRECATED
     Creates a new column, which is the cumsum of the column
 
     - new_column: name of the created column

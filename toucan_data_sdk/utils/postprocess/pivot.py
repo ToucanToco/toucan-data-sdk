@@ -6,7 +6,7 @@ from typing import List
 def pivot(df, index: List[str], column: str, value: str):
     """
     Pivot the data. Reverse operation of melting
-    
+
     - index: list of columns name to let unmodified
     - column: column name to pivot on
     - value: column name containing the value to fill the pivoted table

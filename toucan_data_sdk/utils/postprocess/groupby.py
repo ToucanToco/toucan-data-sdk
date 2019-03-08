@@ -7,7 +7,7 @@ def groupby(df, *, group_cols: Union[str, List[str]], aggregations: Dict[str, st
 
     - group_cols: list of columns used to group data
     - aggregations: dictionnary of values columns to group as keys and aggregation function to
-        use as values. 
+        use as values
         Available aggregation functions are listed here:
         https://pandas.pydata.org/pandas-docs/stable/user_guide/groupby.html#aggregation
 

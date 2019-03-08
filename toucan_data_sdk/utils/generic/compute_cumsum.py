@@ -3,17 +3,20 @@ from toucan_data_sdk.utils.helpers import (
     ParamsValueError
 )
 
+from typing import List
+
 
 def compute_cumsum(
     df,
-    id_cols,
-    reference_cols,
-    value_cols,
+    id_cols: List[str],
+    reference_cols: List[str],
+    value_cols: List[str],
     new_value_cols=None,
     cols_to_keep=None
 ):
     """
     Compute cumsum for a group of columns.
+
     - `id_cols` are the columns id to create each group,
     - `reference_cols` are the columns to order the cumsum,
     - `value_cols` are the columns to cumsum,
@@ -21,7 +24,8 @@ def compute_cumsum(
     - `cols_to_keep` are other column to keep in the dataframe. This option can
      be used if there is only one row by group [id_cols + reference_cols]
 
-    For example :
+
+    # Example #
 
     MONTH  DAY NAME  VALUE  X
      1      1    A      1  lo
@@ -42,15 +46,6 @@ def compute_cumsum(
      A     2      1  la      2
      A     2     15  lo      3
      B     1     15  la      1
-
-
-    Args:
-        df (pd.DataFrame):
-        id_cols (list(str)):
-        reference_cols (list(str)):
-        value_cols (list(str)):
-        new_value_cols (list(str)):
-        cols_to_keep (list(str)):
     """
     if cols_to_keep is None:
         cols_to_keep = []

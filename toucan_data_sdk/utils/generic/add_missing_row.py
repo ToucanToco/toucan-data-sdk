@@ -18,7 +18,8 @@ def add_missing_row(df, id_cols, reference_col, complete_index=None, method=None
        E.g between min and max value of the group.
     - `cols_to_keep` (optional) is the columns link to the reference_col to keep.
 
-    For example :
+
+    # Examples #
 
     YEAR MONTH NAME  VALUE  X
     2017   1     A      1  lo

@@ -75,7 +75,7 @@ def parse_date(datestr: str, date_fmt: str) -> date:
     return dateobj
 
 
-def filter_by_date(df, date_col: str date_fmt='%Y-%m-%d', start=None, stop=None, atdate=None):
+def filter_by_date(df, date_col: str, date_fmt='%Y-%m-%d', start=None, stop=None, atdate=None):
     """
     Filter dataframe your data by date.
 

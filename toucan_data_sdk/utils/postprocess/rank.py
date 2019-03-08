@@ -1,7 +1,9 @@
 import numpy as np
 from typing import Union, List
 
-def rank(df, value_cols: Union[str, List[str]], group_cols=None, rank_cols_names=None, method='min', ascending=True):
+
+def rank(df, value_cols: Union[str, List[str]], group_cols=None,
+         rank_cols_names=None, method='min', ascending=True):
     """
     This function creates rank columns based on numeric values to be ranked.
 

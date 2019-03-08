@@ -1,6 +1,7 @@
 import pandas as pd
 from typing import List
 
+
 def melt(df, id: List[str], value: List[str], dropna=False):
     """
     Melt the data

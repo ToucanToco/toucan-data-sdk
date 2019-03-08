@@ -1,7 +1,8 @@
 import pandas as pd
 from typing import Dict
 
-def waterfall(df, date: str, value: str, start: Dict, end: Dict, upperGroup: Dict,  # noqa:C901
+
+def waterfall(df, date: str, value: str, start: Dict, end: Dict, upperGroup: Dict,
               insideGroup=None, filters=None):
     """
     Return a line for each bars of a waterfall chart, totals, groups, subgroups.

@@ -1,5 +1,6 @@
 from typing import List
 
+
 def drop_duplicates(df, columns: List[str]):
     """
     Drop duplicated rows
@@ -12,9 +13,9 @@ def drop_duplicates(df, columns: List[str]):
 def query_df(df, query):
     """
     Slice the data according to the provided query
-    
+
     - query: your query as a string
-    pandas documentation: 
+    pandas documentation:
     http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.query.html#pandas.DataFrame.query
     """
     df = df.query(query)

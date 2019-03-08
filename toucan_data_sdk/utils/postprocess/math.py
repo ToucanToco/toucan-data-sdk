@@ -104,7 +104,7 @@ def _parse_formula(formula_str) -> List[Token]:
     return [t for t in tokens if t]
 
 
-def formula(df, *, new_column: str, formula :str):
+def formula(df, *, new_column: str, formula: str):
     """
     Compute math formula on columns
 

@@ -5,23 +5,17 @@ def date_requester_generator(start_date, end_date, frequency,
                              format='%Y-%m-%d', granularities=None,
                              others_format=None, times_delta=None):
     """
-    Return a DataFrame containing at least 3 columns :
+    Build a table for the date requester of a Toucan small app
+    The created table will contain at least 3 columns:
     - "DATE" : Label of date
     - "DATETIME" : Date in datetime dtype
     - "GRANULARITY" : Granualrity of date
 
-    Arguments
-    #########
 
-    Mandatory :
-    -----------
-    - start_date (str) : start date in %Y-%m%d format
-    - end_date (str): end date in %Y-%m%d format
-    - frequency (str) : http://pandas.pydata.org/pandas-docs/stable/timeseries.html#offset-aliases
-
-    Optional :
-    ----------
-    - format: format of the date. !!! only use if granularity is None
+    - start_date: start date in %Y-%m%d format
+    - end_date: end date in %Y-%m%d format
+    - frequency: http://pandas.pydata.org/pandas-docs/stable/timeseries.html#offset-aliases
+    - format (optional): format of the date. !!! only use if granularity is None
         NB : same format in Toucan Toco
         Example : '%d/%m/%Y'
         https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior

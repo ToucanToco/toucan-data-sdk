@@ -1,41 +1,34 @@
 import pandas as pd
+from typing import List
 
 
-def two_values_melt(df, first_value_vars, second_value_vars, var_name,
-                    value_name):
+def two_values_melt(df, first_value_vars: List[str], second_value_vars: List[str], var_name: List[str], value_name: str):
     """
     First, build two DataFrames from the original one: one to compute a melt
     for the value, another one to compute a melt for the evolution. Second,
-    merge these two DataFrames. The idea is to go from something like this:
+    merge these two DataFrames.
+
+    - first_value_vars: value_vars of a pandas melt, for the first
+        value columns of the DataFrame
+    - second_value_vars: value_vars of a pandas melt, for the second
+        value columns of the DataFrame
+    - var_name: var_names of a pandas melt
+    - value_name: value_name of a pandas melt
+
+
+    # Examples #
+
+    input :
 
     | ... | <some1> | <some2> | <some1_evol> | <some2_evol> |
     | ... | <val1>  | <val2>  | <evol1>      | <evol2>      |
 
-    to something like that:
+    output :
 
     | ... | variable  | value  | evolution
     | ... | --------- | ------ | ---------
     | ... |  <some1>  | <val1> | <evol1>
     | ... |  <some2>  | <val2> | <evol2>
-
-    Args:
-        df (DataFrame): DataFrame to process
-        first_value_vars (list): value_vars of a pandas melt, for the first
-            value columns of the DataFrame
-        second_value_vars (list): value_vars of a pandas melt, for the second
-            value columns of the DataFrame
-        var_name (str): var_names of a pandas melt
-        value_name (str): value_name of a pandas melt
-
-    Notes:
-        In tests/app/fixtures, you will find example files for the input and
-        output data (respectively two_values_melt_in.csv and
-        two_values_melt_out.csv)
-
-    Returns:
-        DataFrame: molted DataFrame with two value (value and evolution for
-            example) columns
-
     """
     value_name_first = value_name + '_first'
     value_name_second = value_name + '_second'

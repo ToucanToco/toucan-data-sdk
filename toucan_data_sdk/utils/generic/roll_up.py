@@ -1,9 +1,9 @@
 import pandas as pd
+from typing import List
 
 
-def roll_up(df, levels, groupby_vars, extra_groupby_cols=[],
-            var_name='type', value_name='value', agg_func='sum',
-            drop_levels=None):
+def roll_up(df, levels: List[str], groupby_vars: List[str], extra_groupby_cols=[],
+            var_name='type', value_name='value', agg_func='sum', drop_levels=None):
     """
     Move the hierarchy from the columns name to the rows (like a melt).
     Add higher level hierarchy information with pandas aggregation function.
@@ -12,22 +12,13 @@ def roll_up(df, levels, groupby_vars, extra_groupby_cols=[],
     levels, apply aggregation function on groupby_vars. Add two extra columns:
     value_name and var_name, like a pandas melt.
 
-    Args:
-        df (DataFrame): DataFrame to work on...
-        levels (list): Hierarchy. The order is important, from the top level
-            to the lower level.
-        groupby_vars (list): Columns to select from the group by (apply
-            aggregation function to)
-        extra_groupby_cols (list): Add to columns to group by each time.
-        var_name (str): Same as a pandas melt() var_name
-        value_name (str): Same as a pandas melt() value_name
-        agg_func (str): pandas aggregation function to apply to the groupby.
-        drop_levels (list): the names of the levels that may you want to discard
-            from the output
-
-    Returns:
-        DataFrame:
-
+    - levels: Hierarchy. The order is important, from the top level to the lower level.
+    - groupby_vars: Columns to select from the group by (apply aggregation function to)
+    - extra_groupby_cols: Add to columns to group by each time.
+    - var_name (optional): Same as a pandas melt() var_name
+    - value_name (optional): Same as a pandas melt() value_name
+    - agg_func (optional): pandas aggregation function to apply to the groupby.
+    - drop_levels (optional): the names of the levels that may you want to discard from the output
     """
     dfs = list()
     groupby_cols_cpy = list(levels)
