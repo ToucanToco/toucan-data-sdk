@@ -9,6 +9,17 @@ def add_aggregation_columns(
         aggregations: Dict[str, Agg]
 ):
     """
+    Add new columns containing aggregations values on existing columns
+
+    - group_cols: columns used to aggregate the data
+    - aggregations: keys are name of new columns and values are aggregation functions
+        Examples of aggregation functions : 'sum', 'max'
+        Available aggregation functions are listed here:
+        https://pandas.pydata.org/pandas-docs/stable/user_guide/groupby.html#aggregation
+
+
+    # Examples #
+
     df =
        year  group libelle      mois  value  total
     0  2018  e-EKO       a  20180101      3      3
