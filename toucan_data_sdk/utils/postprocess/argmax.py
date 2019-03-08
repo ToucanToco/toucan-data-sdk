@@ -1,4 +1,4 @@
-def argmax(df, column:str):
+def argmax(df, column: str):
     """
     Keep the row of the data corresponding to the maximal value in a column
 
@@ -8,7 +8,7 @@ def argmax(df, column:str):
     return df
 
 
-def argmin(df, column:str):
+def argmin(df, column: str):
     """
     Keep the row of the data corresponding to the minimal value in a column
 

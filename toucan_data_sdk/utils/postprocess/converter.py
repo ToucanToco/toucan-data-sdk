@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-def convert_str_to_datetime(df, *, column=None:str, format=None:str):
+def convert_str_to_datetime(df, *, column=None, format=None):
     """
     Convert string column into datetime column
 
@@ -14,7 +14,7 @@ def convert_str_to_datetime(df, *, column=None:str, format=None:str):
     return df
 
 
-def convert_datetime_to_str(df, *, column=None:str, format=None:str, new_column=None:str):
+def convert_datetime_to_str(df, *, column=None, format=None, new_column=None):
     """
     Convert datetime column into string column
 
@@ -29,8 +29,8 @@ def convert_datetime_to_str(df, *, column=None:str, format=None:str, new_column=
     return df
 
 
-def change_date_format(df, *, column:str, output_format:str, input_format=None:str, new_column=None:str,
-                       new_time_zone=None:str):
+def change_date_format(df, *, column: str, output_format: str, input_format=None, new_column=None,
+                       new_time_zone=None):
     """
     Convert a date column from a format (input_format) to an other (output_format)
 
@@ -49,9 +49,10 @@ def change_date_format(df, *, column:str, output_format:str, input_format=None:s
     return df
 
 
-def cast(df, column:str, type:str, new_column=None:str):
+def cast(df, column: str, type: str, new_column=None):
     """
     Convert column's type into type
+
     - column: name of the column to format
     - type: desired type of the column
     - new_column (optional): name of the output column - if 'None' overwrite column
