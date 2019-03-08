@@ -1,33 +1,31 @@
 import pandas as pd
+from typing import Dict
 
-
-def waterfall(df, date, value, start, end, upperGroup,  # noqa:C901
+def waterfall(df, date: str, value: str, start: Dict, end: Dict, upperGroup: Dict,  # noqa:C901
               insideGroup=None, filters=None):
     """
     Return a line for each bars of a waterfall chart, totals, groups, subgroups.
     Compute the variation and variation rate for each line.
 
-    Args:
-        upperGroup (dict)
-            - id: name of the column that contains upperGroups unique IDs
-            - label: not required, text displayed under each upperGroups bars,
-                     using ID when it's absent
-            - groupsOrder: not required, order of upperGroups
-        insideGroup (dict)
-            - id: name of the column that contains insideGroups unique IDs
-            - label: not required, text displayed under each insideGroups bars,
-                     using ID when it's absent
-            - groupsOrder: not required, order of insideGroups
-        date (str): name of the column that id the period of each lines
-        value (str): name of the column that contains the vaue for each lines
-        start (dict):
-            - label: text displayed under the first master column
-            - id: value in the date col that id lines for the first period
-        end (dict):
-            - label: text displayed under the last master column
-            - id: value in the date col that id lines for the second period
-        filters (list or str) : list of column to filters on
-        # fillValues (bool): (case when false is not implemented)
+    - date: name of the column that id the period of each lines
+    - value: name of the column that contains the vaue for each lines
+    - upperGroup:
+        - id: name of the column that contains upperGroups unique IDs
+        - label: not required, text displayed under each upperGroups bars,
+                    using ID when it's absent
+        - groupsOrder: not required, order of upperGroups
+    - insideGroup:
+        - id: name of the column that contains insideGroups unique IDs
+        - label: not required, text displayed under each insideGroups bars,
+                    using ID when it's absent
+        - groupsOrder: not required, order of insideGroups
+    - start:
+        - label: text displayed under the first master column
+        - id: value in the date col that id lines for the first period
+    - end:
+        - label: text displayed under the last master column
+        - id: value in the date col that id lines for the second period
+    - filters: list of column to filters on
     """
 
     if len(df) == 0:

@@ -1,17 +1,13 @@
 import pandas as pd
+from typing import List
 
-
-def melt(df, id, value, dropna=False):
+def melt(df, id: List[str], value: List[str], dropna=False):
     """
-    This function is useful to massage a DataFrame into a format where one or more columns
-    are identifier variables (id), while all other columns,
-    considered measured variables (value), are “unpivoted” to the row axis,
-    leaving just two non-identifier columns, ‘variable’ and ‘value’.
-    Args:
-        df (pd.DataFrame): DataFrame to transform
-        id (list): Column(s) to use as identifier variables
-        value (list): Column(s) to unpivot.
-        dropna (bool): dropna in added 'value' column
+    Melt the data
+
+    - id: Column(s) to use as identifier variables
+    - value: Column(s) to unpivot
+    - dropna (optional): dropna in added 'value' column
     """
     df = df[(id + value)]
     df = pd.melt(df, id_vars=id, value_vars=value)

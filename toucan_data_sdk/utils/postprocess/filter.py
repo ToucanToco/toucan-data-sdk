@@ -1,7 +1,10 @@
-def drop_duplicates(df, columns):
+from typing import List
+
+def drop_duplicates(df, columns: List[str]):
     """
-    Use only `columns` to identify duplicates and remove them.
-    Set `columns` to None to use all of the columns
+    Drop duplicated rows
+
+    - columns(optional): list of column name to identify duplicates, if 'None' all columns are used
     """
     return df.drop_duplicates(columns)
 
@@ -9,12 +12,10 @@ def drop_duplicates(df, columns):
 def query_df(df, query):
     """
     Slice the data according to the provided query
-    Basic usage like the one in the data query but in the postprocess
-    Useful if you want to perform some slicing after a melt or pivot for example.
-    Wired on the DataFrame.query method, see doc
+    
+    - query: your query as a string
+    pandas documentation: 
     http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.query.html#pandas.DataFrame.query
-    Args:
-        Query String
     """
     df = df.query(query)
     return df

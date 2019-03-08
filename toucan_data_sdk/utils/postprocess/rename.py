@@ -1,19 +1,17 @@
 def rename(df, values=None, columns=None, locale=None):
     """
     Replaces data values and column names according to locale
-    Args:
-        df (pd.DataFrame): DataFrame to transform
-        values (dict):
-            - key (str): term to be replaced
-            - value (dict):
-                - key: locale
-                - value: term's translation
-        columns (dict):
-            - key (str): columns name to be replaced
-            - value (dict):
-                - key: locale
-                - value: column name's translation
-        locale (str): locale
+
+    - values:
+        - key: term to be replaced
+        - value:
+            - key: 'en' or 'fr'
+            - value: term's translation
+    - columns:
+        - key: columns name to be replaced
+        - value:
+            - key: 'en' or 'fr'
+            - value: column name's translation
     """
     if values:
         to_replace = list(values.keys())

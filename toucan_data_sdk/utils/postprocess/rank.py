@@ -1,28 +1,26 @@
 import numpy as np
+from typing import Union, List
 
-
-def rank(df, value_cols, group_cols=None, rank_cols_names=None, method='min', ascending=True):
+def rank(df, value_cols: Union[str, List[str]], group_cols=None, rank_cols_names=None, method='min', ascending=True):
     """
     This function creates rank columns based on numeric values to be ranked.
 
-    :param df: the dataframe to which ranking column(s) will be added
-    :param value_cols (str or list(str)): name(s) of the columns used
-    :param group_cols (str or list(str), optionnal): name(s) of the column(s) used to
+    - value_cols: name(s) of the columns used
+    - group_cols (optionnal): name(s) of the column(s) used to
       create each group inside which independent ranking needs to be applied
-    :param rank_cols_names (str or list(str), optionnal): the names of the added ranking columns.
+    - rank_cols_names (optionnal): the names of the added ranking columns.
       If not filled, the ranking will be named after the value_cols with a '_rank' suffix
-    :param method (str, optional): method to use when encountering equal values:
+    - method (optional): method to use when encountering equal values:
         - 'min' (default): lowest rank in group
         - 'max': highest rank in group
         - 'average': average rank of group
         - 'first': ranks assigned in order the values appear in the series
         - 'dense': like 'min', but rank always increases by 1 between groups
-    :param ascending (bool, optional): True (default) or False whether the rank should be
+    - ascending (optional): True (default) or False whether the rank should be
       determined based on ascending or descending order respectively
-    :return: the df dataframe with the new ranking columns.
 
 
-    Examples:
+    # Examples: #
 
     Dataset df:
 

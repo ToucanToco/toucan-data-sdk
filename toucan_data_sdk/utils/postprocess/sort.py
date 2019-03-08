@@ -1,10 +1,11 @@
-def sort(df, columns, order='asc'):
+from typing import List
+
+def sort(df, columns: List[str], order='asc'):
     """
-    Sort DataFrame
-    :param df: DataFrame
-    :param columns: name of the columns to sort
-    :param order: asc or desc
-    :return: DataFrame
+    Sort data
+
+    - columns: list of the names of the columns to sort
+    - order (optional): 'asc' (default) or 'desc'
     """
     ascending = order != 'desc'
     return df.sort_values(columns, ascending=ascending)

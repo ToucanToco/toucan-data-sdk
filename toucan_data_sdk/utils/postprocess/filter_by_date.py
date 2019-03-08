@@ -75,8 +75,16 @@ def parse_date(datestr: str, date_fmt: str) -> date:
     return dateobj
 
 
-def filter_by_date(df, date_col, date_fmt='%Y-%m-%d', start=None, stop=None, atdate=None):
-    """filter dataframe `df` by date.
+def filter_by_date(df, date_col: str date_fmt='%Y-%m-%d', start=None, stop=None, atdate=None):
+    """
+    Filter dataframe your data by date.
+
+    - date_col: the name of the dataframe's column to filter on
+    - date_fmt: expected date format in column `date_col`
+    - start: if specified, lower bound (included) of the date range
+    - stop: if specified, upper bound (excluded) of the date range
+    - atdate: if specified, the exact date we're filtering on
+
 
     This function will interpret `start`, `stop` and `atdate` and build
     the corresponding date range. The caller must specify either:
@@ -97,17 +105,6 @@ def filter_by_date(df, date_col, date_fmt='%Y-%m-%d', start=None, stop=None, atd
     the parenthesis around the date string). In that case, the offset must be
     one of the syntax supported by `pandas.Timedelta` (cf.
     http://pandas.pydata.org/pandas-docs/stable/timedeltas.html)
-
-    Parameters:
-        `df`: the dataframe to filter
-        `date_col`: the name of the dataframe's column to filter on
-        `date_fmt`: expected date format in column `date_col`
-        `start`: if specified, lower bound (included) of the date range
-        `stop`: if specified, upper bound (excluded) of the date range
-        `atdate`: if specified, the exact date we're filtering on
-
-    Returns:
-        The filtered dataframe
     """
     mask = None
     if start is None and stop is None and atdate is None:

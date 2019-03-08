@@ -5,19 +5,14 @@ def groupby(df, *, group_cols: Union[str, List[str]], aggregations: Dict[str, st
     """
     Aggregate values by groups.
 
-    :param df: dataframe to group
-    :param group_cols: list of columns used to group data
-    :param aggregations: dictionnary of values columns to group as keys and aggregation function to
-        use as values. Available aggregation functions:
-         - 'sum'
-         - 'mean'
-         - 'median'
-         - 'prod' (product)
-         - 'std' (standard deviation)
-         - 'var' (variance)
-    :return: the summarized dataframe
+    - group_cols: list of columns used to group data
+    - aggregations: dictionnary of values columns to group as keys and aggregation function to
+        use as values. 
+        Available aggregation functions are listed here:
+        https://pandas.pydata.org/pandas-docs/stable/user_guide/groupby.html#aggregation
 
-    Example:
+
+    # Examples #
 
     Input df:
 

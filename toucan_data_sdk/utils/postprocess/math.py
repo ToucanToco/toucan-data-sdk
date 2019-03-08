@@ -25,22 +25,34 @@ def _basic_math_operation(df, new_column, column_1, column_2, op):
 
 
 def add(df, new_column, column_1, column_2):
-    """Add df[value] (value: 'str') or value (number) to column_1"""
+    """
+    DEPRECATED
+    Add df[value] (value: 'str') or value (number) to column_1
+    """
     return _basic_math_operation(df, new_column, column_1, column_2, op='add')
 
 
 def subtract(df, new_column, column_1, column_2):
-    """Subtract df[value] (value: 'str') or value (number) to column_1"""
+    """
+    DEPRECATED
+    Subtract df[value] (value: 'str') or value (number) to column_1
+    """
     return _basic_math_operation(df, new_column, column_1, column_2, op='sub')
 
 
 def multiply(df, new_column, column_1, column_2):
-    """Multiply df[value] (value: 'str') or value (number) and column_1"""
+    """
+    DEPRECATED
+    Multiply df[value] (value: 'str') or value (number) and column_1
+    """
     return _basic_math_operation(df, new_column, column_1, column_2, op='mul')
 
 
 def divide(df, new_column, column_1, column_2):
-    """Divide df[value] (value: 'str') or value (number) to column_1"""
+    """
+    DEPRECATED
+    Divide df[value] (value: 'str') or value (number) to column_1
+    """
     return _basic_math_operation(df, new_column, column_1, column_2, op='truediv')
 
 
@@ -92,8 +104,18 @@ def _parse_formula(formula_str) -> List[Token]:
     return [t for t in tokens if t]
 
 
-def formula(df, *, new_column, formula):
-    """Compute math formula for df and put the result in `column`"""
+def formula(df, *, new_column: str, formula :str):
+    """
+    Compute math formula on columns
+
+    - new_column: name of the created column
+    - formula: your forumla as string
+
+
+    # Examples #
+    formula: 'my_column_name / 100' # this will divide the column 'my_column_name' by 100
+    formula: 'colA + colB' # this will add colA and colB
+    """
     tokens = _parse_formula(formula)
     expression_splitted = []
     for t in tokens:
