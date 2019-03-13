@@ -1,5 +1,6 @@
 """date filtering helpers."""
 
+from calendar import monthrange
 from datetime import date, datetime, timedelta
 import re
 from uuid import uuid4
@@ -67,6 +68,9 @@ def add_offset(dateobj, hr_offset: str, sign: str):
 def add_months(dateobj, nb_months: int):
     """return `dateobj` + `nb_months`
 
+    If landing date doesn't exist (e.g. february, 30th), return the last
+    day of the landing month.
+
     >>> add_months(date(2018, 1, 1), 1)
     datetime.date(2018, 1, 1)
     >>> add_months(date(2018, 1, 1), -1)
@@ -75,24 +79,37 @@ def add_months(dateobj, nb_months: int):
     datetime.date(2020, 2, 1)
     >>> add_months(date(2018, 1, 1), -25)
     datetime.date(2015, 12, 1)
+    >>> add_months(date(2018, 1, 31), 1)
+    datetime.date(2018, 2, 28)
     """
     nb_years, nb_months = divmod(nb_months, 12)
     month = dateobj.month + nb_months
     if month > 12:
         nb_years += 1
         month -= 12
-    return dateobj.replace(year=dateobj.year + nb_years, month=month)
+    year = dateobj.year + nb_years
+    lastday = monthrange(year, month)[1]
+    return dateobj.replace(year=year, month=month, day=min(lastday, dateobj.day))
 
 
 def add_years(dateobj, nb_years):
     """return `dateobj` + `nb_years`
 
+    If landing date doesn't exist (e.g. february, 30th), return the last
+    day of the landing month.
+
     >>> add_years(date(2018, 1, 1), 1)
     datetime.date(2019, 1, 1)
     >>> add_years(date(2018, 1, 1), -1)
     datetime.date(2017, 1, 1)
+    >>> add_years(date(2020, 2, 29), 1)
+    datetime.date(2021, 2, 28)
+    >>> add_years(date(2020, 2, 29), -1)
+    datetime.date(2019, 2, 28)
     """
-    return dateobj.replace(year=dateobj.year + nb_years)
+    year = dateobj.year + nb_years
+    lastday = monthrange(year, dateobj.month)[1]
+    return dateobj.replace(year=year, day=min(lastday, dateobj.day))
 
 
 def parse_date(datestr: str, date_fmt: str) -> date:
