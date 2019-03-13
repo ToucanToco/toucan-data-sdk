@@ -8,7 +8,7 @@ jobs:
       - checkout
       - run: sudo pip install tox codecov
       - run: tox -e flake8,coverage
-      - run: codecov --token=f8d82f5b-1379-4fa2-a011-77e83724ce46
+      - run: codecov --token=d84070ff-f638-4632-91c4-437ca7d45e2e
   py36:
     docker:
       - image: circleci/python:3.6
