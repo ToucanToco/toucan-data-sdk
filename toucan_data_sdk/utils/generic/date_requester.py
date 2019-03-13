@@ -5,43 +5,37 @@ def date_requester_generator(df, date_column, frequency, date_column_format=None
                              format='%Y-%m-%d', granularities=None,
                              others_format=None, times_delta=None):
     """
-    Return a DataFrame containing at least 3 columns :
-    - "DATE" : Label of date
-    - "DATETIME" : Date in datetime dtype
-    - "GRANULARITY" : Granualrity of date
+    **From a dataframe containing dates in a column, return a dataframe**
+    **with at least 3 columns :**
+    **- "DATE" : Label of date**
+    **- "DATETIME" : Date in datetime dtype**
+    **- "GRANULARITY" : Granualrity of date**
 
-    Arguments
-    #########
-
-    Mandatory :
-    -----------
-    - df (DataFrame) : dataframe from which  start and end date will be compute
-    - date_column (str): name of column containing date in df
-    - frequency (str) : http://pandas.pydata.org/pandas-docs/stable/timeseries.html#offset-aliases
-
-    Optional :
-    ----------
-    - date_column_format: format of the date in date_column
-    - format: format of the date. !!! only use if granularity is None
+    - `date_column` (str): name of column containing the date in the dataframe
+    - `frequency` (str) : see [pandas doc](
+    http://pandas.pydata.org/pandas-docs/stable/timeseries.html#offset-aliases)
+    - `date_column_format` (optional: str): format of the date in date_column
+    - `format` (optional: str): format of the date. !!! only use if granularity is None.
         NB : same format in Toucan Toco
-        Example : '%d/%m/%Y'
-        https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior
-    - granularities (dict):
+        _Example : '%d/%m/%Y'_ (see [pandas doc](
+        https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior))
+    - `granularities` (optional: dict):
         - keys : name of the granularity
         - values (str): Format of the granularity.
             NB : same format in Toucan Toco
-            Example : '%d/%m/%Y'
-            https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior
-    - others_format (dict) : Add new columns for each key
+            _Example : '%d/%m/%Y'_ (see [pandas doc](
+            https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior))
+    - `others_format` (optional: dict) : Add new columns for each key
         - key (str) : name of the column
         - values (str): format of the granularity.
             NB : same format in Toucan Toco
-            Example : '%d/%m/%Y'
-            https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior
-    - times_delta (dict) : Add new columns for each key
+            _Example : '%d/%m/%Y'_ (see [pandas doc](
+            https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior))
+
+    - `times_delta` (optional: dict) : Add new columns for each key
         - key (str) : name of the column
         - values (str): time delta
-            Examples : '+1 day' '+3 day' '-4 month'
+            _Examples : '+1 day', '+3 day', '-4 month'_
     """
 
     start_date = pd.to_datetime(df[date_column], format=date_column_format).min()
