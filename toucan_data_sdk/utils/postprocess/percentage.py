@@ -1,11 +1,13 @@
-def percentage(df, column, group_cols=None, new_column=None):
+from typing import Union, List
+
+
+def percentage(df, column, group_cols: Union[str, List[str]] = None, new_column: str = None):
     """
     Add a column to the dataframe according to the groupby logic on group_cols
-    :param df: Dataframe
-    :param new_column: name of the new column
-    :param column: name of the desired column you need percentage on
-    :param group_cols: (str | list of str) or None
-    :return: df + the percentage column
+    ---
+    - `column` (str): name of the desired column you need percentage on
+    - `new_column` (optional : str): name of the new column
+    - `group_cols` (list): list of columns on which compute the percentage
     """
     new_column = new_column or column
     if group_cols is None:

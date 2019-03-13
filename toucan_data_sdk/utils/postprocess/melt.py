@@ -5,10 +5,10 @@ from typing import List
 def melt(df, id: List[str], value: List[str], dropna=False):
     """
     Melt the data
-
-    - id: Column(s) to use as identifier variables
-    - value: Column(s) to unpivot
-    - dropna (optional): dropna in added 'value' column
+    ---
+    -  `id` (list): Column(s) to use as identifier variables
+    - `value` (list): Column(s) to unpivot
+    - `dropna` (optional): dropna in added 'value' column
     """
     df = df[(id + value)]
     df = pd.melt(df, id_vars=id, value_vars=value)

@@ -26,7 +26,7 @@ def _basic_math_operation(df, new_column, column_1, column_2, op):
 
 def add(df, new_column, column_1, column_2):
     """
-    DEPRECATED
+    DEPRECATED -  use `formula` instead
     Add df[value] (value: 'str') or value (number) to column_1
     """
     return _basic_math_operation(df, new_column, column_1, column_2, op='add')
@@ -34,7 +34,7 @@ def add(df, new_column, column_1, column_2):
 
 def subtract(df, new_column, column_1, column_2):
     """
-    DEPRECATED
+    DEPRECATED -  use `formula` instead
     Subtract df[value] (value: 'str') or value (number) to column_1
     """
     return _basic_math_operation(df, new_column, column_1, column_2, op='sub')
@@ -42,7 +42,7 @@ def subtract(df, new_column, column_1, column_2):
 
 def multiply(df, new_column, column_1, column_2):
     """
-    DEPRECATED
+    DEPRECATED -  use `formula` instead
     Multiply df[value] (value: 'str') or value (number) and column_1
     """
     return _basic_math_operation(df, new_column, column_1, column_2, op='mul')
@@ -50,7 +50,7 @@ def multiply(df, new_column, column_1, column_2):
 
 def divide(df, new_column, column_1, column_2):
     """
-    DEPRECATED
+    DEPRECATED -  use `formula` instead
     Divide df[value] (value: 'str') or value (number) to column_1
     """
     return _basic_math_operation(df, new_column, column_1, column_2, op='truediv')
@@ -107,14 +107,13 @@ def _parse_formula(formula_str) -> List[Token]:
 def formula(df, *, new_column: str, formula: str):
     """
     Compute math formula on columns
-
-    - new_column: name of the created column
-    - formula: your forumla as string
-
-
-    # Examples #
-    formula: 'my_column_name / 100' # this will divide the column 'my_column_name' by 100
-    formula: 'colA + colB' # this will add colA and colB
+    ---
+    - `new_column` (str): name of the created column
+    - `formula` (str): your forumla as string
+    ---
+    **Examples**
+    `formula: 'my_column_name / 100'`  will divide the column 'my_column_name' by 100
+    `formula: 'colA + colB'`  will add colA and colB
     """
     tokens = _parse_formula(formula)
     expression_splitted = []
@@ -136,20 +135,36 @@ class FormulaError(Exception):
     """Raised when a formula is not valid"""
 
 
-def round_values(df, *, column, decimals, new_column=None):
+def round_values(df, *, column: str, decimals: int, new_column: str = None):
     """
     Round each value of `column` and put the result in `new_column`
     (if set to None, `column` will be replaced)
+    ---
+    - `column` (str): name of the column to round
+    - `decimals` (int): number of decimal to keeep
+    - `new_column` (optional: str): name of the new_column to create
 
-    ENTITY  VALUE_1  VALUE_2
-       A     -1.512   -1.504
-       A      0.432     0.14
+    ---
 
-    round_values(df, column='VALUE_1', new_column='Pika', decimals=1) returns:
+    **Example**
 
-    ENTITY  VALUE_1  VALUE_2  Pika
-       A     -1.512   -1.504  -1.5
-       A      0.432     0.14   0.4
+    **ENTITY**|**VALUE_1**|**VALUE_2**
+    :-----:|:-----:|:-----:
+    A|-1.512|-1.504
+    A|0.432|0.14
+
+    ```cson
+    round_values:
+        column: 'VALUE_1'
+        decimals:1
+        new_column: 'Pika'
+    ```
+    returns:
+
+    **ENTITY**|**VALUE_1**|**VALUE_2**|**Pika**
+    :-----:|:-----:|:-----:|:-----:
+    A|-1.512|-1.504|-1.5
+    A|0.432|0.14|0.4
     """
     new_column = new_column or column
     df[new_column] = df[column].round(decimals)
@@ -160,16 +175,27 @@ def absolute_values(df, *, column, new_column=None):
     """
     Take the absolute value of each value of `column` and put the result in `new_column`
     (if set to None, `column` will be replaced)
+    ---
+    - `column` (str): name of the column to round
+    - `new_column` (optional: str): name of the new_column to create
+    ---
+    **ENTITY**|**VALUE_1**|**VALUE_2**
+    :-----:|:-----:|:-----:
+    A|-1.512|-1.504
+    A|0.432|0.14
 
-    ENTITY  VALUE_1  VALUE_2
-       A     -1.512   -1.504
-       A      0.432     0.14
+    ```cson
+    compute_abs:
+        column:'VALUE_1'
+        new_column:'Pika'
+    ```
 
-    compute_abs(df, column='VALUE_1', new_column='Pika') returns:
+    returns:
 
-    ENTITY  VALUE_1  VALUE_2   Pika
-       A     -1.512   -1.504  1.512
-       A      0.432     0.14  0.432
+    **ENTITY**|**VALUE_1**|**VALUE_2**|**Pika**
+    :-----:|:-----:|:-----:|:-----:
+    A|-1.512|-1.504|1.512
+    A|0.432|0.14|0.432
     """
     new_column = new_column or column
     df[new_column] = abs(df[column])

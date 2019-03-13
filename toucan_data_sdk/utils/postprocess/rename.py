@@ -1,17 +1,21 @@
-def rename(df, values=None, columns=None, locale=None):
+from typing import Dict, List
+
+
+def rename(df, values: Dict[str, Dict] = None, columns: List[str] = None, locale: str = None):
     """
     Replaces data values and column names according to locale
-
-    - values:
+    ---
+    - `values`:
         - key: term to be replaced
         - value:
             - key: 'en' or 'fr'
             - value: term's translation
-    - columns:
+    - `columns`:
         - key: columns name to be replaced
         - value:
             - key: 'en' or 'fr'
             - value: column name's translation
+    - `local` (optional: str): 'en' or 'fr'
     """
     if values:
         to_replace = list(values.keys())

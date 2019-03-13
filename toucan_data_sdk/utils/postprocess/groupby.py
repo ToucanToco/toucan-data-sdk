@@ -5,14 +5,14 @@ def groupby(df, *, group_cols: Union[str, List[str]], aggregations: Dict[str, st
     """
     Aggregate values by groups.
 
-    - group_cols: list of columns used to group data
-    - aggregations: dictionnary of values columns to group as keys and aggregation function to
-        use as values
-        Available aggregation functions are listed here:
-        https://pandas.pydata.org/pandas-docs/stable/user_guide/groupby.html#aggregation
+    - `group_cols` (list): list of columns used to group data
+    - `aggregations` (list): dictionnary of values columns to group as keys and aggregation function to use as values  # noqa E501
+        [See the list of aggregation functions]
+        (https://pandas.pydata.org/pandas-docs/stable/user_guide/groupby.html#aggregation)
 
+    ---
 
-    # Examples #
+    **Examples**
 
     Input df:
 
@@ -27,6 +27,7 @@ def groupby(df, *, group_cols: Union[str, List[str]], aggregations: Dict[str, st
     |    B   | 2018 |    50   |    7    |
     |    B   | 2018 |    60   |    6    |
 
+    ```cson
     groupby(
         df=data,
         group_cols=['ENTITY', 'YEAR'],
@@ -35,6 +36,7 @@ def groupby(df, *, group_cols: Union[str, List[str]], aggregations: Dict[str, st
             'VALUE_2': 'mean'
         }
     )
+    ```
 
     returns:
 

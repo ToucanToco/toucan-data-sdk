@@ -20,7 +20,7 @@ def date_requester_generator(
     - "GRANULARITY" : Granularity of date
     ---
     - `date_column` (str): name of column containing the date in the dataframe
-    - `frequency` (str) : see [pandas doc](
+    - `frequency` (str): see [pandas doc](
     http://pandas.pydata.org/pandas-docs/stable/timeseries.html#offset-aliases)
     - `date_column_format` (optional: str): format of the date in date_column
     - `format` (optional: str): format of the date e.g. '%d/%m/%Y' (see [pandas doc](

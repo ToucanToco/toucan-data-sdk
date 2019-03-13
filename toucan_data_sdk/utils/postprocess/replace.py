@@ -1,9 +1,9 @@
-def replace(df, column, new_column=None, **kwargs):
+def replace(df, column: str, new_column: str = None, **kwargs):
     """
     Replace values of a column
-
-    - column: name of the column containing values to replace
-    - new_column (optional): name of the column which will contain replaced
+    ---
+    - `column` (str): name of the column containing values to replace
+    - `new_column` (optional: str): name of the column which will contain replaced
         if 'None' column' will be overwritten
     """
     new_column = new_column or column

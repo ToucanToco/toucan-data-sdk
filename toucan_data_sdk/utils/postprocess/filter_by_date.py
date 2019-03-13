@@ -75,17 +75,24 @@ def parse_date(datestr: str, date_fmt: str) -> date:
     return dateobj
 
 
-def filter_by_date(df, date_col: str, date_fmt='%Y-%m-%d', start=None, stop=None, atdate=None):
+def filter_by_date(
+    df,
+    date_col: str,
+    date_format: str = '%Y-%m-%d',
+    start: str = None,
+    stop: str = None,
+    atdate: str = None
+):
     """
     Filter dataframe your data by date.
-
-    - date_col: the name of the dataframe's column to filter on
-    - date_fmt: expected date format in column `date_col`
-    - start: if specified, lower bound (included) of the date range
-    - stop: if specified, upper bound (excluded) of the date range
-    - atdate: if specified, the exact date we're filtering on
-
-
+    ---
+    - `date_col` (str): the name of the dataframe's column to filter on
+    - `date_format` (str): expected date format in column `date_col` 
+    [See the list of available format](https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior)  # noqa E501
+    - `start` (str): if specified, lower bound (included) of the date range
+    - `stop` (str): if specified, upper bound (excluded) of the date range
+    - `atdate` (): if specified, the exact date we're filtering on
+    ---
     This function will interpret `start`, `stop` and `atdate` and build
     the corresponding date range. The caller must specify either:
 
@@ -98,7 +105,7 @@ def filter_by_date(df, date_col: str, date_fmt='%Y-%m-%d', start=None, stop=None
     will be included, the upper bound will be excluded.
 
     When specified, `start`, `stop` and `atdate` values are expected to match the
-    `date_fmt` format or a known symbolic value (i.e. 'TODAY', 'YESTERDAY' or
+    `date_format` format or a known symbolic value (i.e. 'TODAY', 'YESTERDAY' or
     'TOMORROW').
 
     Additionally, the offset syntax "(date) + offset" is also supported (Mind
@@ -117,14 +124,14 @@ def filter_by_date(df, date_col: str, date_fmt='%Y-%m-%d', start=None, stop=None
     # This column is just temporary and will be removed before returning the
     # filtered dataframe.
     filtercol = str(uuid4())
-    df[filtercol] = pd.to_datetime(df[date_col], format=date_fmt)
+    df[filtercol] = pd.to_datetime(df[date_col], format=date_format)
     if atdate is not None:
-        mask = df[filtercol] == parse_date(atdate, date_fmt)
+        mask = df[filtercol] == parse_date(atdate, date_format)
     elif start is not None and stop is not None:
-        mask = ((df[filtercol] >= parse_date(start, date_fmt)) &
-                (df[filtercol] < parse_date(stop, date_fmt)))
+        mask = ((df[filtercol] >= parse_date(start, date_format)) &
+                (df[filtercol] < parse_date(stop, date_format)))
     elif stop is None:
-        mask = df[filtercol] >= parse_date(start, date_fmt)
+        mask = df[filtercol] >= parse_date(start, date_format)
     elif start is None:
-        mask = df[filtercol] < parse_date(stop, date_fmt)
+        mask = df[filtercol] < parse_date(stop, date_format)
     return df[mask].drop(filtercol, axis=1)

@@ -1,13 +1,13 @@
 def top(df, value: str, limit: int, order='asc', group=None):
     """
     Get the top or flop N results based on a column value for each specified group columns
-
-    - group: list of column name on which you want to perform the group operation
-    - value: column name on which you will rank the results
-    - limit: Number to specify the N results you want to retrieve.
-            Use a positive number x to retrieve the first x results.
-            Use a negative number -x to retrieve the last x results.
-    - order (optional): String 'asc' or 'desc' to sort by ascending ou descending order
+    ---
+    - `value` (str): column name on which you will rank the results
+    - `limit` (int): Number to specify the N results you want to retrieve.
+        Use a positive number x to retrieve the first x results.
+        Use a negative number -x to retrieve the last x results.
+    - `group` (optional: list): list of column name on which you want to perform the group operation
+    - `order` (optional: str): String 'asc' or 'desc' to sort by ascending ou descending order
     """
     ascending = order != 'desc'
     limit = int(limit)
@@ -30,7 +30,7 @@ def top_group(df, aggregate_by, value, limit, order='asc', function='sum', group
     Get the top or flop N results based on a function and a column value that agregates the input.
     The result is composed by all the original lines including only lines corresponding
     to the top groups
-
+    ---
     - aggregate_by: Array of strings for the columns you want to aggregate
     - value: String for the column name on which you will aggregate the results
     - order: String 'asc' or 'desc' to sort by ascending ou descending order

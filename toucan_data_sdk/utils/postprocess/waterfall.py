@@ -1,29 +1,29 @@
 import pandas as pd
-from typing import Dict
+from typing import Dict, List
 
 
 def waterfall(df, date: str, value: str, start: Dict, end: Dict, upperGroup: Dict,
-              insideGroup=None, filters=None):
+              insideGroup: Dict = None, filters: List[str] = None):
     """
     Return a line for each bars of a waterfall chart, totals, groups, subgroups.
     Compute the variation and variation rate for each line.
 
-    - date: name of the column that id the period of each lines
-    - value: name of the column that contains the vaue for each lines
-    - upperGroup:
+    - `date`: name of the column that id the period of each lines
+    - `value`: name of the column that contains the vaue for each lines
+    - `upperGroup`:
         - id: name of the column that contains upperGroups unique IDs
         - label: not required, text displayed under each upperGroups bars,
                     using ID when it's absent
         - groupsOrder: not required, order of upperGroups
-    - insideGroup:
+    - `insideGroup`:
         - id: name of the column that contains insideGroups unique IDs
         - label: not required, text displayed under each insideGroups bars,
                     using ID when it's absent
         - groupsOrder: not required, order of insideGroups
-    - start:
+    - `start`:
         - label: text displayed under the first master column
         - id: value in the date col that id lines for the first period
-    - end:
+    - `end`:
         - label: text displayed under the last master column
         - id: value in the date col that id lines for the second period
     - filters: list of column to filters on

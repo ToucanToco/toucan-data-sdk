@@ -2,21 +2,26 @@ import pandas as pd
 from typing import List
 
 
-def two_values_melt(df, first_value_vars: List[str], second_value_vars: List[str], var_name: List[str], value_name: str):
+def two_values_melt(
+    df,
+    first_value_vars: List[str],
+    second_value_vars: List[str],
+    var_name: List[str],
+    value_name: str
+):
     """
     First, build two DataFrames from the original one: one to compute a melt
     for the value, another one to compute a melt for the evolution. Second,
     merge these two DataFrames.
-
-    - first_value_vars: value_vars of a pandas melt, for the first
+    ---
+    - `first_value_vars`: value_vars of a pandas melt, for the first
         value columns of the DataFrame
-    - second_value_vars: value_vars of a pandas melt, for the second
+    - `second_value_vars`: value_vars of a pandas melt, for the second
         value columns of the DataFrame
-    - var_name: var_names of a pandas melt
-    - value_name: value_name of a pandas melt
-
-
-    # Examples #
+    - `var_name`: var_names of a pandas melt
+    - `value_name`: value_name of a pandas melt
+    ---
+    **Examples**
 
     input :
 
