@@ -1,11 +1,12 @@
 import pandas as pd
+from typing import Dict
 
 
-def date_requester_generator(df, date_column, frequency, date_column_format=None,
-                             format='%Y-%m-%d', granularities=None,
-                             others_format=None, times_delta=None):
+def date_requester_generator(df, date_column: str, frequency: str, date_column_format: str = None,
+                             format: str = '%Y-%m-%d', granularities: Dict[str, str] = None,
+                             others_format: Dict[str, str] = None, times_delta: Dict[str, str] = None):
     """
-    **From a dataframe containing dates in a column, return a dataframe**
+    **From a dataset containing dates in a column, return a dataset**
     **with at least 3 columns :**
     **- "DATE" : Label of date**
     **- "DATETIME" : Date in datetime dtype**
