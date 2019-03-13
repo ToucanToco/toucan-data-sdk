@@ -3,8 +3,7 @@
 [![Pypi-l](https://img.shields.io/pypi/l/toucan-data-sdk.svg)](https://pypi.python.org/pypi/toucan-data-sdk)
 [![Pypi-wheel](https://img.shields.io/pypi/wheel/toucan-data-sdk.svg)](https://pypi.python.org/pypi/toucan-data-sdk)
 [![CircleCI](https://img.shields.io/circleci/project/github/ToucanToco/toucan-data-sdk.svg)](https://circleci.com/gh/ToucanToco/toucan-data-sdk)
-[![codecov](https://codecov.io/gh/ToucanToco/toucan-data-sdk/branch/master/graph/badge.svg)](https://codecov.io/gh/ToucanToco/toucan-data-sdk)
-
+[![codecov](https://codecov.io/gh/ToucanToco/toucan-data-sdk/branch/master/graph/badge.svg?token=GtzvxpgQM9)](https://codecov.io/gh/ToucanToco/toucan-data-sdk)
 # Toucan Data SDK
 
 Develop your Toucan Toco data pipeline from the confort of your favorite environment.
