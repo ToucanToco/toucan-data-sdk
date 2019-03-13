@@ -1,5 +1,6 @@
-from toucan_data_sdk.utils.generic import date_requester_generator
 import pandas as pd
+
+from toucan_data_sdk.utils.generic import date_requester_generator
 
 fixtures_base_dir = 'tests/fixtures'
 
