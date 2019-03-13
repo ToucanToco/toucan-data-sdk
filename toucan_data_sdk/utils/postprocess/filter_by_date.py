@@ -1,10 +1,12 @@
 """date filtering helpers."""
 
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 import re
 from uuid import uuid4
 
 import pandas as pd
+
+TIMEDELTA_RGX = re.compile(r'\s*(?P<num>\d+)\s*(?P<unit>\w+)$')
 
 
 def _norm_date(datestr: str, date_fmt: str) -> date:
@@ -31,33 +33,55 @@ def _norm_date(datestr: str, date_fmt: str) -> date:
         return datetime.strptime(datestr, date_fmt).date()
 
 
+def _parse_timedelta(hr_offset: str):
+    """convert a human readable offset into a timedelta
+
+    rely on `pandas.Timedelta` and add the following extra shortcuts:
+    "w", "week" and "weeks".
+    """
+    try:
+        return pd.Timedelta(hr_offset)
+    except ValueError:
+        match = TIMEDELTA_RGX.match(hr_offset)
+        if match is None:
+            raise
+        groups = match.groupdict()
+        unit = groups['unit'].lower()
+        units = {
+            'weeks': timedelta(weeks=1),
+            'week': timedelta(weeks=1),
+            'w': timedelta(weeks=1),
+        }
+        if unit not in units:
+            raise
+        return int(groups['num']) * units[unit]
+
+
 def parse_date(datestr: str, date_fmt: str) -> date:
     """parse `datestr` and return corresponding date object.
 
-    `datestr` should be a string matching `date_fmt` and parseable by
-    `strptime` but some offset can also be added using `(datestr) + OFFSET` or
-    `(datestr) - OFFSET` syntax. When using this syntax, `OFFSET` should be
-    understable by `pandas.Timedelta` (cf.
-    http://pandas.pydata.org/pandas-docs/stable/timedeltas.html) and `datestr`
-    MUST be wrapped with parenthesis.
+    `datestr` should be a string matching `date_fmt` and parseable by `strptime`
+    but some offset can also be added using `(datestr) + OFFSET` or `(datestr) -
+    OFFSET` syntax. When using this syntax, `OFFSET` should be understable by
+    `pandas.Timedelta` (cf.
+    http://pandas.pydata.org/pandas-docs/stable/timedeltas.html) and `w` `week`
+    and `weeks` offset keywords are also accepted. `datestr` MUST be wrapped
+    with parenthesis.
 
-    Additionally, the following symbolic names are supported:
-    `TODAY`, `YESTERDAY`, `TOMORROW`.
+    Additionally, the following symbolic names are supported: `TODAY`,
+    `YESTERDAY`, `TOMORROW`.
 
     Example usage:
 
-    >>> parse_date('2018-01-01', '%Y-%m-%d')
-    datetime.date(2018, 1, 1)
-    >>> parse_date('(2018-01-01) + 1day', '%Y-%m-%d')
-    datetime.date(2018, 1, 2)
+    >>> parse_date('2018-01-01', '%Y-%m-%d') datetime.date(2018, 1, 1)
+    parse_date('(2018-01-01) + 1day', '%Y-%m-%d') datetime.date(2018, 1, 2)
+    parse_date('(2018-01-01) + 2weeks', '%Y-%m-%d') datetime.date(2018, 1, 15)
 
-    Parameters:
-        `datestr`: the date to parse, formatted as `date_fmt`
+    Parameters: `datestr`: the date to parse, formatted as `date_fmt`
         `date_fmt`: expected date format
 
-    Returns:
-        The `date` object. If date could not be parsed, a ValueError
-        will be raised.
+    Returns: The `date` object. If date could not be parsed, a ValueError will
+        be raised.
     """
     rgx = re.compile(r'\((?P<date>.*)\)(\s*(?P<sign>[+-])(?P<offset>.*))?$')
     datestr = datestr.strip()
@@ -70,7 +94,7 @@ def parse_date(datestr: str, date_fmt: str) -> date:
     offset = match.group('offset')
     if offset:
         sign = match.group('sign')
-        delta = pd.Timedelta(offset)
+        delta = _parse_timedelta(offset)
         dateobj = (dateobj + delta) if sign == '+' else (dateobj - delta)
     return dateobj
 
