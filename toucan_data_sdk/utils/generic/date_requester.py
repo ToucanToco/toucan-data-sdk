@@ -15,34 +15,28 @@ def date_requester_generator(
     """
     From a dataset containing dates in a column, return a dataset
     with at least 3 columns :
-    - "DATE" : Label of date
-    - "DATETIME" : Date in datetime dtype
-    - "GRANULARITY" : Granualrity of date
-
-    - `date_column` (str): name of column containing the date in the dataframe
-    - `frequency` (str) : see [pandas doc](
+    * "DATE" : Label of date
+    * "DATETIME" : Date in datetime dtype
+    * "GRANULARITY" : Granularity of date
+    ---
+    * `date_column` (str): name of column containing the date in the dataframe
+    * `frequency` (str) : see [pandas doc](
     http://pandas.pydata.org/pandas-docs/stable/timeseries.html#offset-aliases)
-    - `date_column_format` (optional: str): format of the date in date_column
-    - `format` (optional: str): format of the date. !!! only use if granularity is None.
-        NB : same format in Toucan Toco
-        _Example : '%d/%m/%Y'_ (see [pandas doc](
+    * `date_column_format` (optional: str): format of the date in date_column
+    * `format` (optional: str): format of the date e.g. '%d/%m/%Y' (see [pandas doc](
         https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior))
-    - `granularities` (optional: dict):
-        - keys : name of the granularity
-        - values (str): Format of the granularity.
-            NB : same format in Toucan Toco
-            _Example : '%d/%m/%Y'_ (see [pandas doc](
+        WARNING: only use if `granularities` is None.
+    * `granularities` (optional: dict):
+        * keys : name of the granularity
+        * values (str): Format of the granularity e.g. '%d/%m/%Y' (see [pandas doc](
             https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior))
-    - `others_format` (optional: dict) : Add new columns for each key
-        - key (str) : name of the column
-        - values (str): format of the granularity.
-            NB : same format in Toucan Toco
-            _Example : '%d/%m/%Y'_ (see [pandas doc](
+    * `others_format` (optional: dict) : Add new columns for each key
+        * key (str) : name of the column
+        * values (str): format of the granularity e.g. '%d/%m/%Y' (see [pandas doc](
             https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior))
-    - `times_delta` (optional: dict) : Add new columns for each key
-        - key (str) : name of the column
-        - values (str): time delta
-            _Examples : '+1 day', '+3 day', '-4 month'_
+    * `times_delta` (optional: dict) : Add new columns for each key
+        * key (str) : name of the column
+        * values (str): time delta (e.g. '+1 day', '+3 day', '-4 month')
     """
 
     start_date = pd.to_datetime(df[date_column], format=date_column_format).min()
