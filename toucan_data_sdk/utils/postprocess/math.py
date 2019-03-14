@@ -171,31 +171,41 @@ def round_values(df, *, column: str, decimals: int, new_column: str = None):
     return df
 
 
-def absolute_values(df, *, column, new_column=None):
+def absolute_values(df, *, column: str, new_column: str = None):
     """
-    Take the absolute value of each value of `column` and put the result in `new_column`
-    (if set to None, `column` will be replaced)
+    Get the absolute numeric value of each element of a column
+
     ---
-    - `column` (str): name of the column to round
-    - `new_column` (optional: str): name of the new_column to create
+
+    ### Parameters
+
+    - `column` (str): name of the column
+    - `new_column` (optional: str): name of the column containing the result.
+      By default, no new column will be created and `column` will be replaced.
+
     ---
-    **ENTITY**|**VALUE_1**|**VALUE_2**
-    :-----:|:-----:|:-----:
-    A|-1.512|-1.504
-    A|0.432|0.14
+
+    ### Example
+
+    **Input**
+
+    | ENTITY | VALUE_1 | VALUE_2 |
+    |:------:|:-------:|:-------:|
+    | A      | -1.512  | -1.504  |
+    | A      | 0.432   | 0.14    |
 
     ```cson
-    compute_abs:
-        column:'VALUE_1'
-        new_column:'Pika'
+    absolute_values:
+        column: 'VALUE_1'
+        new_column: 'Pika'
     ```
 
-    returns:
+    **Output**
 
-    **ENTITY**|**VALUE_1**|**VALUE_2**|**Pika**
-    :-----:|:-----:|:-----:|:-----:
-    A|-1.512|-1.504|1.512
-    A|0.432|0.14|0.432
+    | ENTITY | VALUE_1 | VALUE_2 | Pika  |
+    |:------:|:-------:|:-------:|:-----:|
+    | A      | -1.512  | -1.504  | 1.512 |
+    | A      | 0.432   | 0.14    | 0.432 |
     """
     new_column = new_column or column
     df[new_column] = abs(df[column])
