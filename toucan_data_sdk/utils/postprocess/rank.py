@@ -27,11 +27,11 @@ def rank(
     - `rank_cols_names` (*list*): the names of the added ranking columns.
       If not filled, the ranking will be named after the value_cols with a '_rank' suffix
     - `method` (*str*): method to use when encountering equal values:
-        - 'min' (default): lowest rank in group
-        - 'max': highest rank in group
-        - 'average': average rank of group
-        - 'first': ranks assigned in order the values appear in the series
-        - 'dense': like 'min', but rank always increases by 1 between groups
+        - `'min'` (default): lowest rank in group
+        - `'max'`: highest rank in group
+        - `'average'`: average rank of group
+        - `'first'`: ranks assigned in order the values appear in the series
+        - `'dense'`: like 'min', but rank always increases by 1 between groups
     - `ascending` (*boolean*): whether the rank should be determined based on
        ascending (default) or descending order
 
@@ -54,7 +54,7 @@ def rank(
 
     ```cson
     rank :
-        value_cols: 'VALUE_1'
+      value_cols: 'VALUE_1'
     ```
 
     **Output**

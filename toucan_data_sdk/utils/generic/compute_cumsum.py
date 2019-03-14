@@ -46,10 +46,10 @@ def compute_cumsum(
 
     ```cson
     compute_cumsum:
-        id_cols: ['NAME']
-        reference_cols: ['MONTH', 'DAY']
-        cumsum_cols: ['VALUE']
-        cols_to_keep: ['X']
+      id_cols: ['NAME']
+      reference_cols: ['MONTH', 'DAY']
+      cumsum_cols: ['VALUE']
+      cols_to_keep: ['X']
     ```
 
     **Output**

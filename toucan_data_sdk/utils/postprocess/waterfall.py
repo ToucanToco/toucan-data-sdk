@@ -61,20 +61,20 @@ def waterfall(
 
     ```cson
     waterfall:
-        upperGroup:
-            id: 'category_id'
-            label: 'category_name'
-        insideGroup:
-            id: 'product_id'
-            groupsOrder: 'ord'
-        date: 'date'
-        value: 'played'
-        start:
-            label: 'Trimestre 1'
-            id: 't1'
-        end:
-            label: 'Trimester 2'
-            id: 't2'
+      upperGroup:
+        id: 'category_id'
+        label: 'category_name'
+      insideGroup:
+        id: 'product_id'
+        groupsOrder: 'ord'
+      date: 'date'
+      value: 'played'
+      start:
+        label: 'Trimestre 1'
+        id: 't1'
+      end:
+        label: 'Trimester 2'
+        id: 't2'
     ```
 
     **Output**

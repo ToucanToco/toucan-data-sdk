@@ -35,16 +35,16 @@ def date_requester_generator(
         By default, the format is set to `'%d/%m/%Y'`
         **WARNING**: only use if `granularities` is None.
     - `granularities` (*dict*):
-        - keys : name of the granularity
-        - values (*str*): Format of the granularity e.g. '%d/%m/%Y' (see [pandas doc](
+        - key (*str*): name of the granularity
+        - value (*str*): Format of the granularity e.g. '%d/%m/%Y' (see [pandas doc](
             https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior))
     - `others_format` (*dict*) : Add new columns for each key
         - key (*str*) : name of the column
-        - values (*str*): format of the granularity e.g. '%d/%m/%Y' (see [pandas doc](
+        - value (*str*): format of the granularity e.g. '%d/%m/%Y' (see [pandas doc](
             https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior))
     - `times_delta` (*dict*) : Add new columns for each key
         - key (*str*) : name of the column
-        - values (*str*): time delta (e.g. '+1 day', '+3 day', '-4 month')
+        - value (*str*): time delta (e.g. '+1 day', '+3 day', '-4 month')
 
     ---
 
@@ -62,13 +62,13 @@ def date_requester_generator(
 
     ```cson
     date_requester_generator:
-        date_column: 'date'
-        frequency: 'D'
-        granularities:
-            'day': '%d/%m/%Y'
-            'Semaine': '%W'
-        others_format:
-            'year': '%Y'
+      date_column: 'date'
+      frequency: 'D'
+      granularities:
+        'day': '%d/%m/%Y'
+        'Semaine': '%W'
+      others_format:
+        'year': '%Y'
     ```
 
     **Ouput**

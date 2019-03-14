@@ -37,10 +37,10 @@ def two_values_melt(
 
     ```cson
     two_values_melt:
-        first_value_vars: ["avg", "total"]
-        second_value_vars: ["evo_avg", "evo_total"]
-        var_name: "type"
-        value_name: "value"
+      first_value_vars: ["avg", "total"]
+      second_value_vars: ["evo_avg", "evo_total"]
+      var_name: "type"
+      value_name: "value"
     ```
 
     **Output**

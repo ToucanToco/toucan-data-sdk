@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-def convert_str_to_datetime(df, *, column, format):
+def convert_str_to_datetime(df, *, column: str, format: str):
     """
     Convert string column into datetime column
 
@@ -10,16 +10,15 @@ def convert_str_to_datetime(df, *, column, format):
     ### Parameters
 
     *mandatory :*
-
-    - column: name of the column to format
-    - format: current format of the values (see [available formats](
+    - `column` (*str*): name of the column to format
+    - `format` (*str*): current format of the values (see [available formats](
     https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior))
     """
     df[column] = pd.to_datetime(df[column], format=format)
     return df
 
 
-def convert_datetime_to_str(df, *, column, format, new_column=None):
+def convert_datetime_to_str(df, *, column: str, format: str, new_column: str = None):
     """
     Convert datetime column into string column
 
@@ -33,7 +32,7 @@ def convert_datetime_to_str(df, *, column, format, new_column=None):
     https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior))
 
     *optional :*
-    - new_column (*str*): name of the output column. By default the `column` arguments is modified.
+    - new_column (*str*): name of the output column. By default `column` is overwritten.
     """
     new_column = new_column or column
     df[new_column] = df[column].dt.strftime(format)

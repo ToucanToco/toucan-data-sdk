@@ -44,8 +44,8 @@ def roll_up(
 
     ```cson
     roll_up:
-        levels: ["Region", "City"]
-        groupby_vars: "Population"
+      levels: ["Region", "City"]
+      groupby_vars: "Population"
     ```
 
     **Output**

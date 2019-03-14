@@ -110,11 +110,11 @@ def formula(df, *, new_column: str, formula: str):
 
     *mandatory :*
     - `new_column` (*str*): name of the output column
-    - `formula`  (*str*): Operation on column. Use name of column and special character:
-          - "`+`" for addition
-          - "`-`" for substration
-          - "`*`" for multiplication
-          - "`/`" for division
+    - `formula` (*str*): Operation on column. Use name of column and special character:
+        - `+` for addition
+        - `-` for subtraction
+        - `*` for multiplication
+        - `/` for division
 
     ---
 
@@ -131,8 +131,8 @@ def formula(df, *, new_column: str, formula: str):
 
     ```cson
     formula:
-        new_column: 'valueD'
-        formula: '(valueB + valueA ) / valueC'
+      new_column: 'valueD'
+      formula: '(valueB + valueA ) / valueC'
     ```
 
     **Output**
@@ -192,9 +192,9 @@ def round_values(df, *, column: str, decimals: int, new_column: str = None):
 
     ```cson
     round_values:
-        column: 'VALUE_1'
-        decimals:1
-        new_column: 'Pika'
+      column: 'VALUE_1'
+      decimals:1
+      new_column: 'Pika'
     ```
 
     **Output**
@@ -237,8 +237,8 @@ def absolute_values(df, *, column: str, new_column: str = None):
 
     ```cson
     absolute_values:
-        column: 'VALUE_1'
-        new_column: 'Pika'
+      column: 'VALUE_1'
+      new_column: 'Pika'
     ```
 
     **Output**

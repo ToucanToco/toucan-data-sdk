@@ -24,7 +24,6 @@ def argmax(df, column: str):
     ```cson
     argmax:
       column: 'year'
-    ]
     ```
 
     **Output**

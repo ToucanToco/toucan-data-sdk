@@ -30,9 +30,9 @@ def pivot(df, index: List[str], column: str, value: str):
 
     ```cson
     pivot:
-        index: ['variable','wave']
-        column: 'year'
-        value: 'value'
+      index: ['variable','wave']
+      column: 'year'
+      value: 'value'
     ```
 
     **Output**
@@ -94,13 +94,13 @@ def pivot_by_group(
 
     ```cson
     pivot_by_group :
-        id_cols: ['type']
-        variable: 'variable'
-        value: 'montant'
-        new_columns: ['value', 'variation']
-        groups:
-          'Group 1' : ['var1', 'var1_evol']
-          'Group 2' : ['var2', 'var2_evol']
+      id_cols: ['type']
+      variable: 'variable'
+      value: 'montant'
+      new_columns: ['value', 'variation']
+      groups:
+        'Group 1' : ['var1', 'var1_evol']
+        'Group 2' : ['var2', 'var2_evol']
     ```
 
     **Ouput**

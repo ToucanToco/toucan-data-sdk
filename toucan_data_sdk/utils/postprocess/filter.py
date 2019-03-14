@@ -10,7 +10,6 @@ def drop_duplicates(df, columns: Optional[List[str]]):
     ### Parameters
 
     *mandatory :*
-
     - `columns` (*list*): columns to consider to identify duplicates (set to null to use all the columns)
 
     ### Example
@@ -50,7 +49,6 @@ def query(df, query):
     ### Parameters
 
     *mandatory :*
-
     - query (*str*): your query as a string (see [pandas doc](
     http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.query.html#pandas.DataFrame.query))
 

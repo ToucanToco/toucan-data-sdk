@@ -39,7 +39,7 @@ def compute_evolution_by_frequency(
     - `evolution_col_name` (*str*): name given to the evolution column. By default, `"evolution_computed"`.
     - `missing_date_as_zero` (*boolean*): add missing date with zero value.
     - `raise_duplicate_error` (*boolean*): raise an error when the dataset has duplicated values with the given `id_cols`.
-    - `format`: `'df'` # Do not change it !!!
+    - `format` (*str*): `'df'` # Do not change it !!!
 
     ---
 
@@ -57,9 +57,9 @@ def compute_evolution_by_frequency(
 
     ```cson
     compute_evolution_by_frequency:
-        id_cols: "id_cols"
-        date_col: "date_col"
-        value_col: "value_col"
+      id_cols: "id_cols"
+      date_col: "date_col"
+      value_col: "value_col"
     ```
 
     **Output**
@@ -123,7 +123,7 @@ def compute_evolution_by_criteria(
     - `offseted_suffix` (*str*): suffix of the offseted column. By default, `"_offseted"`.
     - `evolution_col_name` (*str*): name given to the evolution column. By default, `"evolution_computed"`.
     - `raise_duplicate_error` (*boolean*): raise an error when the dataset has duplicated values with the given `id_cols`.
-    - `format`: `'df'` # Do not change it !!!
+    - `format` (*str*): `'df'` # Do not change it !!!
 
     ---
 
@@ -140,9 +140,9 @@ def compute_evolution_by_criteria(
 
     ```cson
     compute_evolution_by_criteria:
-        id_cols: "id_cols"
-        value_col: "value_col"
-        compare_to: "month==12"
+      id_cols: "id_cols"
+      value_col: "value_col"
+      compare_to: "month==12"
     ```
 
     **Output**

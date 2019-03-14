@@ -38,9 +38,9 @@ def percentage(
 
     ```cson
     percentage:
-        new_column: 'number_percentage'
-        column: 'number'
-        group_cols: ['sport']
+      new_column: 'number_percentage'
+      column: 'number'
+      group_cols: ['sport']
     ```
 
     **Output**

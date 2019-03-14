@@ -53,8 +53,8 @@ def add_missing_row(
 
     ```cson
     add_missing_row:
-        id_cols: ['NAME']
-        reference_col: 'MONTH'
+      id_cols: ['NAME']
+      reference_col: 'MONTH'
     ```
 
     **Output**

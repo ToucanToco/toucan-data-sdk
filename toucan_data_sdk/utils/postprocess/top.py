@@ -47,9 +47,9 @@ def top(
 
     ```cson
     top:
-        value: 'value'
-        limit: 4
-        order: 'asc'
+      value: 'value'
+      limit: 4
+      order: 'asc'
     ```
 
     **Output**
@@ -128,11 +128,11 @@ def top_group(
 
     ```cson
     top_group:
-        group: ["Category"]
-        value: 'value'
-        aggregate_by: ["variable"]
-        limit: 2
-        order: "desc"
+      group: ["Category"]
+      value: 'value'
+      aggregate_by: ["variable"]
+      limit: 2
+      order: "desc"
     ```
 
     **Output**
