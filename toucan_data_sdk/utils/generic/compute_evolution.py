@@ -1,8 +1,9 @@
 import logging
+from typing import List
+
 import numpy as np
 import pandas as pd
 
-from typing import Dict, List, Union
 from toucan_data_sdk.utils.helpers import check_params_columns_duplicate
 
 
@@ -66,7 +67,8 @@ def compute_evolution_by_criteria(
       method: # (str) optional: either abs for aboslute values or pct for the evolution in percentage of previous value
       offseted_suffix: # (str) optional: suffix of the offseted column. By default, _offseted.
       evolution_col_name: # (str) optional: name given to the evolution column. By default, evolution_computed.
-      raise_duplicate_error: # (bool) optional: raise an error when the dataset has duplicated values with the given `id_cols`.
+      raise_duplicate_error: # (bool) optional: raise an error when the dataset has duplicated
+       values with the given `id_cols`.
       format: 'df' # Do not change it !!!
     """
     return __compute_evolution(**locals())

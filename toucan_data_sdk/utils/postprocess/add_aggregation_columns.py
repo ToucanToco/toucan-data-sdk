@@ -15,8 +15,8 @@ def add_aggregation_columns(
 
     ### Parameters
 
-    - `group_cols` (str or list): columns used to aggregate the data
-    - `aggregations` (dict): keys are name of new columns and values are aggregation functions
+    - `group_cols` (*str* or *list*): columns used to aggregate the data
+    - `aggregations` (*dict*): keys are name of new columns and values are aggregation functions
        Examples of aggregation functions : 'sum', 'max'
        Available aggregation functions are listed [here](
        https://pandas.pydata.org/pandas-docs/stable/user_guide/groupby.html#aggregation)
