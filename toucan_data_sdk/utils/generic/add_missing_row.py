@@ -24,12 +24,10 @@ def add_missing_row(
     ### Parameters
 
     *mandatory :*
-
     - `id_cols` (*list of str*): names of the columns used to create each group
     - `reference_col` (*str*): name of the column used to identify missing rows
 
     *optional :*
-
     - `complete_index` (*list* or *dict*): [A, B, C] a list of values used to add missing rows.
       It can also be a dict to declare a date range.
       By default, use all values of reference_col.

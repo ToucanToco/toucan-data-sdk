@@ -17,10 +17,13 @@ def combine_columns_aggregation(
 
     ### Parameters
 
-    - `id_cols` (list): the columns id to group
-    - `cols_for_combination` (dict): colums corresponding to
+    *mandatory :*
+    - `id_cols` (*list*): the columns id to group
+    - `cols_for_combination` (*dict*): colums corresponding to
        the filters as key and their default value as value
-    - `agg_func` (optional: str): the function to use for aggregating the data.
+
+    *optional :*
+    - `agg_func` (*str*, *list* or *dict*): the function(s) to use for aggregating the data.
        Accepted combinations are:
        - string function name
        - list of functions and/or function names, e.g. [np.sum, 'mean']

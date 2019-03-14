@@ -21,11 +21,14 @@ def compute_cumsum(
 
     ### Parameters
 
-    - `id_cols` (list): the columns id to create each group
-    - `reference_cols` (list): the columns to order the cumsum
-    - `value_cols` (list): the columns to cumsum
-    - `new_value_cols` (list): the new columns with the result cumsum
-    - `cols_to_keep` (list): other columns to keep in the dataset.
+    *mandatory :*
+    - `id_cols` (*list*): the columns id to create each group
+    - `reference_cols` (*list*): the columns to order the cumsum
+    - `value_cols` (*list*): the columns to cumsum
+
+    *optional :*
+    - `new_value_cols` (*list*): the new columns with the result cumsum
+    - `cols_to_keep` (*list*): other columns to keep in the dataset.
       This option can be used if there is only one row by group [id_cols + reference_cols]
 
     ---
