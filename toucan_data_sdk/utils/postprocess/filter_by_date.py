@@ -85,14 +85,7 @@ def filter_by_date(
 ):
     """
     Filter dataframe your data by date.
-    ---
-    - `date_col` (str): the name of the dataframe's column to filter on
-    - `date_format` (str): expected date format in column `date_col` 
-    [See the list of available format](https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior)  # noqa E501
-    - `start` (str): if specified, lower bound (included) of the date range
-    - `stop` (str): if specified, upper bound (excluded) of the date range
-    - `atdate` (): if specified, the exact date we're filtering on
-    ---
+
     This function will interpret `start`, `stop` and `atdate` and build
     the corresponding date range. The caller must specify either:
 
@@ -105,13 +98,26 @@ def filter_by_date(
     will be included, the upper bound will be excluded.
 
     When specified, `start`, `stop` and `atdate` values are expected to match the
-    `date_format` format or a known symbolic value (i.e. 'TODAY', 'YESTERDAY' or
-    'TOMORROW').
+    `date_format` format or a known symbolic value (i.e. 'TODAY', 'YESTERDAY' or 'TOMORROW').
 
     Additionally, the offset syntax "(date) + offset" is also supported (Mind
     the parenthesis around the date string). In that case, the offset must be
-    one of the syntax supported by `pandas.Timedelta` (cf.
-    http://pandas.pydata.org/pandas-docs/stable/timedeltas.html)
+    one of the syntax supported by `pandas.Timedelta` (see [pandas doc](
+    http://pandas.pydata.org/pandas-docs/stable/timedeltas.html))
+
+    ---
+
+    ### Parameters
+
+    *mandatory :*
+    - `date_col` (*str*): the name of the dataframe's column to filter on
+
+    *optional :*
+    - `date_format` (*str*): expected date format in column `date_col` (see [available formats](
+    https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior)
+    - `start` (*str*): if specified, lower bound (included) of the date range
+    - `stop` (*str*): if specified, upper bound (excluded) of the date range
+    - `atdate` (*str*): if specified, the exact date we're filtering on
     """
     mask = None
     if start is None and stop is None and atdate is None:
