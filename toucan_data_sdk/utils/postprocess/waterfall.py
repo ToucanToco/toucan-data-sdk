@@ -2,14 +2,35 @@ import pandas as pd
 from typing import Dict, List
 
 
-def waterfall(df, date: str, value: str, start: Dict, end: Dict, upperGroup: Dict,
-              insideGroup: Dict = None, filters: List[str] = None):
+def waterfall(
+        df,
+        date: str,
+        value: str,
+        start: Dict[str, str],
+        end: Dict[str, str],
+        upperGroup: Dict[str, str],
+        insideGroup: Dict[str, str] = None,
+        filters: List[str] = None
+):
     """
     Return a line for each bars of a waterfall chart, totals, groups, subgroups.
     Compute the variation and variation rate for each line.
 
+    ---
+
+    ### Parameters
+
+    *mandatory :*
     - `date`: name of the column that id the period of each lines
     - `value`: name of the column that contains the vaue for each lines
+    - `start`:
+        - label: text displayed under the first master column
+        - id: value in the date col that id lines for the first period
+    - `end`:
+        - label: text displayed under the last master column
+        - id: value in the date col that id lines for the second period
+
+    *optional :*
     - `upperGroup`:
         - id: name of the column that contains upperGroups unique IDs
         - label: not required, text displayed under each upperGroups bars,
@@ -20,13 +41,55 @@ def waterfall(df, date: str, value: str, start: Dict, end: Dict, upperGroup: Dic
         - label: not required, text displayed under each insideGroups bars,
                     using ID when it's absent
         - groupsOrder: not required, order of insideGroups
-    - `start`:
-        - label: text displayed under the first master column
-        - id: value in the date col that id lines for the first period
-    - `end`:
-        - label: text displayed under the last master column
-        - id: value in the date col that id lines for the second period
-    - filters: list of column to filters on
+    - `filters`: list of column to filters on
+
+    ---
+
+    ### Example
+
+    **Input**
+
+    | product_id   |   played | date   |   ord | category_id   | category_name   |
+    |:------------:|:--------:|:------:|:-----:|:-------------:|:---------------:|
+    | super clap   |       12 | t1     |     1 | clap          | Clap            |
+    | clap clap    |        1 | t1     |    10 | clap          | Clap            |
+    | tac          |        1 | t1     |     1 | snare         | Snare           |
+    | super clap   |       10 | t2     |     1 | clap          | Clap            |
+    | tac          |      100 | t2     |     1 | snare         | Snare           |
+    | bom          |        1 | t2     |     1 | tom           | Tom             |
+
+
+    ```cson
+    waterfall:
+        upperGroup:
+            id: 'category_id'
+            label: 'category_name'
+        insideGroup:
+            id: 'product_id'
+            groupsOrder: 'ord'
+        date: 'date'
+        value: 'played'
+        start:
+            label: 'Trimestre 1'
+            id: 't1'
+        end:
+            label: 'Trimester 2'
+            id: 't2'
+    ```
+
+    **Output**
+
+    |   value | label       |   variation | groups   | type   |   order |
+    |:-------:|:-----------:|:-----------:|:--------:|:------:|:-------:|
+    |      14 | Trimestre 1 |  NaN        | NaN      | NaN    |     NaN |
+    |      -3 | Clap        |   -0.230769 | clap     | parent |     NaN |
+    |      -2 | super clap  |   -0.166667 | clap     | child  |       1 |
+    |      -1 | clap clap   |   -1        | clap     | child  |      10 |
+    |      99 | Snare       |   99        | snare    | parent |     NaN |
+    |      99 | tac         |   99        | snare    | child  |       1 |
+    |       1 | Tom         |  inf        | tom      | parent |     NaN |
+    |       1 | bom         |  inf        | tom      | child  |       1 |
+    |     111 | Trimester 2 |  NaN        | NaN      | NaN    |     NaN |
     """
 
     if len(df) == 0:
