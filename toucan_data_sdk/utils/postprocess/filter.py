@@ -12,11 +12,38 @@ def drop_duplicates(df, columns: List[str]):
 
 def query(df, query):
     """
-    Slice the data according to the provided query
+    Filter a dataset under a condition
+
     ---
-    - query: your query as a string
-    [see pandas documentation]
-    (http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.query.html#pandas.DataFrame.query)
+
+    ### Parameters
+
+    - query (str): your query as a string (see [pandas doc](
+    http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.query.html#pandas.DataFrame.query))
+
+    ---
+
+    ### Example
+
+    **Input**
+
+    | variable |   wave  |  year    | value |
+    |:--------:|:-------:|:--------:|:-----:|
+    |   toto   |  wave 1 |  2014    |  300  |
+    |   toto   |  wave 1 |  2015    |  250  |
+    |   toto   |  wave 1 |  2015    |  100  |
+    |   toto   |  wave 1 |  2016    |  450  |
+
+
+    ```cson
+    query: 'value > 350'
+    ```
+
+    **Output**
+
+    | variable |   wave  |  year    | value |
+    |:--------:|:-------:|:--------:|:-----:|
+    |   toto   |  wave 1 |  2016    |  450  |
     """
     df = df.query(query)
     return df
