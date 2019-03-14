@@ -108,9 +108,9 @@ def cast(df, column: str, type: str, new_column=None):
     *mandatory :*
     - `column` (*str*): name of the column to convert
     - `type` (*str*): output type. It can be :
-          - `"int"` : integer type
-          - `"float"` : general number type
-          - `"str"` : text type
+        - `"int"` : integer type
+        - `"float"` : general number type
+        - `"str"` : text type
 
     *optional :*
     - `new_column` (*str*): name of the output column.

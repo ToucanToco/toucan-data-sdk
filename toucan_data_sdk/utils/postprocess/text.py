@@ -466,11 +466,11 @@ def concat(
     ### Parameters
 
     *mandatory :*
-    - columns (*list*): list of columns to concatenate (at least 2 columns)
-    - new_column (*str*): the destination column
+    - `columns` (*list*): list of columns to concatenate (at least 2 columns)
+    - `new_column` (*str*): the destination column
 
     *optional :*
-    - sep (*str*): the separator
+    - `sep` (*str*): the separator
     """
     if len(columns) < 2:
         raise ValueError('The `columns` parameter needs to have at least 2 columns')
@@ -499,14 +499,14 @@ def contains(
     ### Parameters
 
     *mandatory :*
-    - column (*str*): the column
-    - pat (*str*): character sequence or regular expression.
+    - `column` (*str*): the column
+    - `pat` (*str*): character sequence or regular expression.
 
     *optional :*
-    - new_column: the destination column (if not set, `column` will be used)
-    - case (*boolean*): if true, case sensitive.
-    - na: fill value for missing values.
-    - regex (*boolean*): default true
+    - `new_column` (*str*): the destination column (if not set, `column` will be used)
+    - `case` (*boolean*): if true, case sensitive.
+    - `na`: fill value for missing values.
+    - `regex` (*boolean*): default true
     """
     new_column = new_column or column
     df.loc[:, new_column] = df[column].str.contains(pat, case=case, na=na, regex=regex)
@@ -530,11 +530,11 @@ def repeat(
     ### Parameters
 
     *mandatory :*
-    - column (*str*): the column
-    - times (*int*): times to repeat the string
+    - `column` (*str*): the column
+    - `times` (*int*): times to repeat the string
 
     *optional :*
-    - new_column: the destination column (if not set, `column` will be used)
+    - `new_column` (*str*): the destination column (if not set, `column` will be used)
     """
     new_column = new_column or column
     df.loc[:, new_column] = df[column].str.repeat(times)
@@ -561,14 +561,14 @@ def replace_pattern(
     ### Parameters
 
     *mandatory :*
-    - column (*str*): the column
-    - pat (*str*): character sequence or regular expression
-    - repl (*str*): replacement string
+    - `column` (*str*): the column
+    - `pat` (*str*): character sequence or regular expression
+    - `repl` (*str*): replacement string
 
     *optional :*
-    - new_column: the destination column (if not set, `column` will be used)
-    - case (*boolean*): if true, case sensitive.
-    - regex (*boolean*): default true
+    - `new_column` (*str*): the destination column (if not set, `column` will be used)
+    - `case` (*boolean*): if true, case sensitive.
+    - `regex` (*boolean*): default true
     """
     new_column = new_column or column
     df.loc[:, new_column] = df[column].str.replace(pat, repl, case=case, regex=regex)
