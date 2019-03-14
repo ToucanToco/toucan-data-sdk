@@ -7,7 +7,6 @@ def argmax(df, column: str):
     ### Parameters
 
     *mandatory :*
-
     - `column` (*str*): name of the column containing the value you want to keep the maximum
 
     ---
@@ -47,7 +46,6 @@ def argmin(df, column: str):
     ### Parameters
 
     *mandatory :*
-
     - `column` (str): name of the column containing the value you want to keep the minimum
 
     ---

@@ -3,12 +3,43 @@ from numpy import nan
 
 def fillna(df, column: str, value=None,  column_value=None):
     """
-    Can fill NaN values from a column - you can fill with column or with value
+    Can fill NaN values from a column with a given value or a column
+
     ---
-    - `column` (str): name of column you want to fill
-    - `value` (optional): NaN will be replaced by this value
-    - `column_value` (optional): NaN will be replaced by value from this column
-    NB: You must set either the 'value' parameter or the 'column_value' parameter
+
+    ### Parameters
+
+    - `column` (*str*): name of column you want to fill
+    - `value`: NaN will be replaced by this value
+    - `column_value`: NaN will be replaced by value from this column
+
+    *NOTE*: You must set either the 'value' parameter or the 'column_value' parameter
+
+    ---
+
+    ### Example
+
+    **Input**
+
+    | variable |   wave  |  year    | my_value |
+    |:--------:|:-------:|:--------:|:--------:|
+    |   toto   |  wave 1 |  2014    |  300     |
+    |   toto   |  wave 1 |  2015    |          |
+    |   toto   |  wave 1 |  2016    |  450     |
+
+    ```cson
+    fillna:
+      column: 'my_value'
+      value: 0
+    ```
+
+    **Output**
+
+    | variable |   wave  |  year    | my_value |
+    |:--------:|:-------:|:--------:|:--------:|
+    |   toto   |  wave 1 |  2014    |  300     |
+    |   toto   |  wave 1 |  2015    |    0     |
+    |   toto   |  wave 1 |  2016    |  450     |
     """
     if column not in df.columns:
         df[column] = nan

@@ -15,6 +15,7 @@ def add_aggregation_columns(
 
     ### Parameters
 
+    *mandatory :*
     - `group_cols` (*str* or *list*): columns used to aggregate the data
     - `aggregations` (*dict*): keys are name of new columns and values are aggregation functions
        Examples of aggregation functions : 'sum', 'max'
