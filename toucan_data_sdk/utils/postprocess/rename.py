@@ -1,21 +1,62 @@
-from typing import Dict, List
+from typing import Dict
 
 
-def rename(df, values: Dict[str, Dict] = None, columns: List[str] = None, locale: str = None):
+def rename(
+        df,
+        values: Dict[str, Dict[str, str]] = None,
+        columns: Dict[str, Dict[str, str]] = None,
+        locale: str = None
+):
     """
-    Replaces data values and column names according to locale
+    Replaces data values and column names according to the locale
+
     ---
-    - `values`:
+
+    ### Parameters
+
+    - `values` (optional: dict):
         - key: term to be replaced
         - value:
-            - key: 'en' or 'fr'
+            - key: the locale e.g. 'en' or 'fr'
             - value: term's translation
-    - `columns`:
+    - `columns` (optional: dict):
         - key: columns name to be replaced
         - value:
-            - key: 'en' or 'fr'
+            - key: the locale e.g. 'en' or 'fr'
             - value: column name's translation
-    - `local` (optional: str): 'en' or 'fr'
+    - `locale` (optional: str): the locale you want to use.
+      By default the client locale is used.
+
+    ---
+
+    ### Example
+
+    **Input**
+
+    | label | value |
+    |:----------------:|:-----:|
+    | France | 100 |
+    | Europe wo France | 500 |
+
+    ```cson
+    rename:
+      values:
+        'Europe wo France':
+          'en': 'Europe excl. France'
+          'fr': 'Europe excl. France'
+      columns:
+        'value':
+          'en': 'revenue'
+          'fr': 'revenue'
+    ```
+
+    **Output**
+
+    | label | revenue |
+    |:-------------------:|:-------:|
+    | France | 100 |
+    | Europe excl. France | 500 |
+
     """
     if values:
         to_replace = list(values.keys())
