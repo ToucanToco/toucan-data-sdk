@@ -1,5 +1,6 @@
+from typing import Dict, List, Union
+
 import pandas as pd
-from typing import List
 
 from toucan_data_sdk.utils.helpers import (
     check_params_columns_duplicate,
@@ -11,44 +12,56 @@ def add_missing_row(
     df: pd.DataFrame,
     id_cols: List[str],
     reference_col: str,
-    complete_index: List[str] = None,
+    complete_index: Union[Dict[str, str], List[str]] = None,
     method: str = None,
     cols_to_keep: List[str] = None
 ) -> pd.DataFrame:
     """
     Add missing row to a df base on a reference column
+
     ---
+
+    ### Parameters
+
     - `id_cols` (list): list of the columns names to group,
-    - `reference_col` (str): is the column with groups missing values
-    - `complete_index` (optional): a set of values used to add missing rows,
-       by default use the function `unique` on reference_col. Can be dict for date_range
+    - `reference_col` (str): the column with groups missing values
+    - `complete_index` (optional: list or dict): a set of values used to add missing rows
+       By default use the function `unique` on reference_col. Can be dict for date_range
     - `method` (optional: str): method to choose values to keep.
        E.g between min and max value of the group.
     - `cols_to_keep` (optional: list): is the columns link to the reference_col to keep.
-    ---
-    **Examples**
 
-    **YEAR MONTH NAME**|**VALUE**|**X**
-    :-----:|:-----:|:-----:
+    ---
+
+    ### Example
+
+    **Input**
+
+    YEAR | MONTH | NAME
+    :---:|:---:|:--:
     2017|1|A
     2017|2|A
     2017|3|A
     2017|1|B
     2017|3|B
 
-    The function `add_missing_row` with the arguments :
-            id_cols=['NAME']
-            reference_col='MONTH'
-    give as a result :
+    ```cson
+    add_missing_row:
+        id_cols: ['NAME']
+        reference_col: 'MONTH'
+    ```
 
-    **YEAR MONTH NAME**|**VALUE**|**X**
-    :-----:|:-----:|:-----:
+    **Output**
+
+    YEAR | MONTH | NAME
+    :---:|:---:|:--:
     2017|1|A
     2017|2|A
     2017|3|A
     2017|1|B
     2017|2|B
     2017|3|B
+
     """
     if cols_to_keep is None:
         cols_for_index = [reference_col]
