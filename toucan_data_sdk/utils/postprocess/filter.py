@@ -10,7 +10,7 @@ def drop_duplicates(df, columns: List[str]):
     return df.drop_duplicates(columns)
 
 
-def query_df(df, query):
+def query(df, query):
     """
     Slice the data according to the provided query
     ---
@@ -20,6 +20,3 @@ def query_df(df, query):
     """
     df = df.query(query)
     return df
-
-
-query = query_df
