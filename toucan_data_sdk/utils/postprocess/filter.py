@@ -1,11 +1,42 @@
-from typing import List
+from typing import List, Optional
 
 
-def drop_duplicates(df, columns: List[str]):
+def drop_duplicates(df, columns: Optional[List[str]]):
     """
-    Drop duplicated rows
+    Remove duplicate rows
+
     ---
-    - `columns` (optional: list): list of column name to identify duplicates, if 'None' all columns are used  # noqa E501
+
+    ### Parameters
+
+    *mandatory :*
+
+    - `columns` (*list*): columns to consider to identify duplicates (set to null to use all the columns)
+
+    ### Example
+
+    **Input**
+
+    | name | country | year |
+    |:----:|:-------:|:----:|
+    | toto |  France | 2014 |
+    | titi | England | 2015 |
+    | toto |  France | 2014 |
+    | toto |  France | 2016 |
+
+
+    ```cson
+    drop_duplicates:
+      columns: null
+    ```
+
+    **Output**
+
+    | name | country | year |
+    |:----:|:-------:|:----:|
+    | toto |  France | 2014 |
+    | titi | England | 2015 |
+    | toto |  France | 2016 |
     """
     return df.drop_duplicates(columns)
 
@@ -18,7 +49,9 @@ def query(df, query):
 
     ### Parameters
 
-    - query (str): your query as a string (see [pandas doc](
+    *mandatory :*
+
+    - query (*str*): your query as a string (see [pandas doc](
     http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.query.html#pandas.DataFrame.query))
 
     ---

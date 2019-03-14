@@ -59,6 +59,7 @@ def cast(df, column: str, type: str, new_column=None):
     ### Parameters
 
     *mandatory :*
+
     - `column` (*str*): name of the column to convert
     - `type` (*str*): output type. It can be :
           - `"int"` : integer type
@@ -66,6 +67,7 @@ def cast(df, column: str, type: str, new_column=None):
           - `"str"` : text type
 
     *optional :*
+
     - `new_column` (*str*): name of the output column.
        By default the `column` arguments is modified.
 
