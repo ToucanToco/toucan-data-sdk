@@ -1,3 +1,5 @@
+from typing import List, Any
+
 import numpy as np
 
 __all__ = (
@@ -53,18 +55,28 @@ __all__ = (
 ###################################################################################################
 
 def _generate_basic_str_postprocess(method_name, docstring):
-    def f(df, column, new_column=None):
+    def f(df, column: str, new_column: str = None):
         method = getattr(df[column].str, method_name)
         new_column = new_column or column
         df.loc[:, new_column] = method()
         return df
 
     f.__name__ = method_name
-    f.__doc__ = f'{docstring}\n' \
-                f':param df: the dataframe\n' \
-                f':param column: the column\n' \
-                f':param new_column: the destination column (if not set, `column` will be used)\n' \
-                f':return: the transformed dataframe'
+    f.__doc__ = f'''
+    {docstring}
+    See [pandas doc](
+    https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.str.{method_name}.html) for more information
+
+    ---
+
+    ### Parameters
+
+    *mandatory :*
+    - `column` (*str*): the column
+
+    *optional :*
+    - `new_column` (*str*): the destination column (if not set, `column` will be used)
+    '''
     return f
 
 
@@ -131,19 +143,29 @@ isdecimal = _generate_basic_str_postprocess('isdecimal', doc)
 # :return: the transformed dataframe
 ###################################################################################################
 def _generate_strip_str_postprocess(method_name, docstring):
-    def f(df, column, *, to_strip=None, new_column=None):
+    def f(df, column: str, *, to_strip: str = None, new_column: str = None):
         method = getattr(df[column].str, method_name)
         new_column = new_column or column
         df.loc[:, new_column] = method(to_strip)
         return df
 
     f.__name__ = method_name
-    f.__doc__ = f'{docstring}\n' \
-                f':param df: the dataframe\n' \
-                f':param column: the column\n' \
-                f':param to_strip: (str: None) set of characters to be removed\n' \
-                f':param new_column: the destination column (if not set, `column` will be used)\n' \
-                f':return: the transformed dataframe'
+    f.__doc__ = f'''
+    {docstring}
+    See [pandas doc](
+    https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.str.{method_name}.html) for more information
+
+    ---
+
+    ### Parameters
+
+    *mandatory :*
+    - `column` (*str*): the column
+
+    *optional :*
+    - `to_strip` (*str*): set of characters to be removed
+    - `new_column` (*str*): the destination column (if not set, `column` will be used)
+    '''
     return f
 
 
@@ -170,20 +192,30 @@ rstrip = _generate_strip_str_postprocess('rstrip', doc)
 ###################################################################################################
 
 def _generate_width_str_postprocess(method_name, docstring):
-    def f(df, column, *, width, fillchar=' ', new_column=None):
+    def f(df, column: str, *, width: int, fillchar: str = ' ', new_column: str = None):
         method = getattr(df[column].str, method_name)
         new_column = new_column or column
         df.loc[:, new_column] = method(width, fillchar=fillchar)
         return df
 
     f.__name__ = method_name
-    f.__doc__ = f'{docstring}\n' \
-                f':param df: the dataframe\n' \
-                f':param column: the column\n' \
-                f':param width (int): minimum width\n' \
-                f':param fillchar: (default: \' \') additional character for filling\n' \
-                f':param new_column: the destination column (if not set, `column` will be used)\n' \
-                f':return: the transformed dataframe'
+    f.__doc__ = f'''
+    {docstring}
+    See [pandas doc](
+    https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.str.{method_name}.html) for more information
+
+    ---
+
+    ### Parameters
+
+    *mandatory :*
+    - `column` (*str*): the column
+    - `width` (*int*): minimum widt
+
+    *optional :*
+    - `fillchar` (*str*): additional character for filling
+    - `new_column` (*str*): the destination column (if not set, `column` will be used)
+    '''
     return f
 
 
@@ -210,7 +242,7 @@ rjust = _generate_width_str_postprocess('rjust', doc)
 # :return: the transformed dataframe
 ###################################################################################################
 def _generate_split_str_postprocess(method_name, docstring):
-    def f(df, column, *, new_columns=None, sep=' ', limit=None):
+    def f(df, column: str, *, new_columns: List[str] = None, sep: str = ' ', limit: int = None):
         method = getattr(df[column].str, method_name)
         df_split = method(pat=sep, n=limit, expand=True)
         nb_cols = df_split.shape[1]
@@ -222,14 +254,23 @@ def _generate_split_str_postprocess(method_name, docstring):
         return df
 
     f.__name__ = method_name
-    f.__doc__ = f'{docstring}\n' \
-                f':param df: the dataframe\n' \
-                f':param column: the column\n' \
-                f':param new_columns: the destination colums\n' \
-                f'       (if not set, columns `column_1`, ..., `column_n` will be created)\n' \
-                f':param sep: (default: \' \') string or regular expression to split on\n' \
-                f':param limit: (default: None) limit number of splits in output\n' \
-                f':return: the transformed dataframe'
+    f.__doc__ = f'''
+    {docstring}
+    See [pandas doc](
+    https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.str.{method_name}.html) for more information
+
+    ---
+
+    ### Parameters
+
+    *mandatory :*
+    - `column` (*str*): the column
+
+    *optional :*
+    - `sep` (*str*): string or regular expression to split on
+    - `limit` (*int*): limit number of splits in output (by default, there is no limit)
+    - `new_columns` (*list*): the destination columns (by default, new columns will be added automatically)
+    '''
     return f
 
 
@@ -247,12 +288,12 @@ rsplit = _generate_split_str_postprocess('rsplit', doc)
 # All these functions have the same signature:
 # :param df: the dataframe
 # :param column: the column
-# :param new_column: the destination column (if not set, `column` will be used)
+# :param new_columns: the 3 destination columns
 # :param sep: (default: \' \') string or regular expression to split on
 # :return: the transformed dataframe
 ###################################################################################################
 def _generate_partition_str_postprocess(method_name, docstring):
-    def f(df, column, *, new_columns, sep=' '):
+    def f(df, column: str, *, new_columns: List[str], sep: str = ' '):
         if len(new_columns) != 3:
             raise ValueError('`new_columns` must have 3 columns exactly')
         method = getattr(df[column].str, method_name)
@@ -260,12 +301,22 @@ def _generate_partition_str_postprocess(method_name, docstring):
         return df
 
     f.__name__ = method_name
-    f.__doc__ = f'{docstring}\n' \
-                f':param df: the dataframe\n' \
-                f':param column: the column\n' \
-                f':param new_column: the destination column (if not set, `column` will be used)\n' \
-                f':param sep: (default: \' \') string or regular expression to split on\n' \
-                f':return: the transformed dataframe'
+    f.__doc__ = f'''
+    {docstring}
+    See [pandas doc](
+    https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.str.{method_name}.html) for more information
+
+    ---
+
+    ### Parameters
+
+    *mandatory :*
+    - `column` (*str*): the column
+    - `new_columns` (*list*): the 3 destination columns
+
+    *optional :*
+    - `sep` (*str*): string or regular expression to split on
+    '''
     return f
 
 
@@ -295,21 +346,31 @@ rpartition = _generate_partition_str_postprocess('rpartition', doc)
 # :return: the transformed dataframe
 ###################################################################################################
 def _generate_find_str_postprocess(method_name, docstring):
-    def f(df, column, *, sub, start=0, end=None, new_column=None):
+    def f(df, column: str, *, sub: str, start: int = 0, end: int = None, new_column: str = None):
         method = getattr(df[column].str, method_name)
         new_column = new_column or column
         df.loc[:, new_column] = method(sub, start, end)
         return df
 
     f.__name__ = method_name
-    f.__doc__ = f'{docstring}\n' \
-                f':param df: the dataframe\n' \
-                f':param column: the column\n' \
-                f':param new_column: the destination column (if not set, `column` will be used)\n' \
-                f':param sub: substring being searched\n' \
-                f':param start: (default: 0) left edge index\n' \
-                f':param end: (default: None) right edge index\n' \
-                f':return: the transformed dataframe'
+    f.__doc__ = f'''
+    {docstring}
+    See [pandas doc](
+    https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.str.{method_name}.html) for more information
+
+    ---
+
+    ### Parameters
+
+    *mandatory :*
+    - `column` (*str*): the column
+    - `sub` (*str*): substring being searched
+
+    *optional :*
+    - `start` (*int*): left edge index
+    - `end` (*int*): right edge index
+    - `new_column` (*str*): the destination column (if not set, `column` will be used)
+    '''
     return f
 
 
@@ -344,7 +405,7 @@ rindex = _generate_find_str_postprocess('rindex', doc)
 # :return: the transformed dataframe
 ###################################################################################################
 def _generate_with_str_postprocess(method_name, docstring):
-    def f(df, column, *, pat, na=np.nan, new_column=None):
+    def f(df, column: str, *, pat: str, na: Any = np.nan, new_column: str = None):
         method = getattr(df[column].str, method_name)
         new_column = new_column or column
         df.loc[:, new_column] = method(pat, na=na)
@@ -358,6 +419,23 @@ def _generate_with_str_postprocess(method_name, docstring):
                 f':param pat: character sequence\n' \
                 f':param na: (default: NaN) object shown if element tested is not a string\n' \
                 f':return: the transformed dataframe'
+    f.__doc__ = f'''
+    {docstring}
+    See [pandas doc](
+    https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.str.{method_name}.html) for more information
+
+    ---
+
+    ### Parameters
+
+    *mandatory :*
+    - `column` (*str*): the column
+    - `pat` (*str*): character sequence
+
+    *optional :*
+    - `na`: object shown if element tested is not a string
+    - `new_column` (*str*): the destination column (if not set, `column` will be used)
+    '''
     return f
 
 
@@ -371,14 +449,28 @@ endswith = _generate_with_str_postprocess('endswith', doc)
 ###################################################################################################
 #                                        OTHER METHODS
 ###################################################################################################
-def concat(df, *, columns, new_column, sep=None):
+def concat(
+        df,
+        *,
+        columns: List[str],
+        new_column: str,
+        sep: str = None
+):
     """
     Concatenate `columns` element-wise
-    :param df: the dataframe
-    :param columns: list of columns to concatenate
-    :param new_column: the destination column (if not set, `column` will be used)
-    :param sep: (default: None) the separator
-    :return: the transformed dataframe
+    See [pandas doc](
+    https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.str.cat.html) for more information
+
+    ---
+
+    ### Parameters
+
+    *mandatory :*
+    - columns (*list*): list of columns to concatenate (at least 2 columns)
+    - new_column (*str*): the destination column
+
+    *optional :*
+    - sep (*str*): the separator
     """
     if len(columns) < 2:
         raise ValueError('The `columns` parameter needs to have at least 2 columns')
@@ -387,48 +479,96 @@ def concat(df, *, columns, new_column, sep=None):
     return df
 
 
-def contains(df, column, *, pat, new_column=None, case=True, na=None, regex=True):
+def contains(
+        df,
+        column: str,
+        *,
+        pat: str,
+        new_column: str = None,
+        case: bool = True,
+        na: Any = None,
+        regex: bool = True
+):
     """
     Test if pattern or regex is contained within strings of `column`
-    :param df: the dataframe
-    :param column: the column
-    :param pat: (str) character sequence or regular expression.
-    :param new_column: the destination column (if not set, `column` will be used)
-    :param case: (bool) if True, case sensitive.
-    :param na: fill value for missing values.
-    :param regex: (bool) default True
-    :return: the transformed dataframe
+    See [pandas doc](
+    https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.str.contains.html) for more information
+
+    ---
+
+    ### Parameters
+
+    *mandatory :*
+    - column (*str*): the column
+    - pat (*str*): character sequence or regular expression.
+
+    *optional :*
+    - new_column: the destination column (if not set, `column` will be used)
+    - case (*boolean*): if true, case sensitive.
+    - na: fill value for missing values.
+    - regex (*boolean*): default true
     """
     new_column = new_column or column
     df.loc[:, new_column] = df[column].str.contains(pat, case=case, na=na, regex=regex)
     return df
 
 
-def repeat(df, column, *, times, new_column=None):
+def repeat(
+        df,
+        column: str,
+        *,
+        times: int,
+        new_column: str = None
+):
     """
     Duplicate each string in `column` by indicated number of time
-    :param df: the dataframe
-    :param column: the column
-    :param times: (int) times to repeat the string
-    :param new_column: the destination column (if not set, `column` will be used)
-    :return: the transformed dataframe
+    See [pandas doc](
+    https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.str.repeat.html) for more information
+
+    ---
+
+    ### Parameters
+
+    *mandatory :*
+    - column (*str*): the column
+    - times (*int*): times to repeat the string
+
+    *optional :*
+    - new_column: the destination column (if not set, `column` will be used)
     """
     new_column = new_column or column
     df.loc[:, new_column] = df[column].str.repeat(times)
     return df
 
 
-def replace_pattern(df, column, *, pat, repl, new_column=None, case=True, regex=True):
+def replace_pattern(
+        df,
+        column: str,
+        *,
+        pat: str,
+        repl: str,
+        new_column: str = None,
+        case: bool = True,
+        regex: bool = True
+):
     """
-    Replace occurrences of pattern/regex in ``column` with some other string
-    :param df: the dataframe
-    :param column: the column
-    :param pat: (str) character sequence or regular expression.
-    :param repl: (str) replacement string
-    :param new_column: the destination column (if not set, `column` will be used)
-    :param case: (bool) if True, case sensitive.
-    :param regex: (bool) default True
-    :return: the transformed dataframe
+    Replace occurrences of pattern/regex in `column` with some other string
+    See [pandas doc](
+    https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.str.replace.html) for more information
+
+    ---
+
+    ### Parameters
+
+    *mandatory :*
+    - column (*str*): the column
+    - pat (*str*): character sequence or regular expression
+    - repl (*str*): replacement string
+
+    *optional :*
+    - new_column: the destination column (if not set, `column` will be used)
+    - case (*boolean*): if true, case sensitive.
+    - regex (*boolean*): default true
     """
     new_column = new_column or column
     df.loc[:, new_column] = df[column].str.replace(pat, repl, case=case, regex=regex)
