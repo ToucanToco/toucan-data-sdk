@@ -2,6 +2,7 @@ import logging
 import numpy as np
 import pandas as pd
 
+from typing import Dict, List, Union
 from toucan_data_sdk.utils.helpers import check_params_columns_duplicate
 
 
@@ -43,15 +44,31 @@ def compute_evolution_by_frequency(
 
 def compute_evolution_by_criteria(
     df,
-    id_cols,
-    value_col,
-    compare_to,
-    method='abs',
-    format='column',
-    offseted_suffix='_offseted',
-    evolution_col_name='evolution_computed',
-    raise_duplicate_error=True
+    id_cols: List[str],
+    value_col: str,
+    compare_to: str,
+    method: str = 'abs',
+    format: str = 'column',
+    offseted_suffix: str = '_offseted',
+    evolution_col_name: str = 'evolution_computed',
+    raise_duplicate_error: bool = True
 ):
+    """
+    This function answers the question: how has a value changed compare to a specific value ?
+
+    ---
+
+    ### Parameters
+
+    - id_cols (list): columns used to create each group
+    - value_col (str): name of the column containing the value to compare
+    - compare_to (str): the query identifying a specific set of values for comparison.
+      method: # (str) optional: either abs for aboslute values or pct for the evolution in percentage of previous value
+      offseted_suffix: # (str) optional: suffix of the offseted column. By default, _offseted.
+      evolution_col_name: # (str) optional: name given to the evolution column. By default, evolution_computed.
+      raise_duplicate_error: # (bool) optional: raise an error when the dataset has duplicated values with the given `id_cols`.
+      format: 'df' # Do not change it !!!
+    """
     return __compute_evolution(**locals())
 
 

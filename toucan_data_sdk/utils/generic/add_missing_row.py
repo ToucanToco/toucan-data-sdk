@@ -23,13 +23,21 @@ def add_missing_row(
 
     ### Parameters
 
-    - `id_cols` (list): list of the columns names to group,
-    - `reference_col` (str): the column with groups missing values
-    - `complete_index` (optional: list or dict): a set of values used to add missing rows
-       By default use the function `unique` on reference_col. Can be dict for date_range
-    - `method` (optional: str): method to choose values to keep.
-       E.g between min and max value of the group.
-    - `cols_to_keep` (optional: list): is the columns link to the reference_col to keep.
+    *mandatory :*
+
+    - `id_cols` (*list of str*): names of the columns used to create each group
+    - `reference_col` (*str*): name of the column used to identify missing rows
+
+    *optional :*
+
+    - `complete_index` (*list* or *dict*): [A, B, C] a list of values used to add missing rows.
+      It can also be a dict to declare a date range.
+      By default, use all values of reference_col.
+    - `method` (*str*): by default all missing rows are added. The possible values are :
+        - `"between"` : add missing rows having their value between min and max values for each group,
+        - `"between_and_after"` : add missing rows having their value bigger than min value for each group.
+        - `"between_and_before"` : add missing rows having their value smaller than max values for each group.
+    - `cols_to_keep` (*list of str*): name of other columns to keep, linked to the reference_col.
 
     ---
 

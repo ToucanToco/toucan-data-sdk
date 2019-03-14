@@ -53,11 +53,55 @@ def change_date_format(
 def cast(df, column: str, type: str, new_column=None):
     """
     Convert column's type into type
+
     ---
-    - `column` (str): name of the column to format
-    - `type` (str): desired type of the column
-    - `new_column` (optional: str): name of the output column - if 'None' overwrite column
-    Available type : 'str' (from string), 'int' (for integer), 'float' (for real number)
+
+    ### Parameters
+
+    *mandatory :*
+    - `column` (*str*): name of the column to convert
+    - `type` (*str*): output type. It can be :
+          - `"int"` : integer type
+          - `"float"` : general number type
+          - `"str"` : text type
+
+    *optional :*
+    - `new_column` (*str*): name of the output column.
+       By default the `column` arguments is modified.
+
+    ---
+
+    ### Example
+
+    **Input**
+
+    | Column 1 |  Column 2   |  Column 3  |
+    |:-------:|:--------:|:--------:|
+    |  'one'  |  '2014'  |   30.0   |
+    |  'two'  |  2015.0  |    '1'   |
+    |   3.1   |   2016   |    450   |
+
+    ```cson
+    postprocess: [
+      cast:
+        column: 'Column 1'
+        type: 'str'
+      cast:
+        column: 'Column 2'
+        type: 'int'
+      cast:
+        column: 'Column 3'
+        type: 'float'
+    ]
+    ```
+
+    **Output**
+
+    | Column 1 |  Column 2  |  Column 3  |
+    |:-------:|:------:|:--------:|
+    |  'one'  |  2014  |   30.0   |
+    |  'two'  |  2015  |    1.0   |
+    |  '3.1'  |  2016  |  450.0   |
     """
     new_column = new_column or column
     df[new_column] = df[column].astype(type)
