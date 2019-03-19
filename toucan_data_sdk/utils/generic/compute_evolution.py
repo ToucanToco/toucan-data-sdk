@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import Dict, List, Union
 
 import numpy as np
 import pandas as pd
@@ -10,7 +10,7 @@ from toucan_data_sdk.utils.helpers import check_params_columns_duplicate
 def compute_evolution_by_frequency(
     df,
     id_cols: List[str],
-    date_col: str,
+    date_col: Union[str, Dict[str, str]],
     value_col: str,
     freq=1,
     method: str = 'abs',
@@ -29,7 +29,10 @@ def compute_evolution_by_frequency(
 
     *mandatory :*
     - `id_cols` (*list*): name of the columns used to create each group.
-    - `date_col` (*str*): name of the column containing the date.
+    - `date_col` (*str or dict*): either directly the name of the column containing the date or a dictionary with:
+      - `selector` (*str*): the name of the column
+      - `format` (*str*): the format of the date (see [pandas doc](
+        https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior))
     - `value_col` (*str*): name of the column containing the value to compare.
 
     *optional :*
