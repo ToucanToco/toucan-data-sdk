@@ -1,3 +1,5 @@
+from typing import Dict, List, Union
+
 import pandas as pd
 
 from toucan_data_sdk.utils.helpers import (
@@ -6,48 +8,66 @@ from toucan_data_sdk.utils.helpers import (
 )
 
 
-def add_missing_row(df, id_cols, reference_col, complete_index=None, method=None,
-                    cols_to_keep=None):
+def add_missing_row(
+    df: pd.DataFrame,
+    id_cols: List[str],
+    reference_col: str,
+    complete_index: Union[Dict[str, str], List[str]] = None,
+    method: str = None,
+    cols_to_keep: List[str] = None
+) -> pd.DataFrame:
     """
     Add missing row to a df base on a reference column
-    - `id_cols` are the columns id to group,
-    - `reference_col` is the column with groups missing values
-    - `complete_index` (optional) a set of values used to add missing rows,
-       by default use the function `unique` on reference_col. Can be dict for date_range
-    - `method` (optional) method to choose values to keep.
-       E.g between min and max value of the group.
-    - `cols_to_keep` (optional) is the columns link to the reference_col to keep.
 
-    For example :
+    ---
 
-    YEAR MONTH NAME  VALUE  X
-    2017   1     A      1  lo
-    2017   2     A      1  lo
-    2017   3     A      1  la
-    2017   1     B      1  la
-    2017   3     B      1  la
+    ### Parameters
 
-    The function `add_missing_row` with the arguments :
-            id_cols=['NAME']
-            reference_col='MONTH'
-    give as a result :
+    *mandatory :*
+    - `id_cols` (*list of str*): names of the columns used to create each group
+    - `reference_col` (*str*): name of the column used to identify missing rows
 
+    *optional :*
+    - `complete_index` (*list* or *dict*): [A, B, C] a list of values used to add missing rows.
+      It can also be a dict to declare a date range.
+      By default, use all values of reference_col.
+    - `method` (*str*): by default all missing rows are added. The possible values are :
+        - `"between"` : add missing rows having their value between min and max values for each group,
+        - `"between_and_after"` : add missing rows having their value bigger than min value for each group.
+        - `"between_and_before"` : add missing rows having their value smaller than max values for each group.
+    - `cols_to_keep` (*list of str*): name of other columns to keep, linked to the reference_col.
 
-    YEAR MONTH NAME  VALUE  X
-    2017   1     A      1  lo
-    2017   2     A      1  lo
-    2017   3     A      1  la
-    2017   1     B      1  la
-    2017   2     B      NA NA
-    2017   3     B      1  la
+    ---
 
-    Args:
-        df (pd.DataFrame):
-        id_cols (list(str)):
-        reference_col (str):
-        complete_index (tuple/dict):
-        method (str):
-        keep_cols (list(str)):
+    ### Example
+
+    **Input**
+
+    YEAR | MONTH | NAME
+    :---:|:---:|:--:
+    2017|1|A
+    2017|2|A
+    2017|3|A
+    2017|1|B
+    2017|3|B
+
+    ```cson
+    add_missing_row:
+      id_cols: ['NAME']
+      reference_col: 'MONTH'
+    ```
+
+    **Output**
+
+    YEAR | MONTH | NAME
+    :---:|:---:|:--:
+    2017|1|A
+    2017|2|A
+    2017|3|A
+    2017|1|B
+    2017|2|B
+    2017|3|B
+
     """
     if cols_to_keep is None:
         cols_for_index = [reference_col]

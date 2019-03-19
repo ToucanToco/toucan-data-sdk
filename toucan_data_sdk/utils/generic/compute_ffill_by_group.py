@@ -1,19 +1,58 @@
+from typing import List
+
 from toucan_data_sdk.utils.helpers import check_params_columns_duplicate
 
 
-def compute_ffill_by_group(df, id_cols, reference_cols, value_col):
+def compute_ffill_by_group(
+        df,
+        id_cols: List[str],
+        reference_cols: List[str],
+        value_col: str
+):
     """
-    Compute ffill with groupby. There is a performance issue with a simple
-    groupby/fillna (2017/07)
-    - `id_cols` are the columns id to group,
-    - `reference_cols` are the other columns used to order,
-    - `value_col` is the name of the column to fill,
+    Compute `ffill` with `groupby`
+    Dedicated method as there is a performance issue with a simple groupby/fillna (2017/07)
+    The method `ffill` propagates last valid value forward to next values.
 
-    Args:
-        df (pd.DataFrame):
-        id_cols (list(str)):
-        reference_cols (list(str)):
-        value_col (str):
+    ---
+
+    ### Parameters
+
+    *mandatory :*
+    - `id_cols` (*list of str*): names of columns used to create each group.
+    - `reference_cols` (*list of str*): names of columns used to sort.
+    - `value_col` (*str*): name of the columns to fill.
+
+    ---
+
+    ### Example
+
+    **Input**
+
+    name | rank | value
+    :------:|:--------------:|:--------:
+    A | 1 | 2
+    A | 2 | 5
+    A | 3 | null
+    B | 1 | null
+    B | 2 | 7
+
+    ```cson
+    compute_ffill_by_group:
+      id_cols: ['name']
+      reference_cols: ['rank']
+      value_col: 'value'
+    ```
+
+    **Ouput**
+
+    name | rank | value
+    :------:|:--------------:|:--------:
+    A | 1 | 2
+    A | 2 | 5
+    A | 3 | 5
+    B | 1 | null
+    B | 2 | 7
     """
     check_params_columns_duplicate(id_cols + reference_cols + [value_col])
     df = df.sort_values(by=id_cols + reference_cols)

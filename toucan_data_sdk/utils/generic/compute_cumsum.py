@@ -1,3 +1,5 @@
+from typing import List
+
 from toucan_data_sdk.utils.helpers import (
     check_params_columns_duplicate,
     ParamsValueError
@@ -6,51 +8,58 @@ from toucan_data_sdk.utils.helpers import (
 
 def compute_cumsum(
     df,
-    id_cols,
-    reference_cols,
-    value_cols,
-    new_value_cols=None,
-    cols_to_keep=None
+    id_cols: List[str],
+    reference_cols: List[str],
+    value_cols: List[str],
+    new_value_cols: List[str] = None,
+    cols_to_keep: List[str] = None
 ):
     """
     Compute cumsum for a group of columns.
-    - `id_cols` are the columns id to create each group,
-    - `reference_cols` are the columns to order the cumsum,
-    - `value_cols` are the columns to cumsum,
-    - `new_value_cols` are the new columns with the result cumsum
-    - `cols_to_keep` are other column to keep in the dataframe. This option can
-     be used if there is only one row by group [id_cols + reference_cols]
 
-    For example :
+    ---
 
-    MONTH  DAY NAME  VALUE  X
-     1      1    A      1  lo
-     2      1    A      1  lo
-     2     15    A      1  la
-     1     15    B      1  la
+    ### Parameters
 
-    The function `compute_cumsum` with the arguments :
-            id_cols=['NAME']
-            reference_cols=['MONTH','DAY']
-            cumsum_cols=['VALUE']
-            cols_to_keep=['X']
-    give as a result :
+    *mandatory :*
+    - `id_cols` (*list*): the columns id to create each group
+    - `reference_cols` (*list*): the columns to order the cumsum
+    - `value_cols` (*list*): the columns to cumsum
 
+    *optional :*
+    - `new_value_cols` (*list*): the new columns with the result cumsum
+    - `cols_to_keep` (*list*): other columns to keep in the dataset.
+      This option can be used if there is only one row by group [id_cols + reference_cols]
 
-    NAME  MONTH  DAY  X  VALUE
-     A     1      1  lo      1
-     A     2      1  la      2
-     A     2     15  lo      3
-     B     1     15  la      1
+    ---
 
+    ### Example
 
-    Args:
-        df (pd.DataFrame):
-        id_cols (list(str)):
-        reference_cols (list(str)):
-        value_cols (list(str)):
-        new_value_cols (list(str)):
-        cols_to_keep (list(str)):
+    **Input**
+
+    MONTH | DAY | NAME | VALUE | X
+    :---:|:---:|:--:|:---:|:---:
+     1   |   1 |   A  |  1 | lo
+     2   |   1 |   A  |  1 | lo
+     2   |  15 |   A  |  1 | la
+     1   |  15 |   B  |  1 | la
+
+    ```cson
+    compute_cumsum:
+      id_cols: ['NAME']
+      reference_cols: ['MONTH', 'DAY']
+      cumsum_cols: ['VALUE']
+      cols_to_keep: ['X']
+    ```
+
+    **Output**
+
+    NAME | MONTH | DAY | X | VALUE
+    :---:|:---:|:--:|:---:|:---:
+     A  |   1  |    1 | lo  |    1
+     A  |   2  |    1 | la  |    2
+     A  |   2  |   15 | lo  |    3
+     B  |   1  |   15 | la  |    1
     """
     if cols_to_keep is None:
         cols_to_keep = []

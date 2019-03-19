@@ -57,13 +57,13 @@ def test_filter_date_invalid_calls(sample_data):
         filter_by_date(df, 'date', stop='2018-01-01', atdate='2018-01-01')
     with pytest.raises(ValueError):
         # bad date format
-        filter_by_date(df, 'date', start='2018-01-01', date_fmt='%m %Y')
+        filter_by_date(df, 'date', start='2018-01-01', date_format='%m %Y')
     with pytest.raises(ValueError):
         # bad date format
-        filter_by_date(df, 'date', start='01 2018', date_fmt='%m %Y')
+        filter_by_date(df, 'date', start='01 2018', date_format='%m %Y')
     with pytest.raises(ValueError):
         # bad offset syntax (missing parenthesis)
-        filter_by_date(df, 'date', start='2018-01-01 + 1day', date_fmt='%m %Y')
+        filter_by_date(df, 'date', start='2018-01-01 + 1day', date_format='%m %Y')
 
 
 def test_filter_by_date_atdate(sample_data):
@@ -198,14 +198,14 @@ def test_filter_by_date_start_symbolic_tomorrow(sample_data):
     assert_frame_equal_noindex(df, expected)
 
 
-def test_date_fmt():
-    """It should take date_fmt into account"""
+def test_date_format():
+    """It should take date_format into account"""
     df = pd.DataFrame([
         {'date': '01 2018', 'value': 1},
         {'date': '03 2018', 'value': 2},
         {'date': '03 2018', 'value': 3}
     ])
-    df = filter_by_date(df, date_col='date', date_fmt='%m %Y', start='(02 2018)+10d')
+    df = filter_by_date(df, date_col='date', date_format='%m %Y', start='(02 2018)+10d')
     expected = pd.DataFrame([
         {'date': '03 2018', 'value': 2},
         {'date': '03 2018', 'value': 3}

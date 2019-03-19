@@ -1,40 +1,70 @@
 import pandas as pd
+from typing import List
 
 
-def roll_up(df, levels, groupby_vars, extra_groupby_cols=[],
-            var_name='type', value_name='value', agg_func='sum',
-            drop_levels=None):
+def roll_up(
+        df,
+        levels: List[str],
+        groupby_vars: List[str],
+        extra_groupby_cols: List[str] = None,
+        var_name: str = 'type',
+        value_name: str = 'value',
+        agg_func: str = 'sum',
+        drop_levels: List[str] = None
+):
     """
-    Move the hierarchy from the columns name to the rows (like a melt).
-    Add higher level hierarchy information with pandas aggregation function.
+    Creates aggregates following a given hierarchy
 
-    One DatFrame per level (all will be concatenated in the end), group by
-    levels, apply aggregation function on groupby_vars. Add two extra columns:
-    value_name and var_name, like a pandas melt.
+    ---
 
-    Args:
-        df (DataFrame): DataFrame to work on...
-        levels (list): Hierarchy. The order is important, from the top level
-            to the lower level.
-        groupby_vars (list): Columns to select from the group by (apply
-            aggregation function to)
-        extra_groupby_cols (list): Add to columns to group by each time.
-        var_name (str): Same as a pandas melt() var_name
-        value_name (str): Same as a pandas melt() value_name
-        agg_func (str): pandas aggregation function to apply to the groupby.
-        drop_levels (list): the names of the levels that may you want to discard
-            from the output
+    ### Parameters
 
-    Returns:
-        DataFrame:
+    *mandatory :*
+    - `levels` (*list of str*): name of the columns composing the hierarchy (from the top to the bottom level).
+    - `groupby_vars` (*list of str*): name of the columns with value to aggregate.
+    - `extra_groupby_cols` (*list of str*) optional: other columns used to group in each level.
 
+    *optional :*
+    - `var_name` (*str*) : name of the result variable column. By default, `“type”`.
+    - `value_name` (*str*): name of the result value column. By default, `“value”`.
+    - `agg_func` (*str*): name of the aggregation operation. By default, `“sum”`.
+    - `drop_levels` (*list of str*): the names of the levels that you may want to discard from the output.
+
+    ---
+
+    ### Example
+
+    **Input**
+
+    |    Region |     City |  Population |
+    |:---------:|:--------:|:-----------:|
+    |       Idf |     Panam|         200 |
+    |       Idf |   Antony |          50 |
+    |      Nord |    Lille |          20 |
+
+    ```cson
+    roll_up:
+      levels: ["Region", "City"]
+      groupby_vars: "Population"
+    ```
+
+    **Output**
+
+    |    Region |     City |  Population |    value |   type |
+    |:---------:|:--------:|:-----------:|:--------:|:------:|
+    |       Idf |     Panam|         200 |    Panam |   City |
+    |       Idf |   Antony |          50 |   Antony |   City |
+    |      Nord |    Lille |          20 |    Lille |   City |
+    |       Idf |      Nan |         250 |      Idf | Region |
+    |      Nord |      Nan |          20 |     Nord | Region |
     """
     dfs = list()
     groupby_cols_cpy = list(levels)
     levels_cpy = list(levels)
     levels_cpy.reverse()
-    if drop_levels is None:
-        drop_levels = []
+
+    extra_groupby_cols = extra_groupby_cols or []
+    drop_levels = drop_levels or []
     previous_level = None
     for top_level in levels_cpy:
         # Aggregation
