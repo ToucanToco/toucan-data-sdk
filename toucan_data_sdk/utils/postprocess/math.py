@@ -115,12 +115,12 @@ def formula(df, *, new_column: str, formula: str):
         - `-` for subtraction
         - `*` for multiplication
         - `/` for division
-    
-    ---
 
-    *Note:*
+    **Note:**
     - your column name can contain spaces.
     - if your column name is a number, you must use quote mark : `"` (cf. example)
+
+    ---
 
     ### Examples
 
