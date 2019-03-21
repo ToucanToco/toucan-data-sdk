@@ -108,16 +108,19 @@ def formula(df, *, new_column: str, formula: str):
 
     ### Parameters
 
-    *mandatory :*
+    *mandatory:*
     - `new_column` (*str*): name of the output column
     - `formula` (*str*): Operation on column. Use name of column and special character:
         - `+` for addition
         - `-` for subtraction
         - `*` for multiplication
         - `/` for division
-    :information_source: your column name can contain spaces.
-    :warning: if your column name is a number, you must use quote mark : `"` (cf. example)
+    
     ---
+
+    *Note:*
+    - your column name can contain spaces.
+    - if your column name is a number, you must use quote mark : `"` (cf. example)
 
     ### Examples
 
