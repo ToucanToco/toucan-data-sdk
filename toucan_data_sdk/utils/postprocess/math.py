@@ -115,7 +115,8 @@ def formula(df, *, new_column: str, formula: str):
         - `-` for subtraction
         - `*` for multiplication
         - `/` for division
-    :information_source: your column anem can contain space
+    :information_source: your column name can contain spaces or be a number. But in those cases,
+    you need to use quote marks (e.g. "my column name", "2019")
     :warning: if your column name is a number, you must use quote mark : `"` (cf. example)
     ---
 
