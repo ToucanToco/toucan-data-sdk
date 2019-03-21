@@ -118,7 +118,7 @@ def formula(df, *, new_column: str, formula: str):
 
     **Note:**
     - your column name can contain spaces.
-    - if your column name is a number, you must use quote mark : `"` (cf. example)
+    - if your column name is a number, you must use a quote mark : `"` or `'` (cf. example)
 
     ---
 
