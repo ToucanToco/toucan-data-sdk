@@ -115,10 +115,11 @@ def formula(df, *, new_column: str, formula: str):
         - `-` for subtraction
         - `*` for multiplication
         - `/` for division
-
+    :information_source: your column anem can contain space
+    :warning: if your column name is a number, you must use quote mark : `"` (cf. example)
     ---
 
-    ### Example
+    ### Examples
 
     **Input**
 
@@ -142,6 +143,31 @@ def formula(df, *, new_column: str, formula: str):
     |   toto   |    20    |   100  |    10   |     12  |
     |   toto   |    30    |   200  |    10   |     23  |
     |   toto   |    10    |   300  |    10   |     31  |
+
+    ---
+
+    **Input**
+
+    | variable | 2018 | 2019 |
+    |:--------:|:--------:|:-----:|
+    |   toto   |    20    |  100  |
+    |   toto   |    30    |  200  |
+    |   toto   |    10    |  300  |
+
+    ```cson
+    formula:
+      new_column: 'Evolution'
+      formula: "'2019'-'2018'"
+    ```
+
+    **Output**
+
+    | variable | 2018 | 2019 | Evolution |
+    |:--------:|:--------:|:-----:|:-----:|
+    |   toto   |    20    |  100  | 80 |
+    |   toto   |    30    |  200  | 170 |
+    |   toto   |    10    |  300  | 290 |
+
     """
     tokens = _parse_formula(formula)
     expression_splitted = []
