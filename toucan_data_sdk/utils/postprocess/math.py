@@ -108,7 +108,7 @@ def formula(df, *, new_column: str, formula: str):
 
     ### Parameters
 
-    *mandatory :*
+    *mandatory:*
     - `new_column` (*str*): name of the output column
     - `formula` (*str*): Operation on column. Use name of column and special character:
         - `+` for addition
@@ -116,13 +116,17 @@ def formula(df, *, new_column: str, formula: str):
         - `*` for multiplication
         - `/` for division
 
+    **Note:**
+    - your column name can contain spaces.
+    - if your column name is a number, you must use a quote mark : `"` or `'` (cf. example)
+
     ---
 
-    ### Example
+    ### Examples
 
     **Input**
 
-    | variable | valueA | valueB |  valueC |
+    | variable | valueA | valueB | My rate |
     |:--------:|:--------:|:-----:|:------:|
     |   toto   |    20    |  100  |   10   |
     |   toto   |    30    |  200  |   10   |
@@ -132,16 +136,41 @@ def formula(df, *, new_column: str, formula: str):
     ```cson
     formula:
       new_column: 'valueD'
-      formula: '(valueB + valueA ) / valueC'
+      formula: '(valueB + valueA ) / My rate'
     ```
 
     **Output**
 
-    | variable | valueA   | valueB |  valueC |  valueD |
+    | variable | valueA   | valueB |  My rate |  valueD |
     |:--------:|:--------:|:------:|:-------:|:-------:|
     |   toto   |    20    |   100  |    10   |     12  |
     |   toto   |    30    |   200  |    10   |     23  |
     |   toto   |    10    |   300  |    10   |     31  |
+
+    ---
+
+    **Input**
+
+    | variable | 2018 | 2019 |
+    |:--------:|:--------:|:-----:|
+    |   toto   |    20    |  100  |
+    |   toto   |    30    |  200  |
+    |   toto   |    10    |  300  |
+
+    ```cson
+    formula:
+      new_column: 'Evolution'
+      formula: "'2019' - '2018'"
+    ```
+
+    **Output**
+
+    | variable | 2018 | 2019 | Evolution |
+    |:--------:|:--------:|:-----:|:-----:|
+    |   toto   |    20    |  100  | 80 |
+    |   toto   |    30    |  200  | 170 |
+    |   toto   |    10    |  300  | 290 |
+
     """
     tokens = _parse_formula(formula)
     expression_splitted = []
