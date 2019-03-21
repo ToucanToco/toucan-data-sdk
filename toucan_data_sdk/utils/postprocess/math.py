@@ -123,7 +123,7 @@ def formula(df, *, new_column: str, formula: str):
 
     **Input**
 
-    | variable | valueA | valueB |  valueC |
+    | variable | valueA | valueB | My rate |
     |:--------:|:--------:|:-----:|:------:|
     |   toto   |    20    |  100  |   10   |
     |   toto   |    30    |  200  |   10   |
@@ -133,12 +133,12 @@ def formula(df, *, new_column: str, formula: str):
     ```cson
     formula:
       new_column: 'valueD'
-      formula: '(valueB + valueA ) / valueC'
+      formula: '(valueB + valueA ) / My rate'
     ```
 
     **Output**
 
-    | variable | valueA   | valueB |  valueC |  valueD |
+    | variable | valueA   | valueB |  My rate |  valueD |
     |:--------:|:--------:|:------:|:-------:|:-------:|
     |   toto   |    20    |   100  |    10   |     12  |
     |   toto   |    30    |   200  |    10   |     23  |
