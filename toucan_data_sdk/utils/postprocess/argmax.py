@@ -1,7 +1,7 @@
 from typing import List, Union
 
 
-def argmax(df, column: str, groups: Union[str, List[str]]=None):
+def argmax(df, column: str, groups: Union[str, List[str]] = None):
     """
     Keep the row of the data corresponding to the maximal value in a column
 
@@ -52,7 +52,7 @@ def argmax(df, column: str, groups: Union[str, List[str]]=None):
     return df
 
 
-def argmin(df, column: str, groups: Union[str, List[str]]=None):
+def argmin(df, column: str, groups: Union[str, List[str]] = None):
     """
     Keep the row of the data corresponding to the minimal value in a column
 
