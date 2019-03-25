@@ -13,7 +13,7 @@ def argmax(df, column: str, groups: Union[str, List[str]] = None):
     - `column` (*str*): name of the column containing the value you want to keep the maximum
 
     *facultative :*
-    - `groups` (*str ro list(str)*): name of the column(s) used for 'groupby' logic
+    - `groups` (*str or list(str)*): name of the column(s) used for 'groupby' logic
     (the function will return the argmax by group)
 
     ---
