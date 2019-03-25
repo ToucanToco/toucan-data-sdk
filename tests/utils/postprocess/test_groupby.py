@@ -45,3 +45,18 @@ def test_two_group_cols_two_value_cols():
          {'ENTITY': 'B', 'YEAR': '2018', 'VALUE_1': 110, 'VALUE_2': 6.5}
          ])
     assert df.sort_index(axis=1).equals(df_expected.sort_index(axis=1))
+
+
+def test_multiple_aggregation_on_one_column():
+    df = groupby(
+        df=data,
+        group_cols='ENTITY',
+        aggregations={
+            'VALUE_1': ['sum', 'count']
+        }
+    )
+    df_expected = pd.DataFrame(
+        [{'ENTITY': 'A', 'sum_VALUE_1': 70, 'count_VALUE_1': 4},
+         {'ENTITY': 'B', 'sum_VALUE_1': 210, 'count_VALUE_1': 4}
+         ])
+    assert df.sort_index(axis=1).equals(df_expected.sort_index(axis=1))
