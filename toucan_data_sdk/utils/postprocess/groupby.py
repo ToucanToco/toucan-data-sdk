@@ -59,7 +59,7 @@ def groupby(df, *, group_cols: Union[str, List[str]],
     if df.columns.nlevels == 2:
         level_0 = df.columns.get_level_values(0)
         level_1 = df.columns.get_level_values(1)
-        new_columns = [x + "_" + y for (x, y) in zip(level_1, level_0)]
+        new_columns = [f'{x}_{y}' for (x, y) in zip(level_1, level_0)]
         # Remove leading underscore for index columns
         new_columns = [x[1:] if x[0] == "_" else x for x in new_columns]
         df.columns = new_columns
