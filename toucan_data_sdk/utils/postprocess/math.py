@@ -25,22 +25,30 @@ def _basic_math_operation(df, new_column, column_1, column_2, op):
 
 
 def add(df, new_column, column_1, column_2):
-    """Add df[value] (value: 'str') or value (number) to column_1"""
+    """
+    DEPRECATED -  use `formula` instead
+    """
     return _basic_math_operation(df, new_column, column_1, column_2, op='add')
 
 
 def subtract(df, new_column, column_1, column_2):
-    """Subtract df[value] (value: 'str') or value (number) to column_1"""
+    """
+    DEPRECATED -  use `formula` instead
+    """
     return _basic_math_operation(df, new_column, column_1, column_2, op='sub')
 
 
 def multiply(df, new_column, column_1, column_2):
-    """Multiply df[value] (value: 'str') or value (number) and column_1"""
+    """
+    DEPRECATED -  use `formula` instead
+    """
     return _basic_math_operation(df, new_column, column_1, column_2, op='mul')
 
 
 def divide(df, new_column, column_1, column_2):
-    """Divide df[value] (value: 'str') or value (number) to column_1"""
+    """
+    DEPRECATED -  use `formula` instead
+    """
     return _basic_math_operation(df, new_column, column_1, column_2, op='truediv')
 
 
@@ -92,8 +100,78 @@ def _parse_formula(formula_str) -> List[Token]:
     return [t for t in tokens if t]
 
 
-def formula(df, *, new_column, formula):
-    """Compute math formula for df and put the result in `column`"""
+def formula(df, *, new_column: str, formula: str):
+    """
+    Do mathematic operations on columns (add, subtract, multiply or divide)
+
+    ---
+
+    ### Parameters
+
+    *mandatory:*
+    - `new_column` (*str*): name of the output column
+    - `formula` (*str*): Operation on column. Use name of column and special character:
+        - `+` for addition
+        - `-` for subtraction
+        - `*` for multiplication
+        - `/` for division
+
+    **Note:**
+    - your column name can contain spaces.
+    - if your column name is a number, you must use a quote mark : `"` or `'` (cf. example)
+
+    ---
+
+    ### Examples
+
+    **Input**
+
+    | variable | valueA | valueB | My rate |
+    |:--------:|:--------:|:-----:|:------:|
+    |   toto   |    20    |  100  |   10   |
+    |   toto   |    30    |  200  |   10   |
+    |   toto   |    10    |  300  |   10   |
+
+
+    ```cson
+    formula:
+      new_column: 'valueD'
+      formula: '(valueB + valueA ) / My rate'
+    ```
+
+    **Output**
+
+    | variable | valueA   | valueB |  My rate |  valueD |
+    |:--------:|:--------:|:------:|:-------:|:-------:|
+    |   toto   |    20    |   100  |    10   |     12  |
+    |   toto   |    30    |   200  |    10   |     23  |
+    |   toto   |    10    |   300  |    10   |     31  |
+
+    ---
+
+    **Input**
+
+    | variable | 2018 | 2019 |
+    |:--------:|:--------:|:-----:|
+    |   toto   |    20    |  100  |
+    |   toto   |    30    |  200  |
+    |   toto   |    10    |  300  |
+
+    ```cson
+    formula:
+      new_column: 'Evolution'
+      formula: "'2019' - '2018'"
+    ```
+
+    **Output**
+
+    | variable | 2018 | 2019 | Evolution |
+    |:--------:|:--------:|:-----:|:-----:|
+    |   toto   |    20    |  100  | 80 |
+    |   toto   |    30    |  200  | 170 |
+    |   toto   |    10    |  300  | 290 |
+
+    """
     tokens = _parse_formula(formula)
     expression_splitted = []
     for t in tokens:
@@ -114,40 +192,90 @@ class FormulaError(Exception):
     """Raised when a formula is not valid"""
 
 
-def round_values(df, *, column, decimals, new_column=None):
+def round_values(df, *, column: str, decimals: int, new_column: str = None):
     """
-    Round each value of `column` and put the result in `new_column`
-    (if set to None, `column` will be replaced)
+    Round each value of a column
 
-    ENTITY  VALUE_1  VALUE_2
-       A     -1.512   -1.504
-       A      0.432     0.14
+    ---
 
-    round_values(df, column='VALUE_1', new_column='Pika', decimals=1) returns:
+    ### Parameters
 
-    ENTITY  VALUE_1  VALUE_2  Pika
-       A     -1.512   -1.504  -1.5
-       A      0.432     0.14   0.4
+    *mandatory :*
+    - `column` (*str*): name of the column to round
+    - `decimals` (*int*): number of decimal to keeep
+
+    *optional :*
+    - `new_column` (*str*): name of the new column to create.
+      By default, no new column will be created and `column` will be replaced
+
+    ---
+
+    ### Example
+
+    ** Input**
+
+    ENTITY|VALUE_1|VALUE_2
+    :-----:|:-----:|:-----:
+    A|-1.512|-1.504
+    A|0.432|0.14
+
+    ```cson
+    round_values:
+      column: 'VALUE_1'
+      decimals:1
+      new_column: 'Pika'
+    ```
+
+    **Output**
+
+    ENTITY|VALUE_1|VALUE_2|Pika
+    :-----:|:-----:|:-----:|:-----:
+    A|-1.512|-1.504|-1.5
+    A|0.432|0.14|0.4
     """
     new_column = new_column or column
     df[new_column] = df[column].round(decimals)
     return df
 
 
-def absolute_values(df, *, column, new_column=None):
+def absolute_values(df, *, column: str, new_column: str = None):
     """
-    Take the absolute value of each value of `column` and put the result in `new_column`
-    (if set to None, `column` will be replaced)
+    Get the absolute numeric value of each element of a column
 
-    ENTITY  VALUE_1  VALUE_2
-       A     -1.512   -1.504
-       A      0.432     0.14
+    ---
 
-    compute_abs(df, column='VALUE_1', new_column='Pika') returns:
+    ### Parameters
 
-    ENTITY  VALUE_1  VALUE_2   Pika
-       A     -1.512   -1.504  1.512
-       A      0.432     0.14  0.432
+    *mandatory :*
+    - `column` (*str*): name of the column
+
+    *optional :*
+    - `new_column` (*str*): name of the column containing the result.
+      By default, no new column will be created and `column` will be replaced.
+
+    ---
+
+    ### Example
+
+    **Input**
+
+    | ENTITY | VALUE_1 | VALUE_2 |
+    |:------:|:-------:|:-------:|
+    | A      | -1.512  | -1.504  |
+    | A      | 0.432   | 0.14    |
+
+    ```cson
+    absolute_values:
+      column: 'VALUE_1'
+      new_column: 'Pika'
+    ```
+
+    **Output**
+
+    | ENTITY | VALUE_1 | VALUE_2 | Pika  |
+    |:------:|:-------:|:-------:|:-----:|
+    | A      | -1.512  | -1.504  | 1.512 |
+    | A      | 0.432   | 0.14    | 0.432 |
     """
     new_column = new_column or column
     df[new_column] = abs(df[column])

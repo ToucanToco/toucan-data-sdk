@@ -1,4 +1,6 @@
 import logging
+from typing import Dict, List, Union
+
 import numpy as np
 import pandas as pd
 
@@ -7,17 +9,72 @@ from toucan_data_sdk.utils.helpers import check_params_columns_duplicate
 
 def compute_evolution_by_frequency(
     df,
-    id_cols,
-    date_col,
-    value_col,
+    id_cols: List[str],
+    date_col: Union[str, Dict[str, str]],
+    value_col: str,
     freq=1,
-    method='abs',
-    format='column',
-    offseted_suffix='_offseted',
-    evolution_col_name='evolution_computed',
-    missing_date_as_zero=False,
-    raise_duplicate_error=True
+    method: str = 'abs',
+    format: str = 'column',
+    offseted_suffix: str = '_offseted',
+    evolution_col_name: str = 'evolution_computed',
+    missing_date_as_zero: bool = False,
+    raise_duplicate_error: bool = True
 ):
+    """
+    This function answers the question: how has a value changed on a weekly, monthly, yearly basis ?
+
+    ---
+
+    ### Parameters
+
+    *mandatory :*
+    - `id_cols` (*list*): name of the columns used to create each group.
+    - `date_col` (*str or dict*): either directly the name of the column containing the date or a dictionary with:
+      - `selector` (*str*): the name of the column
+      - `format` (*str*): the format of the date (see [pandas doc](
+        https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior))
+    - `value_col` (*str*): name of the column containing the value to compare.
+
+    *optional :*
+    - `freq` (*int/pd.DateOffset/pd.Serie/dict*): the frequency at which we calculate evolutions
+    - `method` (*str*): either `"abs"` for absolute values or `"pct"` for the evolution in percentage of previous value.
+    - `offseted_suffix` (*str*): suffix of the offseted column. By default, `"_offseted"`.
+    - `evolution_col_name` (*str*): name given to the evolution column. By default, `"evolution_computed"`.
+    - `missing_date_as_zero` (*boolean*): add missing date with zero value.
+    - `raise_duplicate_error` (*boolean*): raise an error when the dataset has duplicated values with the given `id_cols`.
+    - `format` (*str*): `'df'` # Do not change it !!!
+
+    ---
+
+    ### Example
+
+    **Input**
+
+    |   id_cols |    value_col |    date_col|
+    |:---------:|:------------:|:----------:|
+    |         A |           20 |        2010|
+    |           |            7 |        2011|
+    |         B |          200 |        2010|
+    |           |          220 |        2011|
+    |         C |          100 |        2011|
+
+    ```cson
+    compute_evolution_by_frequency:
+      id_cols: "id_cols"
+      date_col: "date_col"
+      value_col: "value_col"
+    ```
+
+    **Output**
+
+    |   id_cols |    value_col |    date_col|  evolution|
+    |:---------:|:------------:|:----------:|:---------:|
+    |         A |           20 |        2010|       null|
+    |           |            7 |        2011|        -13|
+    |         B |          200 |        2010|       null|
+    |           |          220 |        2011|         20|
+    |         C |          100 |        2011|       null|
+    """
     if missing_date_as_zero:
         how = 'outer'
         fillna = 0
@@ -43,15 +100,63 @@ def compute_evolution_by_frequency(
 
 def compute_evolution_by_criteria(
     df,
-    id_cols,
-    value_col,
-    compare_to,
-    method='abs',
-    format='column',
-    offseted_suffix='_offseted',
-    evolution_col_name='evolution_computed',
-    raise_duplicate_error=True
+    id_cols: List[str],
+    value_col: str,
+    compare_to: str,
+    method: str = 'abs',
+    format: str = 'column',
+    offseted_suffix: str = '_offseted',
+    evolution_col_name: str = 'evolution_computed',
+    raise_duplicate_error: bool = True
 ):
+    """
+    This function answers the question: how has a value changed compare to a specific value ?
+
+    ---
+
+    ### Parameters
+
+    *mandatory :*
+    - `id_cols` (*list*): columns used to create each group
+    - `value_col` (*str*): name of the column containing the value to compare
+    - `compare_to` (*str*): the query identifying a specific set of values for comparison.
+
+    *optional :*
+    - `method` (*str*): either `"abs"` for absolute values or `"pct"` for the evolution in percentage of previous value.
+    - `offseted_suffix` (*str*): suffix of the offseted column. By default, `"_offseted"`.
+    - `evolution_col_name` (*str*): name given to the evolution column. By default, `"evolution_computed"`.
+    - `raise_duplicate_error` (*boolean*): raise an error when the dataset has duplicated values with the given `id_cols`.
+    - `format` (*str*): `'df'` # Do not change it !!!
+
+    ---
+
+    ### Example
+
+    **Input**
+
+    |   id_cols |    value_col |    month|
+    |:---------:|:------------:|:-------:|
+    |         A |          100 |        1|
+    |           |          250 |       12|
+    |         B |          300 |        1|
+    |           |          200 |       12|
+
+    ```cson
+    compute_evolution_by_criteria:
+      id_cols: "id_cols"
+      value_col: "value_col"
+      compare_to: "month==12"
+    ```
+
+    **Output**
+
+    |   id_cols |    value_col |    month|	value_offseted	| evolution_computed|
+    |:---------:|:------------:|:-------:|:----------------:|:-----------------:|
+    |         A |          100 |        1|               250|               -150|
+    |           |          250 |       12|               250|                  0|
+    |         B |          300 |        1|               200|                100|
+    |           |          200 |       12|               200|                  0|
+    """
     return __compute_evolution(**locals())
 
 

@@ -2,16 +2,9 @@ import pandas as pd
 import logging
 
 
-def cumsum(df, new_column, column, index, date_column, date_format):
+def cumsum(df, new_column: str, column: str, index: list, date_column: str, date_format: str):
     """
-    DEPRECATED : Creates a new column, which is the cumsum of the column
-    :param df: the dataframe
-    :param new_column: name of the new column
-    :param column: name on which the cumulative sum is performed
-    :param index: array of column names to keep as indices
-    :param date_column: column name that represent the date
-    :param date_format: format of the date
-    :return:
+    DEPRECATED - please use `compute_cumsum` instead
     """
     logging.getLogger(__name__).warning(f"DEPRECATED: use compute_cumsum")
     date_temp = '__date_temp__'

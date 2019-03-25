@@ -1,20 +1,33 @@
-import pandas as pd
 import itertools
+from typing import Dict, List, Union
+
+import pandas as pd
 
 
 def combine_columns_aggregation(
-    df,
-    id_cols,
-    cols_for_combination,
-    agg_func='sum'
+        df,
+        id_cols: List[str],
+        cols_for_combination: Dict[str, str],
+        agg_func: Union[str, List[str], Dict[str, str]] = 'sum'
 ):
     """
     Aggregates data to reproduce "All" category for requester
-    - `id_cols` are the columns id to group,
-    - `cols_for_combination` is a dict with the colums corresponding to
+
+    ---
+
+    ### Parameters
+
+    *mandatory :*
+    - `id_cols` (*list*): the columns id to group
+    - `cols_for_combination` (*dict*): colums corresponding to
        the filters as key and their default value as value
-    - `agg_func` (optional) is the function to use for aggregating the data.
-       Can be callable, string, dictionary, or list of string/callables (by default 'sum')
+
+    *optional :*
+    - `agg_func` (*str*, *list* or *dict*): the function(s) to use for aggregating the data.
+       Accepted combinations are:
+       - string function name
+       - list of functions and/or function names, e.g. [np.sum, 'mean']
+       - dict of axis labels -> functions, function names or list of such.
     """
     requesters_cols = list(cols_for_combination.keys())
     requester_combination = [

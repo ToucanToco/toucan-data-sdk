@@ -5,21 +5,21 @@ def groupby(df, *, group_cols: Union[str, List[str]], aggregations: Dict[str, st
     """
     Aggregate values by groups.
 
-    :param df: dataframe to group
-    :param group_cols: list of columns used to group data
-    :param aggregations: dictionnary of values columns to group as keys and aggregation function to
-        use as values. Available aggregation functions:
-         - 'sum'
-         - 'mean'
-         - 'median'
-         - 'prod' (product)
-         - 'std' (standard deviation)
-         - 'var' (variance)
-    :return: the summarized dataframe
+    ---
 
-    Example:
+    ### Parameters
 
-    Input df:
+    *mandatory :*
+    - `group_cols` (*list*): list of columns used to group data
+    - `aggregations` (*dict*): dictionnary of values columns to group as keys and aggregation
+      function to use as values (See the [list of aggregation functions](
+      https://pandas.pydata.org/pandas-docs/stable/user_guide/groupby.html#aggregation))
+
+    ---
+
+    ### Example
+
+    **Input**
 
     | ENTITY | YEAR | VALUE_1 | VALUE_2 |
     |:------:|:----:|:-------:|:-------:|
@@ -32,16 +32,15 @@ def groupby(df, *, group_cols: Union[str, List[str]], aggregations: Dict[str, st
     |    B   | 2018 |    50   |    7    |
     |    B   | 2018 |    60   |    6    |
 
-    groupby(
-        df=data,
-        group_cols=['ENTITY', 'YEAR'],
-        aggregations={
-            'VALUE_1': 'sum',
-            'VALUE_2': 'mean'
-        }
-    )
+    ```cson
+    groupby:
+      group_cols: ['ENTITY', 'YEAR']
+      aggregations:
+        'VALUE_1': 'sum',
+        'VALUE_2': 'mean'
+    ```
 
-    returns:
+    **Output**
 
     | ENTITY | YEAR | VALUE_1 | VALUE_2 |
     |:------:|:----:|:-------:|:-------:|

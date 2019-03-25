@@ -1,23 +1,80 @@
-def drop_duplicates(df, columns):
+from typing import List, Optional
+
+
+def drop_duplicates(df, columns: Optional[List[str]]):
     """
-    Use only `columns` to identify duplicates and remove them.
-    Set `columns` to None to use all of the columns
+    Remove duplicate rows
+
+    ---
+
+    ### Parameters
+
+    *mandatory :*
+    - `columns` (*list*): columns to consider to identify duplicates (set to null to use all the columns)
+
+    ### Example
+
+    **Input**
+
+    | name | country | year |
+    |:----:|:-------:|:----:|
+    | toto |  France | 2014 |
+    | titi | England | 2015 |
+    | toto |  France | 2014 |
+    | toto |  France | 2016 |
+
+
+    ```cson
+    drop_duplicates:
+      columns: null
+    ```
+
+    **Output**
+
+    | name | country | year |
+    |:----:|:-------:|:----:|
+    | toto |  France | 2014 |
+    | titi | England | 2015 |
+    | toto |  France | 2016 |
     """
     return df.drop_duplicates(columns)
 
 
-def query_df(df, query):
+def query(df, query):
     """
-    Slice the data according to the provided query
-    Basic usage like the one in the data query but in the postprocess
-    Useful if you want to perform some slicing after a melt or pivot for example.
-    Wired on the DataFrame.query method, see doc
-    http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.query.html#pandas.DataFrame.query
-    Args:
-        Query String
+    Filter a dataset under a condition
+
+    ---
+
+    ### Parameters
+
+    *mandatory :*
+    - query (*str*): your query as a string (see [pandas doc](
+    http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.query.html#pandas.DataFrame.query))
+
+    ---
+
+    ### Example
+
+    **Input**
+
+    | variable |   wave  |  year    | value |
+    |:--------:|:-------:|:--------:|:-----:|
+    |   toto   |  wave 1 |  2014    |  300  |
+    |   toto   |  wave 1 |  2015    |  250  |
+    |   toto   |  wave 1 |  2015    |  100  |
+    |   toto   |  wave 1 |  2016    |  450  |
+
+
+    ```cson
+    query: 'value > 350'
+    ```
+
+    **Output**
+
+    | variable |   wave  |  year    | value |
+    |:--------:|:-------:|:--------:|:-----:|
+    |   toto   |  wave 1 |  2016    |  450  |
     """
     df = df.query(query)
     return df
-
-
-query = query_df

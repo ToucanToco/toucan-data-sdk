@@ -63,5 +63,5 @@ def test_fillna():
 
     with pytest.raises(ValueError) as exc_info:
         fillna(data.copy(), **kwargs)
-    error_message = 'You cannot set both the value parameter and column_value parameter'
+    error_message = 'You cannot set both the parameters value and column_value'
     assert str(exc_info.value) == error_message
