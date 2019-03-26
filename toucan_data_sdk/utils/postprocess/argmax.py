@@ -12,7 +12,7 @@ def argmax(df, column: str, groups: Union[str, List[str]] = None):
     *mandatory :*
     - `column` (*str*): name of the column containing the value you want to keep the maximum
 
-    *facultative :*
+    *optional :*
     - `groups` (*str or list(str)*): name of the column(s) used for 'groupby' logic
     (the function will return the argmax by group)
 
@@ -42,10 +42,9 @@ def argmax(df, column: str, groups: Union[str, List[str]] = None):
     if groups is None:
         df = df[df[column] == df[column].max()].reset_index(drop=True)
     else:
-        df['tmp'] = df.groupby(groups)[column].transform('max')
+        group_max = df.groupby(groups)[column].transform('max')
         df = (df
-              .loc[df[column] == df['tmp'], :]
-              .drop(columns='tmp')
+              .loc[df[column] == group_max, :]
               .drop_duplicates()
               .reset_index(drop=True)
               )
@@ -63,7 +62,7 @@ def argmin(df, column: str, groups: Union[str, List[str]] = None):
     *mandatory :*
     - `column` (str): name of the column containing the value you want to keep the minimum
 
-    *facultative :*
+    *optional :*
     - `groups` (*str or list(str)*): name of the column(s) used for 'groupby' logic
     (the function will return the argmax by group)
     ---
@@ -93,10 +92,9 @@ def argmin(df, column: str, groups: Union[str, List[str]] = None):
     if groups is None:
         df = df[df[column] == df[column].min()].reset_index(drop=True)
     else:
-        df['tmp'] = df.groupby(groups)[column].transform('min')
+        group_min = df.groupby(groups)[column].transform('min')
         df = (df
-              .loc[df[column] == df['tmp'], :]
-              .drop(columns='tmp')
+              .loc[df[column] == group_min, :]
               .drop_duplicates()
               .reset_index(drop=True)
               )
