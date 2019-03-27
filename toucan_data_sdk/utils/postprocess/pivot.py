@@ -17,7 +17,7 @@ def pivot(df, index: List[str], column: str, value: str, agg_function: str = 'me
     - `value` (*str*): column name containing the value to fill the pivoted df
 
     *optional :*
-    - `agg_function`: aggregation function to use among 'sum' (default), 'count', 'mean', 'max', 'min'
+    - `agg_function` (*str*): aggregation function to use among 'sum' (default), 'count', 'mean', 'max', 'min'
 
     ---
 
