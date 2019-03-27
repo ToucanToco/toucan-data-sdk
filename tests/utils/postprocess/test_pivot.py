@@ -53,7 +53,8 @@ def test_pivot_agg_sum():
     kwargs = {
         'index': ['variable', 'wave'],
         'column': 'year',
-        'value': 'value'
+        'value': 'value',
+        'agg_function': 'sum'
     }
     res = pivot(data, **kwargs)
     assert res[2014][0] == 400
@@ -61,7 +62,7 @@ def test_pivot_agg_sum():
     assert res[2016][0] == 650
 
 
-def test_pivot_agg_max():
+def test_pivot_agg_mean():
     """ It should return result for pivot """
 
     # ~~~~ pivot on int column ~~~
@@ -78,12 +79,11 @@ def test_pivot_agg_max():
         'index': ['variable', 'wave'],
         'column': 'year',
         'value': 'value',
-        'agg_function': 'max'
     }
     res = pivot(data, **kwargs)
-    assert res[2014][0] == 300
-    assert res[2015][0] == 250
-    assert res[2016][0] == 450
+    assert res[2014][0] == 200
+    assert res[2015][0] == 200
+    assert res[2016][0] == 325
 
 
 def test_pivot_by_group():

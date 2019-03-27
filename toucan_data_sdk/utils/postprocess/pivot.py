@@ -3,7 +3,7 @@ import pandas as pd
 from typing import List
 
 
-def pivot(df, index: List[str], column: str, value: str, agg_function: str = 'sum'):
+def pivot(df, index: List[str], column: str, value: str, agg_function: str = 'mean'):
     """
     Pivot the data. Reverse operation of melting
 
@@ -132,5 +132,5 @@ def pivot_by_group(
         df.loc[
             df[temporary_colum].isin(param[column]), temporary_colum] = column
 
-    df = pivot(df, index, temporary_colum, value, agg_function='mean')
+    df = pivot(df, index, temporary_colum, value)
     return df
