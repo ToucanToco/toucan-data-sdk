@@ -1,10 +1,13 @@
 """date filtering helpers."""
 
-from datetime import date, datetime
+from calendar import monthrange
+from datetime import date, datetime, timedelta
 import re
 from uuid import uuid4
 
 import pandas as pd
+
+TIMEDELTA_RGX = re.compile(r'\s*(?P<num>\d+)\s*(?P<unit>\w+)$')
 
 
 def _norm_date(datestr: str, date_fmt: str) -> date:
@@ -31,33 +34,109 @@ def _norm_date(datestr: str, date_fmt: str) -> date:
         return datetime.strptime(datestr, date_fmt).date()
 
 
+def add_offset(dateobj, hr_offset: str, sign: str):
+    """add a human readable offset to `dateobj` and return corresponding date.
+
+    rely on `pandas.Timedelta` and add the following extra shortcuts:
+    - "w", "week" and "weeks" for a week (i.e. 7days)
+    - "month', "months" for a month (i.e. no day computation, just increment the month)
+    - "y", "year', "years" for a year (i.e. no day computation, just increment the year)
+    """
+    sign_coeff = 1 if sign == '+' else -1
+    try:
+        return dateobj + sign_coeff * pd.Timedelta(hr_offset)
+    except ValueError:
+        # pd.Timedelta could not parse the offset, let's try harder
+        match = TIMEDELTA_RGX.match(hr_offset)
+        if match is not None:
+            groups = match.groupdict()
+            unit = groups['unit'].lower()[0]
+            num = sign_coeff * int(groups['num'])
+            # is it a week ?
+            if unit == 'w':
+                return dateobj + num * timedelta(weeks=1)
+            # or a month ?
+            if unit == 'm':
+                return add_months(dateobj, num)
+            # or a year ?
+            if unit == 'y':
+                return add_years(dateobj, num)
+        # we did what we could, just re-raise the original exception
+        raise
+
+
+def add_months(dateobj, nb_months: int):
+    """return `dateobj` + `nb_months`
+
+    If landing date doesn't exist (e.g. february, 30th), return the last
+    day of the landing month.
+
+    >>> add_months(date(2018, 1, 1), 1)
+    datetime.date(2018, 1, 1)
+    >>> add_months(date(2018, 1, 1), -1)
+    datetime.date(2017, 12, 1)
+    >>> add_months(date(2018, 1, 1), 25)
+    datetime.date(2020, 2, 1)
+    >>> add_months(date(2018, 1, 1), -25)
+    datetime.date(2015, 12, 1)
+    >>> add_months(date(2018, 1, 31), 1)
+    datetime.date(2018, 2, 28)
+    """
+    nb_years, nb_months = divmod(nb_months, 12)
+    month = dateobj.month + nb_months
+    if month > 12:
+        nb_years += 1
+        month -= 12
+    year = dateobj.year + nb_years
+    lastday = monthrange(year, month)[1]
+    return dateobj.replace(year=year, month=month, day=min(lastday, dateobj.day))
+
+
+def add_years(dateobj, nb_years):
+    """return `dateobj` + `nb_years`
+
+    If landing date doesn't exist (e.g. february, 30th), return the last
+    day of the landing month.
+
+    >>> add_years(date(2018, 1, 1), 1)
+    datetime.date(2019, 1, 1)
+    >>> add_years(date(2018, 1, 1), -1)
+    datetime.date(2017, 1, 1)
+    >>> add_years(date(2020, 2, 29), 1)
+    datetime.date(2021, 2, 28)
+    >>> add_years(date(2020, 2, 29), -1)
+    datetime.date(2019, 2, 28)
+    """
+    year = dateobj.year + nb_years
+    lastday = monthrange(year, dateobj.month)[1]
+    return dateobj.replace(year=year, day=min(lastday, dateobj.day))
+
+
 def parse_date(datestr: str, date_fmt: str) -> date:
     """parse `datestr` and return corresponding date object.
 
-    `datestr` should be a string matching `date_fmt` and parseable by
-    `strptime` but some offset can also be added using `(datestr) + OFFSET` or
-    `(datestr) - OFFSET` syntax. When using this syntax, `OFFSET` should be
-    understable by `pandas.Timedelta` (cf.
-    http://pandas.pydata.org/pandas-docs/stable/timedeltas.html) and `datestr`
-    MUST be wrapped with parenthesis.
+    `datestr` should be a string matching `date_fmt` and parseable by `strptime`
+    but some offset can also be added using `(datestr) + OFFSET` or `(datestr) -
+    OFFSET` syntax. When using this syntax, `OFFSET` should be understable by
+    `pandas.Timedelta` (cf.
+    http://pandas.pydata.org/pandas-docs/stable/timedeltas.html) and `w`, `week`
+    `month` and `year` offset keywords are also accepted. `datestr` MUST be wrapped
+    with parenthesis.
 
-    Additionally, the following symbolic names are supported:
-    `TODAY`, `YESTERDAY`, `TOMORROW`.
+    Additionally, the following symbolic names are supported: `TODAY`,
+    `YESTERDAY`, `TOMORROW`.
 
     Example usage:
 
-    >>> parse_date('2018-01-01', '%Y-%m-%d')
-    datetime.date(2018, 1, 1)
-    >>> parse_date('(2018-01-01) + 1day', '%Y-%m-%d')
-    datetime.date(2018, 1, 2)
+    >>> parse_date('2018-01-01', '%Y-%m-%d') datetime.date(2018, 1, 1)
+    parse_date('(2018-01-01) + 1day', '%Y-%m-%d') datetime.date(2018, 1, 2)
+    parse_date('(2018-01-01) + 2weeks', '%Y-%m-%d') datetime.date(2018, 1, 15)
 
-    Parameters:
-        `datestr`: the date to parse, formatted as `date_fmt`
+    Parameters: `datestr`: the date to parse, formatted as `date_fmt`
         `date_fmt`: expected date format
 
-    Returns:
-        The `date` object. If date could not be parsed, a ValueError
-        will be raised.
+    Returns: The `date` object. If date could not be parsed, a ValueError will
+        be raised.
     """
     rgx = re.compile(r'\((?P<date>.*)\)(\s*(?P<sign>[+-])(?P<offset>.*))?$')
     datestr = datestr.strip()
@@ -69,9 +148,7 @@ def parse_date(datestr: str, date_fmt: str) -> date:
     dateobj = _norm_date(datestr, date_fmt)
     offset = match.group('offset')
     if offset:
-        sign = match.group('sign')
-        delta = pd.Timedelta(offset)
-        dateobj = (dateobj + delta) if sign == '+' else (dateobj - delta)
+        return add_offset(dateobj, offset, match.group('sign'))
     return dateobj
 
 

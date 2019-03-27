@@ -132,6 +132,19 @@ def test_filter_by_date_stop_only_with_offset(sample_data):
     assert_frame_equal_noindex(df, expected)
 
 
+def test_filter_by_date_stop_only_with_week_offset(sample_data):
+    """It should keep rows before a specific date with offset"""
+    df = pd.DataFrame(sample_data)
+    for weekalias in ('w', 'W', 'week', 'weeks', 'Week', 'Weeks'):
+        df = filter_by_date(df, 'date', stop=f'(2018-01-16) + 2{weekalias}')
+        expected = pd.DataFrame([
+            {'date': '2018-01-28', 'value': 0},
+            {'date': '2018-01-28', 'value': 1},
+            {'date': '2018-01-29', 'value': 2},
+        ])
+        assert_frame_equal_noindex(df, expected)
+
+
 def test_filter_by_date_range(sample_data):
     """It should keep rows on a specific range"""
     df = pd.DataFrame(sample_data)
@@ -222,8 +235,25 @@ def test_parse_date():
     assert parse_date('(2018-01-02) + 1d', '%Y-%m-%d') == date(2018, 1, 3)
     assert parse_date('(2018-01-02)-1d', '%Y-%m-%d') == date(2018, 1, 1)
     assert parse_date('(2018-01-02) - 1d', '%Y-%m-%d') == date(2018, 1, 1)
+    assert parse_date('(2018-01-18) - 2weeks', '%Y-%m-%d') == date(2018, 1, 4)
+    assert parse_date('(2018-01-18) - 2W', '%Y-%m-%d') == date(2018, 1, 4)
+    assert parse_date('(2018-01-18) + 2Y', '%Y-%m-%d') == date(2020, 1, 18)
+    assert parse_date('(2018-01-18) - 2Y', '%Y-%m-%d') == date(2016, 1, 18)
+    assert parse_date('(2018-01-18) + 26months', '%Y-%m-%d') == date(2020, 3, 18)
+    assert parse_date('(2018-01-18) - 26months', '%Y-%m-%d') == date(2015, 11, 18)
+    assert parse_date('(2018-12-18) + 1month', '%Y-%m-%d') == date(2019, 1, 18)
+    assert parse_date('(2018-01-31) + 1month', '%Y-%m-%d') == date(2018, 2, 28)
+    assert parse_date('(2020-02-29) + 1Y', '%Y-%m-%d') == date(2021, 2, 28)
+    assert parse_date('(2020-02-29) - 1Y', '%Y-%m-%d') == date(2019, 2, 28)
+    assert parse_date('(2020-01-31) + 1month', '%Y-%m-%d') == date(2020, 2, 29)
     assert parse_date('TODAY', '%Y-%m-%d') == date.today()
     yesterday = date.today() - timedelta(days=1)
     tomorrow = date.today() + timedelta(days=1)
     assert parse_date('(TODAY) + 1day', '%Y-%m-%d') == tomorrow
     assert parse_date('(TODAY) - 1day', '%Y-%m-%d') == yesterday
+
+
+def test_unknown_offset_raises_error():
+    """It should raise an exception when an invalid offset is used."""
+    with pytest.raises(ValueError):
+        assert parse_date('(2018-01-01) + 1century', '%Y-%m-%d')
