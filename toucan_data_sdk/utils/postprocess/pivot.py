@@ -132,5 +132,5 @@ def pivot_by_group(
         df.loc[
             df[temporary_colum].isin(param[column]), temporary_colum] = column
 
-    df = pivot(df, index, temporary_colum, value)
+    df = pivot(df, index, temporary_colum, value, agg_function='mean')
     return df
