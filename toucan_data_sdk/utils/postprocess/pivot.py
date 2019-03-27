@@ -3,7 +3,7 @@ import pandas as pd
 from typing import List
 
 
-def pivot(df, index: List[str], column: str, value: str):
+def pivot(df, index: List[str], column: str, value: str, agg_function: str = 'sum'):
     """
     Pivot the data. Reverse operation of melting
 
@@ -15,6 +15,9 @@ def pivot(df, index: List[str], column: str, value: str):
     - `index` (*list*): names of index columns.
     - `column` (*str*): column name to pivot on
     - `value` (*str*): column name containing the value to fill the pivoted df
+
+    *optional :*
+    - `agg_function`: aggregation function to use among 'sum' (default), 'count', 'mean', 'max', 'min'
 
     ---
 
@@ -49,7 +52,8 @@ def pivot(df, index: List[str], column: str, value: str):
     else:
         df = pd.pivot_table(df, index=index,
                             columns=column,
-                            values=value)
+                            values=value,
+                            aggfunc=agg_function)
     df = df.reset_index()
     return df
 

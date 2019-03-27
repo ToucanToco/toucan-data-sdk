@@ -37,6 +37,32 @@ def test_pivot():
     assert res[2016][0] == 'value3 value4'
 
 
+def test_pivot_agg_sum():
+    """ It should return result for pivot """
+
+    # ~~~~ pivot on int column ~~~
+    data = pd.DataFrame([
+        {'variable': 'toto', 'wave': 'wave1', 'year': 2014, 'value': 300},
+        {'variable': 'toto', 'wave': 'wave1', 'year': 2015, 'value': 250},
+        {'variable': 'toto', 'wave': 'wave1', 'year': 2016, 'value': 450},
+        {'variable': 'toto', 'wave': 'wave1', 'year': 2014, 'value': 100},
+        {'variable': 'toto', 'wave': 'wave1', 'year': 2015, 'value': 150},
+        {'variable': 'toto', 'wave': 'wave1', 'year': 2016, 'value': 200}
+
+    ])
+    kwargs = {
+        'index': ['variable', 'wave'],
+        'column': 'year',
+        'value': 'value'
+    }
+    res = pivot(data, **kwargs)
+    assert res[2014][0] == 400
+    assert res[2015][0] == 300
+    assert res[2016][0] == 650
+
+
+
+
 def test_pivot_by_group():
     """ It should return result for pivot """
     data = pd.DataFrame({
