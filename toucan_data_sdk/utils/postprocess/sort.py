@@ -1,7 +1,7 @@
-from typing import List
+from typing import List, Union
 
 
-def sort(df, columns: List[str], order='asc'):
+def sort(df, columns: Union[str, List[str]], order: Union[str, List[str]] = None):
     """
 
     Sort the data by the value in specified columns
@@ -11,10 +11,8 @@ def sort(df, columns: List[str], order='asc'):
     ### Parameters
 
     *mandatory :*
-    - `columns` (*list*): list of the names of the columns to sort
-
-    *optional :*
-    - `order` (*str*): 'asc' (default) or 'desc'
+    - `columns` (*list*): dict of the column names as keys and order
+    ('asc' or 'desc') as values.
 
     ---
 
@@ -31,8 +29,8 @@ def sort(df, columns: List[str], order='asc'):
 
     ```cson
     sort:
-      columns: ['variable']
-      order: 'asc'
+      columns:
+       'variable': 'asc'
     ```
 
     **Output**
@@ -43,6 +41,21 @@ def sort(df, columns: List[str], order='asc'):
     |     B    |  200  |
     |     A    |  220  |
     |     C    |  300  |
+
     """
-    ascending = order != 'desc'
-    return df.sort_values(columns, ascending=ascending)
+    if not isinstance(columns, list):
+        columns = [columns]
+    if order is None:
+        orders = ['asc'] * len(columns)
+    else:
+        if not isinstance(order, list):
+            order = [order]
+        assert len(order) == len(columns), "'columns' and 'order' lists" \
+                                           "must be of same length"
+        orders = []
+        for ord in order:
+            assert ord in ['asc', 'desc'], f"Got order value: {order}." \
+                                            "Expected 'asc' or 'desc'"
+            orders.append(ord == 'asc')
+        print(orders)
+    return df.sort_values(columns, ascending=orders)
