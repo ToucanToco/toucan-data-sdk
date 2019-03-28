@@ -11,8 +11,14 @@ def sort(df, columns: Union[str, List[str]], order: Union[str, List[str]] = None
     ### Parameters
 
     *mandatory :*
-    - `columns` (*list*): dict of the column names as keys and order
-    ('asc' or 'desc') as values.
+    - `columns` (*str* or *list(str)*): list of columns to order
+
+    *optional :*
+    - `order` (*str* or *list(str)*): the ordering condition ('asc' for
+    ascending or 'desc' for descending). If not specified, 'asc' by default. If
+    a list of columns have been specified for the `columns` parameter,
+    the `order` parameter, if explicitly specified, must be a list of same
+    length as the `columns` list
 
     ---
 
