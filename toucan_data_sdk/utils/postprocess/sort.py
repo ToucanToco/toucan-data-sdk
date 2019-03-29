@@ -55,7 +55,7 @@ def sort(df, columns: Union[str, List[str]], order: Union[str, List[str]] = None
         orders = ['asc'] * len(columns)
     else:
         if not isinstance(order, list):
-            order = [order]
+            order = [order] * len(columns)
         assert len(order) == len(columns), "'columns' and 'order' lists" \
                                            "must be of same length"
         orders = []

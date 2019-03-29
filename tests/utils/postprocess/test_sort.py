@@ -57,6 +57,20 @@ def test_sort_values_simple_no_order():
     assert output['value'].tolist() == expected
 
 
+def test_sort_values_multiple_column_order_desc():
+    """ It should sort dataframe """
+    data = pd.DataFrame([
+        {'variable': 'toto', 'Category': 1, 'value': 300},
+        {'variable': 'toto', 'Category': 2, 'value': 100},
+        {'variable': 'tata', 'Category': 2, 'value': 250},
+        {'variable': 'tata', 'Category': 1, 'value': 450}
+    ])
+
+    expected = [100, 300, 250, 450]
+    output = sort(data, ['variable', 'Category'], order='desc')
+    assert output['value'].tolist() == expected
+
+
 def test_sort_values_multiple_columns():
     """ It should sort dataframe """
     data = pd.DataFrame([
