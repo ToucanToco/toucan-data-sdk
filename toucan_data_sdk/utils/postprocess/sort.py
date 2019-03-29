@@ -49,9 +49,9 @@ def sort(df, columns: Union[str, List[str]], order: Union[str, List[str]] = 'asc
     |     C    |  300  |
 
     """
-    if not isinstance(columns, list):
+    if isinstance(columns, str):
         columns = [columns]
-    if not isinstance(order, list):
+    if isinstance(order, str):
         assert order in ['asc', 'desc']
         orders = [order == 'asc'] * len(columns)
     else:
