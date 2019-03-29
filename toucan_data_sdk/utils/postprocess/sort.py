@@ -15,7 +15,8 @@ def sort(df, columns: Union[str, List[str]], order: Union[str, List[str]] = 'asc
 
     *optional :*
     - `order` (*str* or *list(str)*): the ordering condition ('asc' for
-    ascending or 'desc' for descending). If not specified, 'asc' by default. If
+    ascending or 'desc' for descending). If not specified, 'asc' by default.
+    If
     a list of columns has been specified for the `columns` parameter,
     the `order` parameter, if explicitly specified, must be a list of same
     length as the `columns` list (if a string is specified, it will be
