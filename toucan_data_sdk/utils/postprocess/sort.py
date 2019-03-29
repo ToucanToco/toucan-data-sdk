@@ -19,7 +19,7 @@ def sort(df, columns: Union[str, List[str]], order: Union[str, List[str]] = 'asc
     a list of columns has been specified for the `columns` parameter,
     the `order` parameter, if explicitly specified, must be a list of same
     length as the `columns` list (if a string is specified, it will be
-    replicated in a list of same length of the `columns list`)
+    replicated in a list of same length of the `columns` list)
 
     ---
 
