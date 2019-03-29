@@ -1,7 +1,7 @@
 from typing import List, Union
 
 
-def sort(df, columns: Union[str, List[str]], order: Union[str, List[str]] = None):
+def sort(df, columns: Union[str, List[str]], order: Union[str, List[str]] = 'asc'):
     """
 
     Sort the data by the value in specified columns
@@ -36,8 +36,7 @@ def sort(df, columns: Union[str, List[str]], order: Union[str, List[str]] = None
 
     ```cson
     sort:
-      columns:
-       'variable': 'asc'
+      columns: 'value'
     ```
 
     **Output**
@@ -52,11 +51,10 @@ def sort(df, columns: Union[str, List[str]], order: Union[str, List[str]] = None
     """
     if not isinstance(columns, list):
         columns = [columns]
-    if order is None:
-        orders = ['asc'] * len(columns)
+    if not isinstance(order, list):
+        assert order in ['asc', 'desc']
+        orders = [order == 'asc'] * len(columns)
     else:
-        if not isinstance(order, list):
-            order = [order] * len(columns)
         assert len(order) == len(columns), "'columns' and 'order' lists" \
                                            "must be of same length"
         orders = []
@@ -64,5 +62,4 @@ def sort(df, columns: Union[str, List[str]], order: Union[str, List[str]] = None
             assert ord in ['asc', 'desc'], f"Got order value: {order}." \
                                             "Expected 'asc' or 'desc'"
             orders.append(ord == 'asc')
-        print(orders)
     return df.sort_values(columns, ascending=orders)
