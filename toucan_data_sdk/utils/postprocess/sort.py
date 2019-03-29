@@ -1,7 +1,7 @@
-from typing import List
+from typing import List, Union
 
 
-def sort(df, columns: List[str], order='asc'):
+def sort(df, columns: Union[str, List[str]], order: Union[str, List[str]] = 'asc'):
     """
 
     Sort the data by the value in specified columns
@@ -11,10 +11,15 @@ def sort(df, columns: List[str], order='asc'):
     ### Parameters
 
     *mandatory :*
-    - `columns` (*list*): list of the names of the columns to sort
+    - `columns` (*str* or *list(str)*): list of columns to order
 
     *optional :*
-    - `order` (*str*): 'asc' (default) or 'desc'
+    - `order` (*str* or *list(str)*): the ordering condition ('asc' for
+    ascending or 'desc' for descending). If not specified, 'asc' by default.
+    If a list of columns has been specified for the `columns` parameter,
+    the `order` parameter, if explicitly specified, must be a list of same
+    length as the `columns` list (if a string is specified, it will be
+    replicated in a list of same length of the `columns` list)
 
     ---
 
@@ -31,8 +36,7 @@ def sort(df, columns: List[str], order='asc'):
 
     ```cson
     sort:
-      columns: ['variable']
-      order: 'asc'
+      columns: 'value'
     ```
 
     **Output**
@@ -43,6 +47,19 @@ def sort(df, columns: List[str], order='asc'):
     |     B    |  200  |
     |     A    |  220  |
     |     C    |  300  |
+
     """
-    ascending = order != 'desc'
-    return df.sort_values(columns, ascending=ascending)
+    if isinstance(columns, str):
+        columns = [columns]
+    if isinstance(order, str):
+        assert order in ['asc', 'desc']
+        orders = [order == 'asc'] * len(columns)
+    else:
+        assert len(order) == len(columns), "'columns' and 'order' lists" \
+                                           "must be of same length"
+        orders = []
+        for ord in order:
+            assert ord in ['asc', 'desc'], f"Got order value: {order}." \
+                                            "Expected 'asc' or 'desc'"
+            orders.append(ord == 'asc')
+    return df.sort_values(columns, ascending=orders)
