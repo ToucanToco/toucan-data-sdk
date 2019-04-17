@@ -28,6 +28,6 @@ def fake_data_generator(conf: List[dict]) -> pd.DataFrame:
     number_confs = [x for x in conf if x['type'] == 'number']
     for num_conf in number_confs:
         num_column = np.random.uniform(low=num_conf['min'], high=num_conf['max'], size=df.shape[0])
-        df[num_conf['name']] = num_column.round(num_conf['digits'])
+        df[num_conf['name']] = num_column.round(num_conf.get('digits', 4))
 
     return df
