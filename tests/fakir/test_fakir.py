@@ -8,7 +8,7 @@ conf_1 = [
 ]
 
 conf_2 = conf_1 + [
-  {'type': 'number', 'min': 10, 'max': 100, 'digits': 4, 'name': 'Percentage'},
+  {'type': 'number', 'min': 10, 'max': 100, 'digits': 2, 'name': 'Percentage'},
   {'type': 'label', 'values': ['Man', 'Women'], 'name': 'Sexe'}
 ]
 
@@ -24,4 +24,5 @@ def test_fake_data_generator():
 
     fake_data = fake_data_generator(conf_2)
     assert set(fake_data.columns) == {'Cities', 'Agence_type', 'CA', 'Sexe', 'Percentage'}
+    assert fake_data['Percentage'].round(2).equals(fake_data['Percentage'])
     assert fake_data.shape == (3 * 3 * 2, 5)
