@@ -48,7 +48,7 @@ def date_requester_generator(
     - `times_delta` (*dict*): Add new columns for each key
         - key (*str*): name of the column
         - value (*str*): time delta (e.g. '+1 day', '+3 day', '-4 month')
-    - `locale` (*str*): locale used to display the dates (by default, the client one is taken)
+    - `locale` (*str*): locale used to display the dates (by default, the process one is taken)
     ---
 
     ### Example

@@ -28,6 +28,9 @@ def setlocale(name: Optional[str]):
         saved = locale.setlocale(locale.LC_ALL)
         try:
             yield locale.setlocale(locale.LC_ALL, name)
+        except Exception:
+            logger.warning(f'Impossible to set locale from {name!r}')
+            yield saved
         finally:
             locale.setlocale(locale.LC_ALL, saved)
 

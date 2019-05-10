@@ -99,3 +99,6 @@ def test_date_requester_generator_locales():
 
     de_res = date_requester_generator(df, 'date', frequency='D', format='%A', locale='de')
     assert de_res.DATE.tolist() == ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag']
+
+    bad_locale_res = date_requester_generator(df, 'date', frequency='D', format='%A', locale='pika')
+    assert bad_locale_res.equals(res)
