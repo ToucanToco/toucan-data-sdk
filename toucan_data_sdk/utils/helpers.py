@@ -1,15 +1,38 @@
 import inspect
 import linecache
+import locale
+import logging
 import re
 import shutil
+import threading
+from contextlib import contextmanager
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
 from joblib._store_backends import StoreBackendBase
 from slugify import slugify as _slugify
-import logging
 
 logger = logging.getLogger(__name__)
+LOCALE_LOCK = threading.Lock()
+CURRENT_LOCALE = locale.getlocale()
+
+
+@contextmanager
+def setlocale(name: Optional[str]):
+    """
+    Context manager to set a locale ('en', 'fr', 'de', ...)
+    """
+    if name is not None:
+        name = locale.normalize(f'{name}.UTF-8')
+    with LOCALE_LOCK:
+        saved = locale.setlocale(locale.LC_ALL)
+        try:
+            yield locale.setlocale(locale.LC_ALL, name)
+        except Exception:
+            logger.warning(f'Impossible to set locale from {name!r}')
+            yield saved
+        finally:
+            locale.setlocale(locale.LC_ALL, saved)
 
 
 def get_orig_function(f):

@@ -18,7 +18,6 @@ df_2 = pd.DataFrame({
 
 
 def test_date_requester_generator():
-
     # mandatory only
     result = date_requester_generator(df, "date",
                                       frequency='D')
@@ -92,3 +91,14 @@ def test_date_requester_generator():
     assert result.shape == (5, 4)
     assert "Tomorow" in result.columns
     assert list(result["Tomorow"]) == expected_tomorow
+
+
+def test_date_requester_generator_locales():
+    res = date_requester_generator(df, 'date', frequency='D', format='%A')
+    assert res.DATE.tolist() == ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+
+    de_res = date_requester_generator(df, 'date', frequency='D', format='%A', locale='de')
+    assert de_res.DATE.tolist() == ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag']
+
+    bad_locale_res = date_requester_generator(df, 'date', frequency='D', format='%A', locale='pika')
+    assert bad_locale_res.equals(res)

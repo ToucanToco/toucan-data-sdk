@@ -6,6 +6,8 @@ jobs:
       - image: circleci/python:3.7
     steps:
       - checkout
+      - run: sudo sed -i -e 's/^# en_US.UTF-8/en_US.UTF-8/; s/^# de_DE.UTF-8/de_DE.UTF-8/' /etc/locale.gen
+      - run: sudo locale-gen
       - run: sudo pip install tox codecov
       - run: tox -e flake8,coverage
       - run: codecov --token=d84070ff-f638-4632-91c4-437ca7d45e2e
@@ -14,6 +16,8 @@ jobs:
       - image: circleci/python:3.6
     steps:
       - checkout
+      - run: sudo sed -i -e 's/^# en_US.UTF-8/en_US.UTF-8/; s/^# de_DE.UTF-8/de_DE.UTF-8/' /etc/locale.gen
+      - run: sudo locale-gen
       - run: sudo pip install tox
       - run: tox -e py36
   py37:
@@ -21,6 +25,8 @@ jobs:
       - image: circleci/python:3.7
     steps:
       - checkout
+      - run: sudo sed -i -e 's/^# en_US.UTF-8/en_US.UTF-8/; s/^# de_DE.UTF-8/de_DE.UTF-8/' /etc/locale.gen
+      - run: sudo locale-gen
       - run: sudo pip install tox
       - run: tox -e py37
 

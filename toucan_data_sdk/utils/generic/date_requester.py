@@ -1,6 +1,8 @@
 import pandas as pd
 from typing import Dict
 
+from ..helpers import setlocale
+
 
 def date_requester_generator(
         df: pd.DataFrame,
@@ -10,7 +12,8 @@ def date_requester_generator(
         format: str = '%Y-%m-%d',
         granularities: Dict[str, str] = None,
         others_format: Dict[str, str] = None,
-        times_delta: Dict[str, str] = None
+        times_delta: Dict[str, str] = None,
+        locale: str = None
 ) -> pd.DataFrame:
     """
     From a dataset containing dates in a column, return a dataset
@@ -38,14 +41,14 @@ def date_requester_generator(
         - key (*str*): name of the granularity
         - value (*str*): Format of the granularity e.g. '%d/%m/%Y' (see [pandas doc](
             https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior))
-    - `others_format` (*dict*) : Add new columns for each key
-        - key (*str*) : name of the column
+    - `others_format` (*dict*): Add new columns for each key
+        - key (*str*): name of the column
         - value (*str*): format of the granularity e.g. '%d/%m/%Y' (see [pandas doc](
             https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior))
-    - `times_delta` (*dict*) : Add new columns for each key
-        - key (*str*) : name of the column
+    - `times_delta` (*dict*): Add new columns for each key
+        - key (*str*): name of the column
         - value (*str*): time delta (e.g. '+1 day', '+3 day', '-4 month')
-
+    - `locale` (*str*): locale used to display the dates (by default, the process one is taken)
     ---
 
     ### Example
@@ -82,37 +85,37 @@ def date_requester_generator(
     05/01/2018 | 2018-01-05 |         day | 2018
     01 | 2018-01-01 |     Semaine | 2018
     """
+    with setlocale(locale):
+        start_date = pd.to_datetime(df[date_column], format=date_column_format).min()
+        end_date = pd.to_datetime(df[date_column], format=date_column_format).max()
 
-    start_date = pd.to_datetime(df[date_column], format=date_column_format).min()
-    end_date = pd.to_datetime(df[date_column], format=date_column_format).max()
+        granularities = granularities or {'date': format}
+        others_format = others_format or {}
+        times_delta = times_delta or {}
 
-    granularities = granularities or {'date': format}
-    others_format = others_format or {}
-    times_delta = times_delta or {}
+        # Base DataFrame
+        columns_list = ['DATE', 'DATETIME', 'GRANULARITY', *others_format, *times_delta]
+        result_df = {col_name: [] for col_name in columns_list}
 
-    # Base DataFrame
-    columns_list = ['DATE', 'DATETIME', 'GRANULARITY', *others_format, *times_delta]
-    result_df = {col_name: [] for col_name in columns_list}
+        # Generate the range
+        date_range = pd.date_range(start=start_date, end=end_date, freq=frequency)
 
-    # Generate the range
-    date_range = pd.date_range(start=start_date, end=end_date, freq=frequency)
+        for granularity_name, granularity_format in granularities.items():
+            date_range_label = date_range.strftime(granularity_format)
+            a = list(set(date_range_label))
+            index_unique = list(set([a.index(x) for x in date_range_label]))
+            date_range_datetime = date_range[index_unique]
+            date_range_label = date_range_label.unique()
 
-    for granularity_name, granularity_format in granularities.items():
-        date_range_label = date_range.strftime(granularity_format)
-        a = list(set(date_range_label))
-        index_unique = list(set([a.index(x) for x in date_range_label]))
-        date_range_datetime = date_range[index_unique]
-        date_range_label = date_range_label.unique()
+            result_df['DATE'] += list(date_range_label)
+            result_df['DATETIME'] += list(date_range_datetime)
+            result_df['GRANULARITY'] += [granularity_name] * len(date_range_label)
 
-        result_df['DATE'] += list(date_range_label)
-        result_df['DATETIME'] += list(date_range_datetime)
-        result_df['GRANULARITY'] += [granularity_name] * len(date_range_label)
+            for col_name, other_format in others_format.items():
+                result_df[col_name] += list(date_range_datetime.strftime(other_format))
 
-        for col_name, other_format in others_format.items():
-            result_df[col_name] += list(date_range_datetime.strftime(other_format))
-
-        for col_name, time_delta in times_delta.items():
-            result_df[col_name] += list((date_range_datetime + pd.Timedelta(time_delta))
-                                        .strftime(granularity_format))
+            for col_name, time_delta in times_delta.items():
+                result_df[col_name] += list((date_range_datetime + pd.Timedelta(time_delta))
+                                            .strftime(granularity_format))
 
     return pd.DataFrame(result_df)
