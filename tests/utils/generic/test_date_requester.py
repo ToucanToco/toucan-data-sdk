@@ -16,6 +16,11 @@ df_2 = pd.DataFrame({
     "my_kpi": [1, 2, 3, 4, 5]
 })
 
+df_3 = pd.DataFrame({
+    "date": ['2018-03-01', '2017-10-01'],
+    "my_kpi": [1, 5]
+})
+
 
 def test_date_requester_generator():
 
@@ -92,3 +97,15 @@ def test_date_requester_generator():
     assert result.shape == (5, 4)
     assert "Tomorow" in result.columns
     assert list(result["Tomorow"]) == expected_tomorow
+
+    # with multi-ganularity and others_format
+    result = date_requester_generator(df_3, "date",
+                                      frequency='M',
+                                      granularities={"Mois": "%Y-%m", "Annee": "%Y"},
+                                      others_format={'DYEAR': '%Y', "DMONTH": '%m'})
+
+    assert result.shape == (7, 5)
+    assert list(result["DATE"]) == ['2017-10', '2017-11', '2017-12', '2018-01', '2018-02', '2017', '2018']
+    assert list(result["GRANULARITY"]) == ['Mois']*5+["Annee"]*2
+    assert list(result["DYEAR"]) == ['2017', '2017', '2017', '2018', '2018', '2017', '2018']
+    assert list(result["DMONTH"]) == ["10", "11", "12", "01", "02", "10", "01"]
