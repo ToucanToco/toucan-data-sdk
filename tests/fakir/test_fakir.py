@@ -1,5 +1,5 @@
-from toucan_data_sdk.fakir.fake_data_generator import fake_data_generator
-from toucan_data_sdk.fakir.predict_number_of_row_from_conf import predict_number_of_row_from_conf
+from toucan_data_sdk.fakir import fake_data_generator
+from toucan_data_sdk.fakir import predict_number_of_row_from_conf
 
 conf_1 = [
   {'type': 'label', 'values': ['Paris', 'Marseille', 'Lyons'], 'name': 'Cities'},
