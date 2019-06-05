@@ -102,9 +102,9 @@ def date_requester_generator(
 
         for granularity_name, granularity_format in granularities.items():
             date_range_label = date_range.strftime(granularity_format)
-            a = list(set(date_range_label))
-            index_unique = list(set([a.index(x) for x in date_range_label]))
-            date_range_datetime = date_range[index_unique]
+            date_range_label_as_list = list(date_range_label)
+            first_index = list(set([date_range_label_as_list.index(x) for x in date_range_label]))
+            date_range_datetime = date_range[first_index]
             date_range_label = date_range_label.unique()
 
             result_df['DATE'] += list(date_range_label)
