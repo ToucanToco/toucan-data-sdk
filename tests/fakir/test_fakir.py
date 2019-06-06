@@ -1,5 +1,5 @@
-from toucan_data_sdk.fakir.fake_data_generator import fake_data_generator
-
+from toucan_data_sdk.fakir import fake_data_generator
+from toucan_data_sdk.fakir import predict_number_of_row_from_conf
 
 conf_1 = [
   {'type': 'label', 'values': ['Paris', 'Marseille', 'Lyons'], 'name': 'Cities'},
@@ -26,3 +26,26 @@ def test_fake_data_generator():
     assert set(fake_data.columns) == {'Cities', 'Agence_type', 'CA', 'Sexe', 'Percentage'}
     assert fake_data['Percentage'].round(2).equals(fake_data['Percentage'])
     assert fake_data.shape == (3 * 3 * 2, 5)
+
+
+def test_predict_number_of_row_from_conf():
+    conf = [
+      {'values': ['a', 'b', 'c'], 'type': 'label'},
+      {'min': 0, 'max': 10, 'type': 'number'},
+    ]
+    assert predict_number_of_row_from_conf(conf) == 3
+
+    conf = [
+      {'values': ['a', 'b', 'c'], 'type': 'label'},
+      {'values': ['x', 'y'], 'type': 'label'},
+      {'min': 0, 'max': 10, 'type': 'number'},
+    ]
+    assert predict_number_of_row_from_conf(conf) == 3*2
+
+    conf = [
+      {'values': ['a', 'b', 'c'], 'type': 'label'},
+      {'values': ['x', 'y'], 'type': 'label'},
+      {'values': ['A', 'B', 'C', 'D'], 'type': 'label'},
+      {'min': 0, 'max': 10, 'type': 'number'},
+    ]
+    assert predict_number_of_row_from_conf(conf) == 3*2*4
