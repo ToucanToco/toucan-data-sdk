@@ -239,6 +239,7 @@ def test_parse_date():
     assert parse_date('(2018-01-18) - 2W', '%Y-%m-%d') == date(2018, 1, 4)
     assert parse_date('(2018-01-18) + 2Y', '%Y-%m-%d') == date(2020, 1, 18)
     assert parse_date('(2018-01-18) - 2Y', '%Y-%m-%d') == date(2016, 1, 18)
+    assert parse_date('(2018-01-18) + 2YEARS', '%Y-%m-%d') == date(2020, 1, 18)
     assert parse_date('(2018-01-18) + 26months', '%Y-%m-%d') == date(2020, 3, 18)
     assert parse_date('(2018-01-18) - 26months', '%Y-%m-%d') == date(2015, 11, 18)
     assert parse_date('(2018-12-18) + 1month', '%Y-%m-%d') == date(2019, 1, 18)

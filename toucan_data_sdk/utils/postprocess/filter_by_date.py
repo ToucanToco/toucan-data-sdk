@@ -39,8 +39,8 @@ def add_offset(dateobj, hr_offset: str, sign: str):
 
     rely on `pandas.Timedelta` and add the following extra shortcuts:
     - "w", "week" and "weeks" for a week (i.e. 7days)
-    - "month', "months" for a month (i.e. no day computation, just increment the month)
-    - "y", "year', "years" for a year (i.e. no day computation, just increment the year)
+    - "m", "month', "months" for a month (i.e. no day computation, just increment the month)
+    - "y", "year", "years" for a year (i.e. no day computation, just increment the year)
     """
     sign_coeff = 1 if sign == '+' else -1
     try:
