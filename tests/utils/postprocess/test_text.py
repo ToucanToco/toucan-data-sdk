@@ -115,6 +115,20 @@ def test_concat(df):
     assert df['res'].tolist() == ['pika/77/1', 'fway/88/3', 'zbruh/99/2', 'wesh/11/1']
 
 
+def test_concat_integer_columns():
+    """It should keep the numbers as int if possible in concat"""
+    df = pd.DataFrame({'a': ['pika', 'bulbi'],
+                       'b': [1, None],
+                       'c': [1.0, 2.1],
+                       })
+    concat_df = concat(df.copy(), columns=['a', 'b'], new_column='res')
+    assert concat_df['res'].tolist() == ['pika1', 'bulbi']
+    assert concat_df[['a', 'b', 'c']].equals(df)
+
+    assert concat(df, columns=['a', 'c'], new_column='res')['res'].tolist() == ['pika1.0', 'bulbi2.1']
+    assert concat(df, columns=['b', 'c'], new_column='res')['res'].tolist() == ['11.0', '2.1']
+
+
 def test_contains(df):
     df = contains(df, 'b', new_column='res', pat='ca', case=False)
     assert df['res'].tolist() == [False, True, False, True]
