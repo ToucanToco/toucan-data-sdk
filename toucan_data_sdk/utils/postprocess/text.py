@@ -1,6 +1,7 @@
 from typing import List, Any
 
 import numpy as np
+import pandas as pd
 
 __all__ = (
     'lower',
@@ -475,7 +476,23 @@ def concat(
     if len(columns) < 2:
         raise ValueError('The `columns` parameter needs to have at least 2 columns')
     first_col, *other_cols = columns
-    df.loc[:, new_column] = df[first_col].astype(str).str.cat(df[other_cols].astype(str), sep=sep)
+
+    def is_integer_column(df: pd.DataFrame, column: str):
+        """Check if a column has only integers or NaN"""
+        try:
+            return all(pd.isnull(x) or x.is_integer() for x in df[column])
+        except Exception:
+            return False
+
+    str_sub_df = df[columns]
+    for col in columns:
+        # In case of integer columns, we don't want the values to be considered
+        # as floats (with leading `.0` because of NaN values)
+        if is_integer_column(str_sub_df, col):
+            str_sub_df[col] = str_sub_df[col].apply(lambda x: '' if pd.isnull(x) else int(x))
+        str_sub_df[col] = str_sub_df[col].astype(str)
+
+    df.loc[:, new_column] = str_sub_df[first_col].str.cat(str_sub_df[other_cols], sep=sep)
     return df
 
 
