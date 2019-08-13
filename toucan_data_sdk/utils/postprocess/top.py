@@ -1,3 +1,4 @@
+import pandas as pd
 from typing import List, Union
 
 
@@ -6,7 +7,8 @@ def top(
         value: str,
         limit: int,
         order: str = 'asc',
-        group: Union[str, List[str]] = None
+        group: Union[str, List[str]] = None,
+        date_format: str = None
 ):
     """
     Get the top or flop N results based on a column value for each specified group columns
@@ -64,17 +66,24 @@ def top(
     ascending = order != 'desc'
     limit = int(limit)
     filter_func = 'nlargest' if (limit > 0) ^ ascending else 'nsmallest'
+    sorted_order = 1 if limit > 0 else -1
+    df = df.copy()
 
     def _top(df):
-        return getattr(df, filter_func)(abs(limit), value).sort_values(by=value,
-                                                                       ascending=ascending)
+        try:
+            df = getattr(df, filter_func)(abs(limit), value)
+        except TypeError:
+            # Create a temporay column and make sure the name is not already taken
+            temp_column = value
+            while temp_column in df.columns:
+                temp_column += '_'
+            # Fallback on dtype: object -> try to convert to datetime
+            df[temp_column] = pd.to_datetime(df[value], format=date_format)
+            df = getattr(df, filter_func)(abs(limit), temp_column)
+            del df[temp_column]
+        return df[::sorted_order]
 
-    if group is None:
-        df = _top(df)
-    else:
-        df = df.groupby(group).apply(_top)
-
-    return df
+    return _top(df) if group is None else df.groupby(group).apply(_top)
 
 
 def top_group(
@@ -153,6 +162,4 @@ def top_group(
     df2 = df.groupby(group_top + aggregate_by).agg(function).reset_index()
     df2 = top(df2, group=group, value=value, limit=limit, order=order).reset_index(drop=True)
     df2 = df2[group_top + aggregate_by]
-    df = df2.merge(df, on=group_top + aggregate_by)
-
-    return df
+    return df2.merge(df, on=group_top + aggregate_by)

@@ -64,6 +64,31 @@ def test_top():
         assert wa[i] == expected[i]
 
 
+def test_top_date_strings():
+    """It should manage to use top if the column can be interpretated as date"""
+    df = pd.DataFrame({
+        'date': ['2017-01-01', '2017-03-02', '2018-01-02', '2016-04-02', '2017-01-03']
+    })
+    top_df = top(df, value='date', limit=2)
+    assert top_df['date'].tolist() == ['2016-04-02', '2017-01-01']
+
+    top_df = top(df, value='date', limit=3, order='desc')
+    assert top_df['date'].tolist() == ['2018-01-02', '2017-03-02', '2017-01-03']
+
+    top_df = top(df, value='date', limit=3, order='desc', date_format='%Y-%d-%m')
+    assert top_df['date'].tolist() == ['2018-01-02', '2017-01-03', '2017-03-02']
+
+
+def test_top_date_strings_temp_column():
+    """It should not change existing columns"""
+    df = pd.DataFrame({
+        'date': ['2017-01-01', '2017-03-02'],
+        'date_': ['a', 'b'],
+        'date__': ['aa', 'bb']
+    })
+    assert top(df, value='date', limit=2, order='desc').equals(df[::-1])
+
+
 def test_top_group():
     """ It should return result for top_group """
     data = pd.DataFrame({
