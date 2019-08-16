@@ -1,6 +1,7 @@
+import inspect
+from functools import wraps
+
 import pandas as pd
-import toucan_data_sdk.utils.generic as generic_functions
-import toucan_data_sdk.utils.postprocess as postprocess_functions
 
 
 def _apply_condition(df, condition, new_column):
@@ -8,6 +9,9 @@ def _apply_condition(df, condition, new_column):
     `condition` can be a simple string or integer
     but also a dictionary or a list of dictionaries with postprocesses
     """
+    import toucan_data_sdk.utils.generic as generic_functions
+    import toucan_data_sdk.utils.postprocess as postprocess_functions
+
     # Single postprocess
     if isinstance(condition, dict):
         condition = [condition]
@@ -35,21 +39,47 @@ def _apply_condition(df, condition, new_column):
     return df
 
 
-def _if_else(df, *, if_, then_, else_=None, new_column):
-    if_sub_df = df.query(if_)
-    else_sub_df = df[~df.index.isin(if_sub_df.index)]
+def replace_by_reserved_keywords(f):
+    """
+    As `if`, `else` and `then` are reserved keywords, we have to
+    make the mapping to accepted keywords
+    """
+    reserved_keywords_mapping = {
+        'if_': 'if',
+        'then_': 'then',
+        'else_': 'else'
+    }
 
-    if_sub_df = _apply_condition(if_sub_df, then_, new_column)
-    else_sub_df = _apply_condition(else_sub_df, else_, new_column)
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        # Update the params to be sent to `if_else` as `if_`, `else_`, `then_`
+        for accepted, reserved in reserved_keywords_mapping.items():
+            if reserved in kwargs:
+                kwargs[accepted] = kwargs.pop(reserved)
+        return f(*args, **kwargs)
 
-    new_df = pd.concat([if_sub_df, else_sub_df]).sort_index()
+    # Update the signature of the wrapper to still have the right documentation
+    # and the excepted `if`, `else`, `then` params
+    sig_with_accepted_params = inspect.signature(f)
+    parameters_with_reserved_names = []
 
-    # Put back the order in columns
-    new_cols = [col for col in new_df.columns if col not in df.columns]
-    return new_df[[*df.columns, *new_cols]]
+    for param_name, param in sig_with_accepted_params.parameters.items():
+        if param_name in reserved_keywords_mapping:
+            parameters_with_reserved_names.append(
+                param.replace(name=reserved_keywords_mapping[param_name])
+            )
+        else:
+            parameters_with_reserved_names.append(param)
+
+    wrapper.__signature__ = sig_with_accepted_params.replace(
+        parameters=parameters_with_reserved_names
+    )
+
+    return wrapper
 
 
-def if_else(df, **kwargs):
+@replace_by_reserved_keywords
+def if_else(df, *, if_, then_, else_=None, new_column):
     """
     The usual if...then...else... statement
 
@@ -102,7 +132,14 @@ def if_else(df, **kwargs):
     | France   |   Nice   |    3  |      4     | 3.5  |
     |  Hell    | HellCity |   -10 |      0     | -5.0 |
     """
-    for kw in ('if', 'then', 'else'):
-        if kw in kwargs:
-            kwargs[f'{kw}_'] = kwargs.pop(kw)
-    return _if_else(df, **kwargs)
+    if_sub_df = df.query(if_)
+    else_sub_df = df[~df.index.isin(if_sub_df.index)]
+
+    if_sub_df = _apply_condition(if_sub_df, then_, new_column)
+    else_sub_df = _apply_condition(else_sub_df, else_, new_column)
+
+    new_df = pd.concat([if_sub_df, else_sub_df]).sort_index()
+
+    # Put back the order in columns
+    new_cols = [col for col in new_df.columns if col not in df.columns]
+    return new_df[[*df.columns, *new_cols]]
