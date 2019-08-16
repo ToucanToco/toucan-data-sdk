@@ -6,6 +6,7 @@ from .fillna import fillna
 from .filter import drop_duplicates, query
 from .filter_by_date import filter_by_date
 from .groupby import groupby
+from .if_else import if_else
 from .math import multiply, divide, add, subtract, formula, round_values, absolute_values
 from .melt import melt
 from .percentage import percentage
