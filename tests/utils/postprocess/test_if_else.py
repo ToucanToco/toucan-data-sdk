@@ -1,6 +1,13 @@
+import inspect
+
 import pandas as pd
 
-from toucan_data_sdk.utils.postprocess.if_else import if_else
+from toucan_data_sdk.utils.postprocess import if_else
+
+
+def test_if_else_signature():
+    assert if_else.__doc__.strip().startswith('The usual if...then...else... statement')
+    assert str(inspect.signature(if_else)) == '(df, *, if, then, else=None, new_column)'
 
 
 def test_if_else():
