@@ -1,3 +1,4 @@
+import pandas as pd
 import sys
 import textwrap
 import types
@@ -5,10 +6,16 @@ import types
 import pytest
 
 from toucan_data_sdk.utils.helpers import (
+    get_temp_column_name,
     get_param_value_from_func_call,
     get_func_sourcecode,
     clean_cachedir_old_entries
 )
+
+
+def test_get_temp_column_name():
+    df = pd.DataFrame({'__tmp__': ['a, b']})
+    assert get_temp_column_name(df) == '__tmp___'
 
 
 def test_get_param_value_from_func_call():

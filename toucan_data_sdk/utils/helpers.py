@@ -17,6 +17,14 @@ LOCALE_LOCK = threading.Lock()
 CURRENT_LOCALE = locale.getlocale()
 
 
+def get_temp_column_name(df) -> str:
+    """Small helper to get a new column name that does not already exist"""
+    temp_column_name = '__tmp__'
+    while temp_column_name in df.columns:
+        temp_column_name += '_'
+    return temp_column_name
+
+
 @contextmanager
 def setlocale(name: Optional[str]):
     """
