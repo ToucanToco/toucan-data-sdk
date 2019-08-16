@@ -3,6 +3,8 @@ from typing import List
 import numpy as np
 import pandas as pd
 
+from toucan_data_sdk.utils.helpers import get_temp_column_name
+
 
 def pivot(
         df,
@@ -127,14 +129,16 @@ def pivot_by_group(
     |   A  |   Group 2  |    6    |    0.2    |
 
     """
+    df = df.copy()
+
     if id_cols is None:
         index = [variable]
     else:
         index = [variable] + id_cols
 
     param = pd.DataFrame(groups, index=new_columns)
-    temporary_colum = 'tmp'
 
+    temporary_colum = get_temp_column_name(df)
     df[temporary_colum] = df[variable]
     for column in param.columns:
         df.loc[df[variable].isin(param[column]), variable] = column

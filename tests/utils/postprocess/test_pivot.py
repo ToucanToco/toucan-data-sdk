@@ -1,5 +1,4 @@
 import pandas as pd
-from copy import copy
 
 from toucan_data_sdk.utils.postprocess import pivot, pivot_by_group
 
@@ -148,7 +147,7 @@ def test_pivot_by_group():
             'var2': ['var2', 'var2_evol']
         }
     }
-    res = pivot_by_group(copy(data), **kwargs)
+    res = pivot_by_group(data, **kwargs)
     assert len(res.columns) == 3
     assert 'kpi' in res.columns
     assert len(res) == 2
