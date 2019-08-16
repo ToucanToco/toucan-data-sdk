@@ -88,12 +88,12 @@ def test_pivot_agg_mean():
 
 def test_pivot_with_value_to_pivot():
     data = pd.DataFrame([
-        {"date": 2018, "Type": 'A', "value_column":2},
-        {"date": 2018, "Type": 'B', "value_column":2},
-        {"date": 2018, "Type": 'REF', "value_column":4},
-        {"date": 2019, "Type": 'A', "value_column":2},
-        {"date": 2019, "Type": 'B', "value_column":5},
-        {"date": 2019, "Type": 'REF', "value_column":3}
+        {"date": 2018, "Type": 'A', "value_column": 2},
+        {"date": 2018, "Type": 'B', "value_column": 2},
+        {"date": 2018, "Type": 'REF', "value_column": 4},
+        {"date": 2019, "Type": 'A', "value_column": 2},
+        {"date": 2019, "Type": 'B', "value_column": 5},
+        {"date": 2019, "Type": 'REF', "value_column": 3}
     ])
     kwargs = {
         'index': ['date'],
@@ -107,14 +107,14 @@ def test_pivot_with_value_to_pivot():
     assert set(res.Type) == {'A', 'B'}
 
     data = pd.DataFrame([
-        {"date": 2018, "Type": 'A', "value_column":2},
-        {"date": 2018, "Type": 'B', "value_column":2},
-        {"date": 2018, "Type": 'REF', "value_column":4},
-        {"date": 2018, "Type": 'REF2', "value_column":3},
-        {"date": 2019, "Type": 'A', "value_column":2},
-        {"date": 2019, "Type": 'B', "value_column":5},
-        {"date": 2019, "Type": 'REF', "value_column":3},
-        {"date": 2019, "Type": 'REF2', "value_column":3}
+        {"date": 2018, "Type": 'A', "value_column": 2},
+        {"date": 2018, "Type": 'B', "value_column": 2},
+        {"date": 2018, "Type": 'REF', "value_column": 4},
+        {"date": 2018, "Type": 'REF2', "value_column": 3},
+        {"date": 2019, "Type": 'A', "value_column": 2},
+        {"date": 2019, "Type": 'B', "value_column": 5},
+        {"date": 2019, "Type": 'REF', "value_column": 3},
+        {"date": 2019, "Type": 'REF2', "value_column": 3}
     ])
     kwargs = {
         'index': ['date'],
@@ -127,6 +127,7 @@ def test_pivot_with_value_to_pivot():
     assert res.columns.contains('REF2')
     assert res.shape[0] == 4
     assert set(res.Type) == {'A', 'B'}
+
 
 def test_pivot_by_group():
     """ It should return result for pivot """

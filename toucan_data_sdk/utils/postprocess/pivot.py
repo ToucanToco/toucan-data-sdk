@@ -57,7 +57,7 @@ def pivot(df, index: List[str], column: str, value: str, agg_function: str = 'me
     df = df.reset_index()
     if values_to_pivot:
         df = df.melt(
-            id_vars=index+values_to_pivot, 
+            id_vars=index+values_to_pivot,
             value_vars=df.columns.difference(index+values_to_pivot))
     return df
 
