@@ -1,5 +1,8 @@
-import pandas as pd
 from typing import List, Union
+
+import pandas as pd
+
+from toucan_data_sdk.utils.helpers import get_temp_column_name
 
 
 def top(
@@ -74,9 +77,7 @@ def top(
             df = getattr(df, filter_func)(abs(limit), value)
         except TypeError:
             # Create a temporay column and make sure the name is not already taken
-            temp_column = value
-            while temp_column in df.columns:
-                temp_column += '_'
+            temp_column = get_temp_column_name(df)
             # Fallback on dtype: object -> try to convert to datetime
             df[temp_column] = pd.to_datetime(df[value], format=date_format)
             df = getattr(df, filter_func)(abs(limit), temp_column)
