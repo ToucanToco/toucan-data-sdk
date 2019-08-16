@@ -1,9 +1,17 @@
-import numpy as np
-import pandas as pd
 from typing import List
 
+import numpy as np
+import pandas as pd
 
-def pivot(df, index: List[str], column: str, value: str, agg_function: str = 'mean', values_to_pivot: List[str] = None):
+
+def pivot(
+        df,
+        index: List[str],
+        column: str,
+        value: str,
+        agg_function: str = 'mean',
+        values_to_pivot: List[str] = None
+):
     """
     Pivot the data. Reverse operation of melting
 
