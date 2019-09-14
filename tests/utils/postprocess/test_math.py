@@ -1,10 +1,25 @@
+from functools import partial
+
 import pandas as pd
 import pytest
 
 from toucan_data_sdk.utils.postprocess import (
-    add, subtract, multiply, divide, formula, round_values, absolute_values
+    absolute_values,
+    add,
+    divide,
+    formula,
+    multiply,
+    round_values,
+    subtract,
 )
-from toucan_data_sdk.utils.postprocess.math import FormulaError, _parse_formula, Token
+from toucan_data_sdk.utils.postprocess.math import (
+    DEPRECATED_COLUMN_QUOTE_CHARS,
+    LOGGER,
+    FormulaError,
+    Token,
+    get_new_syntax_formula,
+    _parse_formula,
+)
 
 
 def test_math_operations_with_column():
@@ -85,33 +100,54 @@ def test_token():
     assert len(t) == 0
     assert repr(t) == "''"
     assert t == ''
+    assert t.get_text() == ''
     t1 = Token(' a ', quoted=True)
+    assert t1.get_text() == '`a`'
     t2 = Token('a')
     assert t1 == t2
 
 
-def test_parse_formula():
-    assert _parse_formula('a') == ['a']
-    assert _parse_formula('a+b') == ['a', '+', 'b']
-    assert _parse_formula('pika + chuuu') == ['pika', '+', 'chuuu']
-    assert _parse_formula('pika + (chuuu/10)') == ['pika', '+', '(', 'chuuu', '/', '10', ')']
-    assert _parse_formula('pika + (chu uu/10)') == ['pika', '+', '(', 'chu uu', '/', '10', ')']
-    assert _parse_formula('pika + (chu_uu/10)') == ['pika', '+', '(', 'chu_uu', '/', '10', ')']
-    assert _parse_formula('pika + ("chu-uu"/10)') == ['pika', '+', '(', 'chu-uu', '/', '10', ')']
-    assert _parse_formula('a + b*3.1') == ['a', '+', 'b', '*', '3', '.', '1']
-    assert _parse_formula('a + "b*3.1"') == ['a', '+', 'b*3.1']
-    assert _parse_formula('("and-another" - yet_another) / (and - another)') == [
+# DEPRECATED: OLD SYNTAX
+def test_old_parse_formula():
+    old_parse_formula = partial(_parse_formula, quote_chars=DEPRECATED_COLUMN_QUOTE_CHARS)
+    assert old_parse_formula('a') == ['a']
+    assert old_parse_formula('a+b') == ['a', '+', 'b']
+    assert old_parse_formula('pika + chuuu') == ['pika', '+', 'chuuu']
+    assert old_parse_formula('pika + (chuuu/10)') == ['pika', '+', '(', 'chuuu', '/', '10', ')']
+    assert old_parse_formula('pika + (chu uu/10)') == ['pika', '+', '(', 'chu uu', '/', '10', ')']
+    assert old_parse_formula('pika + (chu_uu/10)') == ['pika', '+', '(', 'chu_uu', '/', '10', ')']
+    assert old_parse_formula('pika + ("chu-uu"/10)') == ['pika', '+', '(', 'chu-uu', '/', '10', ')']
+    assert old_parse_formula('a + b*3.1') == ['a', '+', 'b', '*', '3', '.', '1']
+    assert old_parse_formula('a + "b*3.1"') == ['a', '+', 'b*3.1']
+    assert old_parse_formula('("and-another" - yet_another) / (and - another)') == [
         '(', 'and-another', '-', 'yet_another', ')', '/', '(', 'and', '-', 'another', ')'
     ]
-    assert _parse_formula("pika + ('chu-uu'/10)") == ['pika', '+', '(', 'chu-uu', '/', '10', ')']
-    assert _parse_formula('pika + (\'chu-uu\'/10)') == ['pika', '+', '(', 'chu-uu', '/', '10', ')']
-    assert _parse_formula("pika + (\"chu-uu\"/10)") == ['pika', '+', '(', 'chu-uu', '/', '10', ')']
+    assert old_parse_formula("pika + ('chu-uu'/10)") == ['pika', '+', '(', 'chu-uu', '/', '10', ')']
+    assert old_parse_formula('pika + (\'chu-uu\'/10)') == ['pika', '+', '(', 'chu-uu', '/', '10', ')']
+    assert old_parse_formula("pika + (\"chu-uu\"/10)") == ['pika', '+', '(', 'chu-uu', '/', '10', ')']
     with pytest.raises(FormulaError) as e:
-        _parse_formula('pika + ("chu-uu/10)')
+        old_parse_formula('pika + ("chu-uu/10)')
     assert str(e.value) == 'Missing closing quote in formula'
 
 
-def test_formula():
+def test_get_new_syntax_formula():
+    assert get_new_syntax_formula('a') == '`a`'
+    assert get_new_syntax_formula('a+b') == '`a`+`b`'
+    assert get_new_syntax_formula('pika + chuuu') == '`pika`+`chuuu`'
+    assert get_new_syntax_formula('pika + (chuuu/10)') == '`pika`+(`chuuu`/10)'
+    assert get_new_syntax_formula('pika + (chu_uu/10)') == '`pika`+(`chu_uu`/10)'
+    assert get_new_syntax_formula('pika + ("chu-uu"/10)') == '`pika`+(`chu-uu`/10)'
+    assert get_new_syntax_formula('a + b*3.1') == '`a`+`b`*3.1'
+    assert get_new_syntax_formula('a + "b*3.1"') == '`a`+`b*3.1`'
+    assert get_new_syntax_formula(
+        '("and-another" - yet_another) / (and - another)') == '(`and-another`-`yet_another`)/(`and`-`another`)'
+    assert get_new_syntax_formula("pika + ('chu-uu'/10)") == '`pika`+(`chu-uu`/10)'
+    assert get_new_syntax_formula('pika + (\'chu-uu\'/10)') == '`pika`+(`chu-uu`/10)'
+    assert get_new_syntax_formula("pika + (\"chu-uu\"/10)") == '`pika`+(`chu-uu`/10)'
+
+
+# DEPRECATED: OLD SYNTAX
+def test_formula_old_syntax(mocker):
     df = pd.DataFrame({'a': [1, 3], 'b': [2, 4], 'other col': [3, 5],
                        'yet_another': [2, 2], 'and-another': [2, 2]})
 
@@ -123,8 +159,12 @@ def test_formula():
         formula(df, new_column='c', formula='import ipdb')
     assert str(exc_info.value) == '"import ipdb" is not a valid column name'
 
+    log_warning = mocker.patch.object(LOGGER, 'warning')
     res = formula(df, new_column='c', formula='a + b')
     assert res['c'].tolist() == [3, 7]
+    log_warning.assert_called_once_with(
+        "DEPRECATED: You should always use ` for your columns. Old syntax: 'a + b', new syntax: '`a`+`b`'"
+    )
 
     res = formula(df, new_column='c', formula='.5*a - b')
     assert res['c'].tolist() == [-1.5, -2.5]
@@ -157,13 +197,63 @@ def test_formula():
     assert res['c'].tolist() == [0, 0]
 
 
+def test_formula():
+    df = pd.DataFrame({'a': [1, 3], 'b': [2, 4], 'other col': [3, 5],
+                       'yet_another': [2, 2], 'and-another': [2, 2]})
+
+    with pytest.raises(FormulaError) as exc_info:
+        formula(df, new_column='c', formula='`a,` + `b`')
+    assert str(exc_info.value) == '"a," is not a valid column name'
+
+    with pytest.raises(FormulaError) as exc_info:
+        formula(df, new_column='c', formula='`import ipdb`')
+    assert str(exc_info.value) == '"import ipdb" is not a valid column name'
+
+    res = formula(df, new_column='c', formula='`a` + `b`')
+    assert res['c'].tolist() == [3, 7]
+
+    res = formula(df, new_column='c', formula='.5*`a` - `b`')
+    assert res['c'].tolist() == [-1.5, -2.5]
+
+    res = formula(df, new_column='c', formula='`a` + `other col`')
+    assert res['c'].tolist() == [4, 8]
+
+    res = formula(df, new_column='c', formula='`a` + `other col` / 2')
+    assert res['c'].tolist() == [2.5, 5.5]
+
+    res = formula(df, new_column='c', formula='`a` + `other col` // 2')
+    assert res['c'].tolist() == [2, 5]
+
+    res = formula(df, new_column='c', formula='(`a` + `other col`)/  2.')
+    assert res['c'].tolist() == [2, 4]
+
+    res = formula(df, new_column='c', formula='(`a` + `b` ) % 3')
+    assert res['c'].tolist() == [0, 1]
+
+    res = formula(df, new_column='c', formula='`yet_another` + `b`')
+    assert res['c'].tolist() == [4, 6]
+
+    res = formula(df, new_column='c', formula='(`yet_another` + `b` ) % 3')
+    assert res['c'].tolist() == [1, 0]
+
+    with pytest.raises(FormulaError):
+        formula(df, new_column='c', formula='`and`-`another` - `yet_another`')
+
+    res = formula(df, new_column='c', formula='`and-another` - `yet_another`')
+    assert res['c'].tolist() == [0, 0]
+
+
 def test_formula_number_columns():
     df = pd.DataFrame({'2017': [3, 2], '2018': [8, -1]})
 
     res = formula(df, new_column='evo', formula='2018 - 2017')
     assert res['evo'].tolist() == [1, 1]
 
+    # DEPRECATED: OLD SYNTAX
     res = formula(df, new_column='evo', formula='"2018" - "2017"')
+    assert res['evo'].tolist() == [5, -3]
+
+    res = formula(df, new_column='evo', formula='`2018` - `2017`')
     assert res['evo'].tolist() == [5, -3]
 
 

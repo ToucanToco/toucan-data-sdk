@@ -1,7 +1,12 @@
+import logging
 import operator as _operator
 from typing import List
 
+LOGGER = logging.getLogger(__name__)
+
 MATH_CHARACTERS = '()+-/*%.'
+DEPRECATED_COLUMN_QUOTE_CHARS = ('"', "'")
+COLUMN_QUOTE_CHARS = ('`',)
 
 
 def _basic_math_operation(df, new_column, column_1, column_2, op):
@@ -74,13 +79,19 @@ class Token(str):
         string.quoted = quoted
         return string
 
+    def get_text(self) -> str:
+        if not self.quoted and (self in MATH_CHARACTERS or is_float(self)):
+            return str(self)
+        else:
+            return f'`{str(self)}`'
 
-def _parse_formula(formula_str) -> List[Token]:
+
+def _parse_formula(formula_str, quote_chars=COLUMN_QUOTE_CHARS) -> List[Token]:
     tokens = []
     current_word = ''
     quote_to_match = None
     for x in formula_str:
-        if x in ('"', "'") and not quote_to_match:
+        if x in quote_chars and not quote_to_match:
             quote_to_match = x
             continue
         if x == quote_to_match:
@@ -100,6 +111,15 @@ def _parse_formula(formula_str) -> List[Token]:
     return [t for t in tokens if t]
 
 
+def get_new_syntax_formula(formula: str) -> str:
+    """
+    Now that all columns must explicitly be quoted, we need a function
+    to get the new syntax from the deprecated one
+    """
+    tokens = _parse_formula(formula, quote_chars=DEPRECATED_COLUMN_QUOTE_CHARS)
+    return ''.join(t.get_text() for t in tokens)
+
+
 def formula(df, *, new_column: str, formula: str):
     """
     Do mathematic operations on columns (add, subtract, multiply or divide)
@@ -117,8 +137,7 @@ def formula(df, *, new_column: str, formula: str):
         - `/` for division
 
     **Note:**
-    - your column name can contain spaces.
-    - if your column name is a number, you must use a quote mark : `"` or `'` (cf. example)
+    your column name must be quoted with backtick `
 
     ---
 
@@ -136,7 +155,7 @@ def formula(df, *, new_column: str, formula: str):
     ```cson
     formula:
       new_column: 'valueD'
-      formula: '(valueB + valueA ) / My rate'
+      formula: '(`valueB` + `valueA` ) / `My rate`'
     ```
 
     **Output**
@@ -160,7 +179,7 @@ def formula(df, *, new_column: str, formula: str):
     ```cson
     formula:
       new_column: 'Evolution'
-      formula: "'2019' - '2018'"
+      formula: "`2019` - `2018`"
     ```
 
     **Output**
@@ -172,6 +191,13 @@ def formula(df, *, new_column: str, formula: str):
     |   toto   |    10    |  300  | 290 |
 
     """
+    if '`' not in formula:  # OLD SYNTAX
+        old_formula = formula
+        formula = get_new_syntax_formula(old_formula)
+        LOGGER.warning(
+            f"DEPRECATED: You should always use ` for your columns. "
+            f"Old syntax: {old_formula!r}, new syntax: {formula!r}"
+        )
     tokens = _parse_formula(formula)
     expression_splitted = []
     for t in tokens:
