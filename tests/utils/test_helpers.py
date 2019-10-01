@@ -1,15 +1,15 @@
-import pandas as pd
 import sys
 import textwrap
 import types
 
+import pandas as pd
 import pytest
 
 from toucan_data_sdk.utils.helpers import (
-    get_temp_column_name,
-    get_param_value_from_func_call,
+    clean_cachedir_old_entries,
     get_func_sourcecode,
-    clean_cachedir_old_entries
+    get_param_value_from_func_call,
+    get_temp_column_name,
 )
 
 
@@ -24,13 +24,7 @@ def test_get_param_value_from_func_call():
 
     args = [1]
     kwargs = {'b': 2, 'd': 44, 'e': 55}
-    expected = {
-        'a': 1,
-        'b': 2,
-        'c': 3,
-        'd': 44,
-        'kwargs': {'e': 55},
-    }
+    expected = {'a': 1, 'b': 2, 'c': 3, 'd': 44, 'kwargs': {'e': 55}}
     for k, v in expected.items():
         assert get_param_value_from_func_call(k, foo, args, kwargs) == v
 
@@ -42,10 +36,7 @@ def test_get_param_value_from_func_call():
 
     args = []
     kwargs = {'a': 1}
-    expected = {
-        'a': 1,
-        'b': None,
-    }
+    expected = {'a': 1, 'b': None}
     for k, v in expected.items():
         assert get_param_value_from_func_call(k, bar, args, kwargs) == v
 
@@ -58,13 +49,15 @@ def test_get_func_sourcecode(mocker):
     new_module.__path__ = [module_dir]
     sys.path.append(module_dir)
     sys.modules[module_name] = new_module
-    code = textwrap.dedent("""
+    code = textwrap.dedent(
+        """
     def foo():
         return 1
 
     def get_answer():
         return 42
-    """).lstrip()
+    """
+    ).lstrip()
     exec(code, new_module.__dict__)
 
     mocker.patch('inspect.getsource').side_effect = ZeroDivisionError

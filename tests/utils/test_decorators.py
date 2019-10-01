@@ -1,10 +1,8 @@
-import pytest
 import pandas as pd
+import pytest
 
-from toucan_data_sdk.utils.decorators import (
-    log_time, log_shapes, log_message, domain,
-    _logger as catch_logger, log
-)
+from toucan_data_sdk.utils.decorators import _logger as catch_logger
+from toucan_data_sdk.utils.decorators import domain, log, log_message, log_shapes, log_time
 
 
 def test_log_time(mocker):
@@ -62,31 +60,43 @@ def test_log(mocker):
 
     # Default logger
     @log
-    def a_random_function(): pass
+    def a_random_function():
+        pass
+
     a_random_function()
 
     mylogger.assert_not_called()
     assert [call[0][0] for call in default_log_info.call_args_list] == [
-        'a_random_function - Starting...', 'a_random_function - Done... (took 0.00s)']
+        'a_random_function - Starting...',
+        'a_random_function - Done... (took 0.00s)',
+    ]
     default_log_info.reset_mock()
 
     # Custom logger
     @log(mylogger)
-    def a_random_function(): pass
+    def a_random_function():
+        pass
+
     a_random_function()
 
     default_log_info.assert_not_called()
     assert [call[0][0] for call in mylogger.info.call_args_list] == [
-        'a_random_function - Starting...', 'a_random_function - Done... (took 0.00s)']
+        'a_random_function - Starting...',
+        'a_random_function - Done... (took 0.00s)',
+    ]
     mylogger.reset_mock()
 
     @log(start_message='Hello !', logger=mylogger, end_message='Bye !')
-    def a_random_function(): pass
+    def a_random_function():
+        pass
+
     a_random_function()
 
     default_log_info.assert_not_called()
     assert [call[0][0] for call in mylogger.info.call_args_list] == [
-        'a_random_function - Hello !', 'a_random_function - Bye ! (took 0.00s)']
+        'a_random_function - Hello !',
+        'a_random_function - Bye ! (took 0.00s)',
+    ]
 
 
 def test_domain():

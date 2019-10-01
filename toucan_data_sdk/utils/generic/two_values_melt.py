@@ -1,13 +1,10 @@
-import pandas as pd
 from typing import List
+
+import pandas as pd
 
 
 def two_values_melt(
-    df,
-    first_value_vars: List[str],
-    second_value_vars: List[str],
-    var_name: str,
-    value_name: str
+    df, first_value_vars: List[str], second_value_vars: List[str], var_name: str, value_name: str
 ):
     """
     Transforms one or multiple columns into rows.
@@ -56,21 +53,23 @@ def two_values_melt(
     value_name_second = value_name + '_second'
 
     # Melt on the first value columns
-    melt_first_value = pd.melt(df,
-                               id_vars=[col for col in list(df) if
-                                        col not in first_value_vars],
-                               value_vars=first_value_vars,
-                               var_name=var_name,
-                               value_name=value_name_first)
+    melt_first_value = pd.melt(
+        df,
+        id_vars=[col for col in list(df) if col not in first_value_vars],
+        value_vars=first_value_vars,
+        var_name=var_name,
+        value_name=value_name_first,
+    )
     melt_first_value.drop(second_value_vars, axis=1, inplace=True)
 
     # Melt on the second value columns
-    melt_second_value = pd.melt(df,
-                                id_vars=[col for col in list(df) if
-                                         col not in second_value_vars],
-                                value_vars=second_value_vars,
-                                var_name=var_name,
-                                value_name=value_name_second)
+    melt_second_value = pd.melt(
+        df,
+        id_vars=[col for col in list(df) if col not in second_value_vars],
+        value_vars=second_value_vars,
+        var_name=var_name,
+        value_name=value_name_second,
+    )
 
     # Since there are two value columns, there is no need to keep the
     # second_value_vars names. And it will make things easier for the merge.

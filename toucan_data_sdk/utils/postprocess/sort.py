@@ -55,11 +55,9 @@ def sort(df, columns: Union[str, List[str]], order: Union[str, List[str]] = 'asc
         assert order in ['asc', 'desc']
         orders = [order == 'asc'] * len(columns)
     else:
-        assert len(order) == len(columns), "'columns' and 'order' lists" \
-                                           "must be of same length"
+        assert len(order) == len(columns), "'columns' and 'order' lists" "must be of same length"
         orders = []
         for ord in order:
-            assert ord in ['asc', 'desc'], f"Got order value: {order}." \
-                                            "Expected 'asc' or 'desc'"
+            assert ord in ['asc', 'desc'], f"Got order value: {order}." "Expected 'asc' or 'desc'"
             orders.append(ord == 'asc')
     return df.sort_values(columns, ascending=orders)

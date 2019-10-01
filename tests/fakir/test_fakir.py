@@ -1,15 +1,14 @@
-from toucan_data_sdk.fakir import fake_data_generator
-from toucan_data_sdk.fakir import predict_number_of_row_from_conf
+from toucan_data_sdk.fakir import fake_data_generator, predict_number_of_row_from_conf
 
 conf_1 = [
-  {'type': 'label', 'values': ['Paris', 'Marseille', 'Lyons'], 'name': 'Cities'},
-  {'type': 'label', 'values': ['A', 'B', 'C'], 'name': 'Agence_type'},
-  {'type': 'number', 'min': 0, 'max': 10, 'name': 'CA'}
+    {'type': 'label', 'values': ['Paris', 'Marseille', 'Lyons'], 'name': 'Cities'},
+    {'type': 'label', 'values': ['A', 'B', 'C'], 'name': 'Agence_type'},
+    {'type': 'number', 'min': 0, 'max': 10, 'name': 'CA'},
 ]
 
 conf_2 = conf_1 + [
-  {'type': 'number', 'min': 10, 'max': 100, 'digits': 2, 'name': 'Percentage'},
-  {'type': 'label', 'values': ['Man', 'Women'], 'name': 'Sexe'}
+    {'type': 'number', 'min': 10, 'max': 100, 'digits': 2, 'name': 'Percentage'},
+    {'type': 'label', 'values': ['Man', 'Women'], 'name': 'Sexe'},
 ]
 
 
@@ -29,23 +28,20 @@ def test_fake_data_generator():
 
 
 def test_predict_number_of_row_from_conf():
-    conf = [
-      {'values': ['a', 'b', 'c'], 'type': 'label'},
-      {'min': 0, 'max': 10, 'type': 'number'},
-    ]
+    conf = [{'values': ['a', 'b', 'c'], 'type': 'label'}, {'min': 0, 'max': 10, 'type': 'number'}]
     assert predict_number_of_row_from_conf(conf) == 3
 
     conf = [
-      {'values': ['a', 'b', 'c'], 'type': 'label'},
-      {'values': ['x', 'y'], 'type': 'label'},
-      {'min': 0, 'max': 10, 'type': 'number'},
+        {'values': ['a', 'b', 'c'], 'type': 'label'},
+        {'values': ['x', 'y'], 'type': 'label'},
+        {'min': 0, 'max': 10, 'type': 'number'},
     ]
-    assert predict_number_of_row_from_conf(conf) == 3*2
+    assert predict_number_of_row_from_conf(conf) == 3 * 2
 
     conf = [
-      {'values': ['a', 'b', 'c'], 'type': 'label'},
-      {'values': ['x', 'y'], 'type': 'label'},
-      {'values': ['A', 'B', 'C', 'D'], 'type': 'label'},
-      {'min': 0, 'max': 10, 'type': 'number'},
+        {'values': ['a', 'b', 'c'], 'type': 'label'},
+        {'values': ['x', 'y'], 'type': 'label'},
+        {'values': ['A', 'B', 'C', 'D'], 'type': 'label'},
+        {'min': 0, 'max': 10, 'type': 'number'},
     ]
-    assert predict_number_of_row_from_conf(conf) == 3*2*4
+    assert predict_number_of_row_from_conf(conf) == 3 * 2 * 4

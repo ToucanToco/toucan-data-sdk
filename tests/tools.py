@@ -5,7 +5,6 @@ import zipfile
 import joblib
 import pandas as pd
 
-
 DF = pd.DataFrame({'a': [1, 2, 3], 'b': [4, 5, 6]})
 DF2 = pd.DataFrame({'a': ['a', 'b'], 'b': ['c', 'd']})
 

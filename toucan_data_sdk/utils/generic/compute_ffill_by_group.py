@@ -3,12 +3,7 @@ from typing import List
 from toucan_data_sdk.utils.helpers import check_params_columns_duplicate
 
 
-def compute_ffill_by_group(
-        df,
-        id_cols: List[str],
-        reference_cols: List[str],
-        value_col: str
-):
+def compute_ffill_by_group(df, id_cols: List[str], reference_cols: List[str], value_col: str):
     """
     Compute `ffill` with `groupby`
     Dedicated method as there is a performance issue with a simple groupby/fillna (2017/07)
@@ -58,9 +53,7 @@ def compute_ffill_by_group(
     df = df.sort_values(by=id_cols + reference_cols)
     df = df.set_index(id_cols)
     df['fill'] = 1 - df[value_col].isnull().astype(int)
-    df['fill'] = df.groupby(
-        level=list(range(0, len(id_cols) - 1))
-    )['fill'].cumsum()
+    df['fill'] = df.groupby(level=list(range(0, len(id_cols) - 1)))['fill'].cumsum()
     df[value_col] = df[value_col].ffill()
     df.loc[df['fill'] == 0, value_col] = None
     del df['fill']

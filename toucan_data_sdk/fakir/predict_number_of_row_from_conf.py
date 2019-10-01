@@ -7,4 +7,4 @@ def predict_number_of_row_from_conf(conf):
     This is the product of number of values for each label
     """
     num_uniques_by_label = [len(c['values']) for c in conf if c['type'] == 'label']
-    return reduce(lambda x, y: x*y, num_uniques_by_label)
+    return reduce(lambda x, y: x * y, num_uniques_by_label)

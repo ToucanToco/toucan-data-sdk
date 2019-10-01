@@ -1,16 +1,17 @@
-import pandas as pd
 from typing import List
+
+import pandas as pd
 
 
 def roll_up(
-        df,
-        levels: List[str],
-        groupby_vars: List[str],
-        extra_groupby_cols: List[str] = None,
-        var_name: str = 'type',
-        value_name: str = 'value',
-        agg_func: str = 'sum',
-        drop_levels: List[str] = None
+    df,
+    levels: List[str],
+    groupby_vars: List[str],
+    extra_groupby_cols: List[str] = None,
+    var_name: str = 'type',
+    value_name: str = 'value',
+    agg_func: str = 'sum',
+    drop_levels: List[str] = None,
 ):
     """
     Creates aggregates following a given hierarchy
@@ -69,8 +70,8 @@ def roll_up(
     for top_level in levels_cpy:
         # Aggregation
         gb_df = getattr(
-            df.groupby(groupby_cols_cpy + extra_groupby_cols)[groupby_vars],
-            agg_func)().reset_index()
+            df.groupby(groupby_cols_cpy + extra_groupby_cols)[groupby_vars], agg_func
+        )().reset_index()
 
         # Melt-like columns
         gb_df[var_name] = top_level

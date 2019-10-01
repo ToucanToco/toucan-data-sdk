@@ -1,4 +1,5 @@
 import os
+
 import pandas as pd
 import pytest
 
@@ -17,7 +18,7 @@ def test_compute_cumsum():
         input_df,
         id_cols=['City', 'Country', 'Region'],
         reference_cols=['Date'],
-        value_cols=['population']
+        value_cols=['population'],
     )
     assert input_df['population_cumsum'].equals(cumsum_df['population'])
 
@@ -32,7 +33,7 @@ def test_compute_cumsum_keep_cols():
         id_cols=['City', 'Country', 'Region'],
         reference_cols=['Date'],
         value_cols=['population'],
-        cols_to_keep=['blob']
+        cols_to_keep=['blob'],
     )
     assert input_df['blob'].equals(cumsum_df['blob'])
 
@@ -46,7 +47,7 @@ def test_compute_cumsum_multiple_values():
         input_df,
         id_cols=['City', 'Country', 'Region'],
         reference_cols=['Date'],
-        value_cols=['population', 'size']
+        value_cols=['population', 'size'],
     )
     assert input_df['population_cumsum'].equals(cumsum_df['population'])
     assert input_df['size_cumsum'].equals(cumsum_df['size'])
@@ -62,7 +63,7 @@ def test_compute_cumsum_new_value_cols():
         id_cols=['City', 'Country', 'Region'],
         reference_cols=['Date'],
         value_cols=['population'],
-        new_value_cols=['new_population']
+        new_value_cols=['new_population'],
     )
     assert input_df['population'].equals(cumsum_df['population'])
     assert input_df['population_cumsum'].equals(cumsum_df['new_population'])
@@ -78,7 +79,7 @@ def test_compute_cumsum_new_value_cols_error():
             id_cols=['City', 'Country', 'Region'],
             reference_cols=['Date'],
             value_cols=['population'],
-            new_value_cols=['a', 'b']
+            new_value_cols=['a', 'b'],
         )
 
     expected = "`value_cols` and `new_value_cols` needs to have the same number of elements"

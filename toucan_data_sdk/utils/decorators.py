@@ -39,7 +39,7 @@ Note:
 import collections
 import logging
 import time
-from functools import wraps, partial
+from functools import partial, wraps
 from hashlib import md5
 from threading import current_thread
 
@@ -47,13 +47,12 @@ import joblib
 import pandas as pd
 
 from .helpers import (
+    clean_cachedir_old_entries,
+    get_func_sourcecode,
     get_orig_function,
     get_param_value_from_func_call,
-    get_func_sourcecode,
     resolve_dependencies,
-    clean_cachedir_old_entries,
 )
-
 
 _logger = logging.getLogger(__name__)
 
@@ -68,6 +67,7 @@ def catch(logger):
         This is used to decorate any function that gets executed
         before or after the execution of the decorated function.
     """
+
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -77,6 +77,7 @@ def catch(logger):
                 logger.warning(f"Exception raised in decorator: {func.__name__}")
 
         return wrapper
+
     return decorator
 
 
@@ -110,13 +111,16 @@ def log_message(logger, message=""):
     """
     Decorator to log a message before executing a function
     """
+
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
             _log_message(logger, func.__name__, message)
             result = func(*args, **kwargs)
             return result
+
         return wrapper
+
     return decorator
 
 
@@ -124,6 +128,7 @@ def log_time(logger):
     """
     Decorator to log the execution time of a function
     """
+
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -132,7 +137,9 @@ def log_time(logger):
             end = time.time()
             _log_time(logger, func.__name__, start, end)
             return result
+
         return wrapper
+
     return decorator
 
 
@@ -143,6 +150,7 @@ def log_shapes(logger):
     It considers all the dataframes passed either as arguments or keyword arguments as inputs
     and all the dataframes returned as outputs.
     """
+
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -151,7 +159,9 @@ def log_shapes(logger):
             output_shapes = _get_dfs_shapes(result)
             _log_shapes(logger, func.__name__, input_shapes, output_shapes)
             return result
+
         return wrapper
+
     return decorator
 
 
@@ -163,6 +173,7 @@ def log(logger=None, start_message='Starting...', end_message='Done...'):
     - @log(mylogger)
     - @log(start_message='Hello !", logger=mylogger, end_message='Bye !')
     """
+
     def actual_log(f, real_logger=logger):
         logger = real_logger or _logger
 
@@ -198,6 +209,7 @@ def domain(domain_name):
             #actual process
             return df
     """
+
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -217,11 +229,7 @@ def domain(domain_name):
 
 
 def cache(  # noqa: C901
-    requires=None,
-    disabled=False,
-    applied_on_method=False,
-    check_param=True,
-    limit=None
+    requires=None, disabled=False, applied_on_method=False, check_param=True, limit=None
 ):
     """ Avoid to recompute a function if its parameters and its source code doesnt have changed.
 
@@ -317,10 +325,7 @@ def cache(  # noqa: C901
             else:
                 if isinstance(check_param, str):
                     check_only_param_value = get_param_value_from_func_call(
-                        param_name=check_param,
-                        func=func,
-                        call_args=args,
-                        call_kwargs=kwargs,
+                        param_name=check_param, func=func, call_args=args, call_kwargs=kwargs
                     )
                     tmp_extra_kwargs['__check_only__'] = check_only_param_value
 
@@ -351,10 +356,7 @@ def setup_cachedir(cachedir, mmap_mode=None, bytes_limit=None):
         cache.memories = {}
 
     memory = joblib.Memory(
-        location=cachedir,
-        verbose=0,
-        mmap_mode=mmap_mode,
-        bytes_limit=bytes_limit,
+        location=cachedir, verbose=0, mmap_mode=mmap_mode, bytes_limit=bytes_limit
     )
     cache.memories[current_thread().name] = memory
     return memory

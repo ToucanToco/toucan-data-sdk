@@ -43,11 +43,7 @@ def argmax(df, column: str, groups: Union[str, List[str]] = None):
         df = df[df[column] == df[column].max()].reset_index(drop=True)
     else:
         group_max = df.groupby(groups)[column].transform('max')
-        df = (df
-              .loc[df[column] == group_max, :]
-              .drop_duplicates()
-              .reset_index(drop=True)
-              )
+        df = df.loc[df[column] == group_max, :].drop_duplicates().reset_index(drop=True)
     return df
 
 
@@ -93,9 +89,5 @@ def argmin(df, column: str, groups: Union[str, List[str]] = None):
         df = df[df[column] == df[column].min()].reset_index(drop=True)
     else:
         group_min = df.groupby(groups)[column].transform('min')
-        df = (df
-              .loc[df[column] == group_min, :]
-              .drop_duplicates()
-              .reset_index(drop=True)
-              )
+        df = df.loc[df[column] == group_min, :].drop_duplicates().reset_index(drop=True)
     return df

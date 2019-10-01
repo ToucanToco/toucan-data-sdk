@@ -24,10 +24,9 @@ def _apply_condition(df, condition, new_column):
             if postprocess_name == 'if_else':
                 postprocess_function = if_else
             else:
-                postprocess_function = (
-                        getattr(postprocess_functions, postprocess_name, None) or
-                        getattr(generic_functions, postprocess_name)
-                )
+                postprocess_function = getattr(
+                    postprocess_functions, postprocess_name, None
+                ) or getattr(generic_functions, postprocess_name)
             # Apply the postprocess to the dataframe
             if 'new_column' not in postprocess_infos:
                 postprocess_infos['new_column'] = new_column
@@ -44,11 +43,7 @@ def replace_by_reserved_keywords(f):
     As `if`, `else` and `then` are reserved keywords, we have to
     make the mapping to accepted keywords
     """
-    reserved_keywords_mapping = {
-        'if_': 'if',
-        'then_': 'then',
-        'else_': 'else'
-    }
+    reserved_keywords_mapping = {'if_': 'if', 'then_': 'then', 'else_': 'else'}
 
     @wraps(f)
     def wrapper(*args, **kwargs):

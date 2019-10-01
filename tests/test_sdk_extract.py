@@ -3,11 +3,8 @@ import tempfile
 
 import pytest
 
-from tests.tools import (
-    default_zip_file,
-    DF,
-    DF2)
-from toucan_data_sdk.sdk import extract_zip, extract, DataSdkError
+from tests.tools import DF, DF2, default_zip_file
+from toucan_data_sdk.sdk import DataSdkError, extract, extract_zip
 
 
 @pytest.fixture(name='zip_content', scope='function')

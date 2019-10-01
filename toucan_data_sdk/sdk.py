@@ -3,12 +3,13 @@ import os
 import shutil
 import tempfile
 import zipfile
-import pandas as pd
+
 import joblib
+import pandas as pd
 from toucan_client import ToucanClient
+
 from .utils.helpers import slugify
 from .utils.traceback import load_traceback
-
 
 logger = logging.getLogger(__name__)
 
@@ -22,16 +23,13 @@ class ToucanDataSdk:
         self.small_app_url = instance_url + (('/' + small_app) if small_app else '')
         self.client = ToucanClient(self.small_app_url, auth=auth, stage=stage)
         self.EXTRACTION_CACHE_PATH = os.path.join(
-            'extraction_cache',
-            slugify(instance_url, separator='_'),
-            small_app
+            'extraction_cache', slugify(instance_url, separator='_'), small_app
         )
 
     def get_datasources(self, domains=None):
         if domains is not None and isinstance(domains, list):
             dfs = {}
-            domains_cache = [domain for domain in domains
-                             if self.cache_exists(domain)]
+            domains_cache = [domain for domain in domains if self.cache_exists(domain)]
             domains_sdk = list(set(domains) - set(domains_cache))
 
             if len(domains_cache) > 0:
@@ -120,8 +118,7 @@ class ToucanDataSdk:
         if domains is not None and isinstance(domains, list):
             dfs = {domain: self.read_entry(domain) for domain in domains}
         else:
-            dfs = {name: self.read_entry(name)
-                   for name in os.listdir(self.EXTRACTION_CACHE_PATH)}
+            dfs = {name: self.read_entry(name) for name in os.listdir(self.EXTRACTION_CACHE_PATH)}
         return dfs
 
     def read_entry(self, file_name):

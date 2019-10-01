@@ -74,6 +74,7 @@ class Token(str):
     E.g. in the formula above, `2017` is a number whereas `"2018"` is a column name.
     even though both are strings.
     """
+
     def __new__(cls, text, quoted=False):
         string = super().__new__(cls, text.strip())
         string.quoted = quoted
