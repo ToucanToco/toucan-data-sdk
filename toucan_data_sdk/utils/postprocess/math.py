@@ -66,7 +66,7 @@ def is_float(x):
         return True
 
 
-class Token(str):
+class Token:
     """
     A formula is a string like this '"2018  " - 2017 + (a - b)'
     In order to parse it, we split it in different tokens and keep track if it was
@@ -75,16 +75,24 @@ class Token(str):
     even though both are strings.
     """
 
-    def __new__(cls, text, quoted=False):
-        string = super().__new__(cls, text.strip())
-        string.quoted = quoted
-        return string
+    def __init__(self, text: str, quoted: bool = False):
+        self.text = text.strip()
+        self.quoted = quoted
 
     def get_text(self) -> str:
-        if not self.quoted and (self in MATH_CHARACTERS or is_float(self)):
-            return str(self)
+        if not self.quoted and (self.text in MATH_CHARACTERS or is_float(self.text)):
+            return self.text
         else:
-            return f'`{str(self)}`'
+            return f'`{self.text}`'
+
+    def __len__(self):
+        return len(self.text)
+
+    def __repr__(self):
+        return repr(self.text)
+
+    def __eq__(self, other):
+        return repr(self) == repr(other)
 
 
 def _parse_formula(formula_str, quote_chars=COLUMN_QUOTE_CHARS) -> List[Token]:
@@ -204,12 +212,12 @@ def formula(df, *, new_column: str, formula: str):
     for t in tokens:
         # To use a column name with only digits, it has to be quoted!
         # Otherwise it is considered as a regular number
-        if not t.quoted and (t in MATH_CHARACTERS or is_float(t)):
-            expression_splitted.append(t)
-        elif t in df.columns:
-            expression_splitted.append(f'df["{t}"]')
+        if not t.quoted and (t.text in MATH_CHARACTERS or is_float(t.text)):
+            expression_splitted.append(t.text)
+        elif t.text in df.columns:
+            expression_splitted.append(f'df["{t.text}"]')
         else:
-            raise FormulaError(f'"{t}" is not a valid column name')
+            raise FormulaError(f'"{t.text}" is not a valid column name')
     expression = ''.join(expression_splitted)
     df[new_column] = eval(expression)
     return df
