@@ -1,4 +1,4 @@
-from typing import Dict, List, Union
+from typing import Any, Dict, List, Sequence, Union
 
 import pandas as pd
 
@@ -9,7 +9,7 @@ def add_missing_row(
     df: pd.DataFrame,
     id_cols: List[str],
     reference_col: str,
-    complete_index: Union[Dict[str, str], List[str]] = None,
+    complete_index: Union[Dict[str, str], Sequence[str]] = None,
     method: str = None,
     cols_to_keep: List[str] = None,
 ) -> pd.DataFrame:
@@ -81,10 +81,10 @@ def add_missing_row(
 
     names = id_cols + cols_for_index
     new_df = df.set_index(names)
-    index_values = df.groupby(id_cols).sum().index.values
+    index_values: Union[Any, tuple] = df.groupby(id_cols).sum().index.values
 
     if complete_index is None:
-        complete_index = df.groupby(cols_for_index).sum().index.values
+        complex_index_values: Union[Any, tuple] = df.groupby(cols_for_index).sum().index.values
     elif isinstance(complete_index, dict):
         if complete_index['type'] == 'date':
             freq = complete_index['freq']
@@ -93,16 +93,21 @@ def add_missing_row(
             end = complete_index['end']
             if isinstance(freq, dict):
                 freq = pd.DateOffset(**{k: int(v) for k, v in freq.items()})
-            complete_index = pd.date_range(start=start, end=end, freq=freq)
-            complete_index = complete_index.strftime(date_format)
+            new_index = pd.date_range(start=start, end=end, freq=freq)
+            complex_index_values = new_index.strftime(date_format).values
         else:
             raise ParamsValueError(f'Unknown complete index type: ' f'{complete_index["type"]}')
+    else:
+        complex_index_values = list(complete_index)
 
-    if not isinstance(index_values[0], tuple):
-        index_values = [(x,) for x in index_values]
-    if not isinstance(complete_index[0], tuple):
-        complete_index = [(x,) for x in complete_index]
-    new_tuples_index = [x + y for x in index_values for y in complete_index]
+    def get_tuple(x: Union[Any, tuple]) -> tuple:
+        if not isinstance(x, tuple):
+            return (x,)
+        return x
+
+    new_tuples_index: List[tuple] = [
+        get_tuple(x) + get_tuple(y) for x in index_values for y in complex_index_values
+    ]
 
     new_index = pd.MultiIndex.from_tuples(new_tuples_index, names=names)
     new_df = new_df.reindex(new_index).reset_index()
