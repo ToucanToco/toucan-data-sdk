@@ -118,7 +118,7 @@ def if_else(df, *, if_, then_, else_=None, new_column):
       if: '`the rating` % 2 == 0'
       then:
         postprocess: 'formula'
-        formula: '("the rating" + clean) / 2'
+        formula: '(`the rating` + `clean`) / 2'
       else: 'Hey !'
       new_column: 'new'
     ```
@@ -132,6 +132,11 @@ def if_else(df, *, if_, then_, else_=None, new_column):
     | France   |   Nice   |    3  |      4     | 3.5  |
     |  Hell    | HellCity |   -10 |      0     | -5.0 |
     """
+    # If the index is not monotonic (e.g. if the dataframe is a concatenation
+    # of multiple dataframes), recompute it
+    if not df.index.is_monotonic_increasing:
+        df.index = pd.RangeIndex(len(df.index))
+
     if_sub_df = df.query(if_)
     else_sub_df = df[~df.index.isin(if_sub_df.index)]
 

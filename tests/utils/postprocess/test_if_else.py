@@ -1,6 +1,7 @@
 import inspect
 
 import pandas as pd
+import pytest
 
 from toucan_data_sdk.utils.postprocess import if_else
 
@@ -10,14 +11,22 @@ def test_if_else_signature():
     assert str(inspect.signature(if_else)) == '(df, *, if, then, else=None, new_column)'
 
 
-def test_if_else():
-    df = pd.DataFrame([
-        {'country': 'France', 'city': 'Paris', 'clean': -1, 'the rating': 3},
-        {'country': 'Germany', 'city': 'Munich', 'clean': 4, 'the rating': 5},
-        {'country': 'France', 'city': 'Nice', 'clean': 3, 'the rating': 4},
-        {'country': 'Hell', 'city': 'HellCity', 'clean': 0, 'the rating': 0},
-    ])
+rows1 = [
+    {'country': 'France', 'city': 'Paris', 'clean': -1, 'the rating': 3},
+    {'country': 'Germany', 'city': 'Munich', 'clean': 4, 'the rating': 5},
+]
 
+rows2 = [
+    {'country': 'France', 'city': 'Nice', 'clean': 3, 'the rating': 4},
+    {'country': 'Hell', 'city': 'HellCity', 'clean': 0, 'the rating': 0},
+]
+
+
+@pytest.mark.parametrize('df', [
+    pd.DataFrame(rows1 + rows2),  # test for single dataframe
+    pd.concat([pd.DataFrame(rows1), pd.DataFrame(rows2)])  # test for concatenated dataframe
+])
+def test_if_else(df):
     config = {
         'if': '`the rating` == 3',
         'then': {
