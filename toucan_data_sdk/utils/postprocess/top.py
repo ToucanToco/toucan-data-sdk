@@ -159,7 +159,9 @@ def top_group(
     |   lala   |    2     |  450  |
     """
     aggregate_by = aggregate_by or []
-    group_top = group or []
+    if isinstance(group, str):
+        group = [group]
+    group_top: List[str] = group or []
     df2 = df.groupby(group_top + aggregate_by).agg(function).reset_index()
     df2 = top(df2, group=group, value=value, limit=limit, order=order).reset_index(drop=True)
     df2 = df2[group_top + aggregate_by]

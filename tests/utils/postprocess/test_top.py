@@ -96,7 +96,7 @@ def test_top_group():
     }
 
     kwargs = {
-        "group": ["Periode"],
+        "group": "Periode",
         "value": 'Valeurs',
         "aggregate_by": ["Label"],
         "limit": 2,

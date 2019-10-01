@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Any, Dict
 
 import pandas as pd
 
@@ -96,7 +96,7 @@ def date_requester_generator(
 
         # Base DataFrame
         columns_list = ['DATE', 'DATETIME', 'GRANULARITY', *others_format, *times_delta]
-        result_df = {col_name: [] for col_name in columns_list}
+        result_df: Dict[str, Any] = {col_name: [] for col_name in columns_list}
 
         # Generate the range
         date_range = pd.date_range(start=start_date, end=end_date, freq=frequency)

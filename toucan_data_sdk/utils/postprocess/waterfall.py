@@ -134,7 +134,7 @@ def waterfall(
     # prepare the dataframe with standard column names
     df = _compute_rename(df, date, value, groups)
 
-    agg_conf = {'value': sum}
+    agg_conf = {'value': 'sum'}
     agg_conf.update({f'{col}_label': 'first' for col in groups.keys()})
     agg_conf.update({f'{col}_order': 'first' for col in groups.keys()})
     df = df.groupby(list(groups.keys()) + ['date']).agg(agg_conf).reset_index()
