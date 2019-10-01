@@ -1,7 +1,8 @@
-import joblib
-import types
 import io
 import os
+import types
+
+import joblib
 
 
 def _from_pickled_dict(d):
@@ -13,6 +14,7 @@ def _from_pickled_dict(d):
             return joblib.load(f)
         except Exception:
             return None
+
     unpickled = {k: from_picklable(v) for k, v in d.items()}
     unpickling_failed = {k: v for k, v in unpickled.items() if v is None}
     unpickled = {k: v for k, v in unpickled.items() if v is not None}

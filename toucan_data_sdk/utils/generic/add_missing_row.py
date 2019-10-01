@@ -2,10 +2,7 @@ from typing import Dict, List, Union
 
 import pandas as pd
 
-from toucan_data_sdk.utils.helpers import (
-    check_params_columns_duplicate,
-    ParamsValueError
-)
+from toucan_data_sdk.utils.helpers import ParamsValueError, check_params_columns_duplicate
 
 
 def add_missing_row(
@@ -14,7 +11,7 @@ def add_missing_row(
     reference_col: str,
     complete_index: Union[Dict[str, str], List[str]] = None,
     method: str = None,
-    cols_to_keep: List[str] = None
+    cols_to_keep: List[str] = None,
 ) -> pd.DataFrame:
     """
     Add missing row to a df base on a reference column
@@ -99,8 +96,7 @@ def add_missing_row(
             complete_index = pd.date_range(start=start, end=end, freq=freq)
             complete_index = complete_index.strftime(date_format)
         else:
-            raise ParamsValueError(f'Unknown complete index type: '
-                                   f'{complete_index["type"]}')
+            raise ParamsValueError(f'Unknown complete index type: ' f'{complete_index["type"]}')
 
     if not isinstance(index_values[0], tuple):
         index_values = [(x,) for x in index_values]

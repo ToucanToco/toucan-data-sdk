@@ -2,24 +2,41 @@ import pandas as pd
 import pytest
 
 from toucan_data_sdk.utils.postprocess.text import (
-    length, lower, title, capitalize, isupper, strip,
-    center, split, partition, find, endswith, concat,
-    contains, repeat, replace_pattern
+    capitalize,
+    center,
+    concat,
+    contains,
+    endswith,
+    find,
+    isupper,
+    length,
+    lower,
+    partition,
+    repeat,
+    replace_pattern,
+    split,
+    strip,
+    title,
 )
 
 
 @pytest.fixture
 def df():
-    return pd.DataFrame({'a': ['1', '3', '2', '1'],
-                         'b': ['lower', 'CAPITALS', 'this is a sentence', 'SwApCaSe'],
-                         'c': [77, 88, 99, 11],
-                         'd': ['pika', 'fway', 'zbruh', 'wesh']})
+    return pd.DataFrame(
+        {
+            'a': ['1', '3', '2', '1'],
+            'b': ['lower', 'CAPITALS', 'this is a sentence', 'SwApCaSe'],
+            'c': [77, 88, 99, 11],
+            'd': ['pika', 'fway', 'zbruh', 'wesh'],
+        }
+    )
 
 
 @pytest.fixture
 def df1():
-    return pd.DataFrame({'a': ['1', '3', '2', '1'],
-                         'b': ['2017 03 01', '2018', '2014 03 12', '2018 01 01']})
+    return pd.DataFrame(
+        {'a': ['1', '3', '2', '1'], 'b': ['2017 03 01', '2018', '2014 03 12', '2018 01 01']}
+    )
 
 
 def test_length(df):
@@ -108,8 +125,12 @@ def test_concat(df):
         concat(df, columns=['a'], new_column='res')
 
     df = concat(df, columns=['a', 'b', 'd'], new_column='res')
-    assert df['res'].tolist() == ['1lowerpika', '3CAPITALSfway',
-                                  '2this is a sentencezbruh', '1SwApCaSewesh']
+    assert df['res'].tolist() == [
+        '1lowerpika',
+        '3CAPITALSfway',
+        '2this is a sentencezbruh',
+        '1SwApCaSewesh',
+    ]
 
     df = concat(df, columns=['d', 'c', 'a'], new_column='res', sep='/')
     assert df['res'].tolist() == ['pika/77/1', 'fway/88/3', 'zbruh/99/2', 'wesh/11/1']
@@ -117,15 +138,15 @@ def test_concat(df):
 
 def test_concat_integer_columns():
     """It should keep the numbers as int if possible in concat"""
-    df = pd.DataFrame({'a': ['pika', 'bulbi'],
-                       'b': [1, None],
-                       'c': [1.0, 2.1],
-                       })
+    df = pd.DataFrame({'a': ['pika', 'bulbi'], 'b': [1, None], 'c': [1.0, 2.1]})
     concat_df = concat(df.copy(), columns=['a', 'b'], new_column='res')
     assert concat_df['res'].tolist() == ['pika1', 'bulbi']
     assert concat_df[['a', 'b', 'c']].equals(df)
 
-    assert concat(df, columns=['a', 'c'], new_column='res')['res'].tolist() == ['pika1.0', 'bulbi2.1']
+    assert concat(df, columns=['a', 'c'], new_column='res')['res'].tolist() == [
+        'pika1.0',
+        'bulbi2.1',
+    ]
     assert concat(df, columns=['b', 'c'], new_column='res')['res'].tolist() == ['11.0', '2.1']
 
 

@@ -1,13 +1,17 @@
 import pandas as pd
+
 from toucan_data_sdk.utils.postprocess import argmax, argmin
 
 
 def test_argmax():
     """ It should return result for argmax """
-    data = pd.DataFrame([
-        {'variable': 'toto', 'wave': 'wave1', 'year': 2014, 'value': 300},
-        {'variable': 'toto', 'wave': 'wave1', 'year': 2015, 'value': 250},
-        {'variable': 'toto', 'wave': 'wave1', 'year': 2016, 'value': 450}])
+    data = pd.DataFrame(
+        [
+            {'variable': 'toto', 'wave': 'wave1', 'year': 2014, 'value': 300},
+            {'variable': 'toto', 'wave': 'wave1', 'year': 2015, 'value': 250},
+            {'variable': 'toto', 'wave': 'wave1', 'year': 2016, 'value': 450},
+        ]
+    )
 
     kwargs = {'column': 'year'}
     res = argmax(data, **kwargs)
@@ -18,10 +22,13 @@ def test_argmax():
 
 def test_argmin():
     """ It should return result for argmin """
-    data = pd.DataFrame([
-        {'variable': 'toto', 'wave': 'wave1', 'year': 2014, 'value': 300},
-        {'variable': 'toto', 'wave': 'wave1', 'year': 2015, 'value': 250},
-        {'variable': 'toto', 'wave': 'wave1', 'year': 2016, 'value': 450}])
+    data = pd.DataFrame(
+        [
+            {'variable': 'toto', 'wave': 'wave1', 'year': 2014, 'value': 300},
+            {'variable': 'toto', 'wave': 'wave1', 'year': 2015, 'value': 250},
+            {'variable': 'toto', 'wave': 'wave1', 'year': 2016, 'value': 450},
+        ]
+    )
 
     kwargs = {'column': 'year'}
     res = argmin(data, **kwargs)
@@ -32,14 +39,16 @@ def test_argmin():
 
 def test_argmax_with_groups():
     """ It should return result for argmax """
-    data = pd.DataFrame([
-        {'variable': 'toto', 'wave': 'wave1', 'year': 2014, 'value': 300},
-        {'variable': 'toto', 'wave': 'wave1', 'year': 2015, 'value': 250},
-        {'variable': 'toto', 'wave': 'wave1', 'year': 2016, 'value': 450},
-        {'variable': 'toto', 'wave': 'wave2', 'year': 2014, 'value': 500},
-        {'variable': 'toto', 'wave': 'wave2', 'year': 2015, 'value': 250},
-        {'variable': 'toto', 'wave': 'wave2', 'year': 2016, 'value': 100}
-    ])
+    data = pd.DataFrame(
+        [
+            {'variable': 'toto', 'wave': 'wave1', 'year': 2014, 'value': 300},
+            {'variable': 'toto', 'wave': 'wave1', 'year': 2015, 'value': 250},
+            {'variable': 'toto', 'wave': 'wave1', 'year': 2016, 'value': 450},
+            {'variable': 'toto', 'wave': 'wave2', 'year': 2014, 'value': 500},
+            {'variable': 'toto', 'wave': 'wave2', 'year': 2015, 'value': 250},
+            {'variable': 'toto', 'wave': 'wave2', 'year': 2016, 'value': 100},
+        ]
+    )
 
     kwargs = {'column': 'value', 'groups': ['variable', 'wave']}
     res = argmax(data, **kwargs)
@@ -55,14 +64,16 @@ def test_argmax_with_groups():
 
 def test_argmin_with_groups():
     """ It should return result for argmin """
-    data = pd.DataFrame([
-        {'variable': 'toto', 'wave': 'wave1', 'year': 2014, 'value': 300},
-        {'variable': 'toto', 'wave': 'wave1', 'year': 2015, 'value': 250},
-        {'variable': 'toto', 'wave': 'wave1', 'year': 2016, 'value': 450},
-        {'variable': 'toto', 'wave': 'wave2', 'year': 2014, 'value': 500},
-        {'variable': 'toto', 'wave': 'wave2', 'year': 2015, 'value': 250},
-        {'variable': 'toto', 'wave': 'wave2', 'year': 2016, 'value': 100}
-    ])
+    data = pd.DataFrame(
+        [
+            {'variable': 'toto', 'wave': 'wave1', 'year': 2014, 'value': 300},
+            {'variable': 'toto', 'wave': 'wave1', 'year': 2015, 'value': 250},
+            {'variable': 'toto', 'wave': 'wave1', 'year': 2016, 'value': 450},
+            {'variable': 'toto', 'wave': 'wave2', 'year': 2014, 'value': 500},
+            {'variable': 'toto', 'wave': 'wave2', 'year': 2015, 'value': 250},
+            {'variable': 'toto', 'wave': 'wave2', 'year': 2016, 'value': 100},
+        ]
+    )
 
     kwargs = {'column': 'value', 'groups': ['variable', 'wave']}
     res = argmin(data, **kwargs)

@@ -69,8 +69,9 @@ def get_param_value_from_func_call(param_name, func, call_args, call_kwargs):
     signature = inspect.signature(func)
     params_list = signature.parameters.keys()
     if param_name not in params_list:
-        raise TypeError(f"'{param_name}' not found in {func.__name__}"
-                        f"parameters list ([{params_list}])")
+        raise TypeError(
+            f"'{param_name}' not found in {func.__name__}" f"parameters list ([{params_list}])"
+        )
     call = signature.bind(*call_args, **call_kwargs)
     call.apply_defaults()
     return call.arguments[param_name]
@@ -121,8 +122,7 @@ def check_params_columns_duplicate(cols_name: List[str]) -> bool:
     params = [column for column in cols_name if column is not None]
     if len(set(params)) != len(params):
         duplicates = set([x for x in params if params.count(x) > 1])
-        raise ParamsValueError(
-            f'Duplicate declaration of column(s) {duplicates} in the parameters')
+        raise ParamsValueError(f'Duplicate declaration of column(s) {duplicates} in the parameters')
     else:
         return True
 

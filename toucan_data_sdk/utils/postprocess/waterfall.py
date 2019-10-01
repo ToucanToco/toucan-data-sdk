@@ -1,16 +1,17 @@
-import pandas as pd
 from typing import Dict, List
+
+import pandas as pd
 
 
 def waterfall(
-        df,
-        date: str,
-        value: str,
-        start: Dict[str, str],
-        end: Dict[str, str],
-        upperGroup: Dict[str, str],
-        insideGroup: Dict[str, str] = None,
-        filters: List[str] = None
+    df,
+    date: str,
+    value: str,
+    start: Dict[str, str],
+    end: Dict[str, str],
+    upperGroup: Dict[str, str],
+    insideGroup: Dict[str, str] = None,
+    filters: List[str] = None,
 ):
     """
     Return a line for each bars of a waterfall chart, totals, groups, subgroups.
@@ -106,20 +107,18 @@ def waterfall(
             return wa_df
 
         # filters df into a list of sub_df
-        list_of_sub_df = [df[(df[filters].values == i).all(axis=1)]
-                          for i in df[filters].drop_duplicates().values]
+        list_of_sub_df = [
+            df[(df[filters].values == i).all(axis=1)] for i in df[filters].drop_duplicates().values
+        ]
 
         return pd.concat([sub_waterfall(df) for df in list_of_sub_df], sort=False)
 
     groups = {
         'upperGroup': {
             'type': 'parent',
-            'id':  'upperGroup',
-            'order': {
-                'by': ['upperGroup_order', 'groups'],
-                'ascending': [True, True]
-            },
-            'obj': upperGroup
+            'id': 'upperGroup',
+            'order': {'by': ['upperGroup_order', 'groups'], 'ascending': [True, True]},
+            'obj': upperGroup,
         }
     }
     if insideGroup is not None:
@@ -128,9 +127,9 @@ def waterfall(
             'id': 'insideGroup',
             'order': {
                 'by': ['type', 'insideGroup_order', 'label'],
-                'ascending': [False, True, True]
+                'ascending': [False, True, True],
             },
-            'obj': insideGroup
+            'obj': insideGroup,
         }
     # prepare the dataframe with standard column names
     df = _compute_rename(df, date, value, groups)
@@ -154,10 +153,7 @@ def waterfall(
 
 
 def _compute_rename(df, date, value, groups):
-    df = df.rename(columns={
-        date: 'date',
-        value: 'value'
-    })
+    df = df.rename(columns={date: 'date', value: 'value'})
     for g_name, g in groups.items():
         df = df.rename(columns={g['obj']['id']: g_name})
         if 'label' not in g['obj']:
@@ -185,16 +181,12 @@ def _compute_start_end(df, start, end):
     totals = df.groupby('date').agg({'value': sum}).reset_index()
     for time_name, time in time_dict.items():
         if not totals[totals['date'] == time['id']].empty:
-            value = totals.loc[
-                totals['date'] == time['id'], 'value'
-            ].values[0]
+            value = totals.loc[totals['date'] == time['id'], 'value'].values[0]
         else:
             value = 0
-        result[time_name] = pd.DataFrame([{
-            'value': value,
-            'label': time['label'],
-            'groups': time['label']
-        }])
+        result[time_name] = pd.DataFrame(
+            [{'value': value, 'label': time['label'], 'groups': time['label']}]
+        )
     return result['start'], result['end']
 
 
@@ -214,10 +206,7 @@ def _compute_value_diff(df, start, end, groups):
     for key, group in groups.items():
         merge_on = merge_on + [key, f'{key}_label', f'{key}_order']
 
-    df = start_values.merge(end_values,
-                            on=merge_on,
-                            how='outer',
-                            suffixes=('_start', '_end'), )
+    df = start_values.merge(end_values, on=merge_on, how='outer', suffixes=('_start', '_end'))
 
     # necessary before calculating variation
     df[['value_start', 'value_end']] = df[['value_start', 'value_end']].fillna(0)
@@ -238,12 +227,9 @@ def _compute_inside_group(df):
     """
     inside_group = df.copy()
     inside_group['type'] = 'child'
-    inside_group['variation'] = inside_group['value'] / inside_group[
-        'value_start']
-    inside_group.drop(['upperGroup_label', 'insideGroup', 'value_start'],
-                      axis=1, inplace=True)
-    inside_group.rename(columns={'insideGroup_label': 'label'},
-                        inplace=True)
+    inside_group['variation'] = inside_group['value'] / inside_group['value_start']
+    inside_group.drop(['upperGroup_label', 'insideGroup', 'value_start'], axis=1, inplace=True)
+    inside_group.rename(columns={'insideGroup_label': 'label'}, inplace=True)
     return inside_group
 
 
@@ -256,15 +242,20 @@ def _compute_upper_group(df):
     Returns: Dataframe
 
     """
-    upper_group = df.groupby(['groups']).agg({
-        'value': sum,
-        'value_start': sum,
-        'upperGroup_label': 'first',
-        'upperGroup_order': 'first'
-    }).reset_index()
+    upper_group = (
+        df.groupby(['groups'])
+        .agg(
+            {
+                'value': sum,
+                'value_start': sum,
+                'upperGroup_label': 'first',
+                'upperGroup_order': 'first',
+            }
+        )
+        .reset_index()
+    )
     upper_group['type'] = 'parent'
-    upper_group['variation'] = upper_group['value'] / upper_group[
-        'value_start']
+    upper_group['variation'] = upper_group['value'] / upper_group['value_start']
     upper_group.drop(['value_start'], axis=1, inplace=True)
     upper_group.rename(columns={'upperGroup_label': 'label'}, inplace=True)
     return upper_group

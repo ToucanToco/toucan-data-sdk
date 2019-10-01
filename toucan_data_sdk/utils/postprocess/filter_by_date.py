@@ -1,8 +1,8 @@
 """date filtering helpers."""
 
+import re
 from calendar import monthrange
 from datetime import date, datetime, timedelta
-import re
 from uuid import uuid4
 
 import pandas as pd
@@ -158,7 +158,7 @@ def filter_by_date(
     date_format: str = '%Y-%m-%d',
     start: str = None,
     stop: str = None,
-    atdate: str = None
+    atdate: str = None,
 ):
     """
     Filter dataframe your data by date.
@@ -211,8 +211,9 @@ def filter_by_date(
     if atdate is not None:
         mask = df[filtercol] == parse_date(atdate, date_format)
     elif start is not None and stop is not None:
-        mask = ((df[filtercol] >= parse_date(start, date_format)) &
-                (df[filtercol] < parse_date(stop, date_format)))
+        mask = (df[filtercol] >= parse_date(start, date_format)) & (
+            df[filtercol] < parse_date(stop, date_format)
+        )
     elif stop is None:
         mask = df[filtercol] >= parse_date(start, date_format)
     elif start is None:

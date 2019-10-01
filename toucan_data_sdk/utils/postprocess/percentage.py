@@ -1,12 +1,7 @@
-from typing import Union, List
+from typing import List, Union
 
 
-def percentage(
-        df,
-        column: str,
-        group_cols: Union[str, List[str]] = None,
-        new_column: str = None
-):
+def percentage(df, column: str, group_cols: Union[str, List[str]] = None, new_column: str = None):
     """
     Add a column to the dataframe according to the groupby logic on group_cols
 
@@ -58,7 +53,7 @@ def percentage(
     """
     new_column = new_column or column
     if group_cols is None:
-        df[new_column] = 100. * df[column] / sum(df[column])
+        df[new_column] = 100.0 * df[column] / sum(df[column])
     else:
-        df[new_column] = 100. * df[column] / df.groupby(group_cols)[column].transform(sum)
+        df[new_column] = 100.0 * df[column] / df.groupby(group_cols)[column].transform(sum)
     return df

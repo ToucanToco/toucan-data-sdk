@@ -6,12 +6,12 @@ from toucan_data_sdk.utils.helpers import get_temp_column_name
 
 
 def top(
-        df,
-        value: str,
-        limit: int,
-        order: str = 'asc',
-        group: Union[str, List[str]] = None,
-        date_format: str = None
+    df,
+    value: str,
+    limit: int,
+    order: str = 'asc',
+    group: Union[str, List[str]] = None,
+    date_format: str = None,
 ):
     """
     Get the top or flop N results based on a column value for each specified group columns
@@ -88,13 +88,13 @@ def top(
 
 
 def top_group(
-        df,
-        aggregate_by: List[str],
-        value: str,
-        limit: int,
-        order: str = 'asc',
-        function: str = 'sum',
-        group: Union[str, List[str]] = None
+    df,
+    aggregate_by: List[str],
+    value: str,
+    limit: int,
+    order: str = 'asc',
+    function: str = 'sum',
+    group: Union[str, List[str]] = None,
 ):
     """
     Get the top or flop N results based on a function and a column value that agregates the input.

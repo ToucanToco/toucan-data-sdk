@@ -1,15 +1,15 @@
-from typing import Union, List
+from typing import List, Union
 
 import numpy as np
 
 
 def rank(
-        df,
-        value_cols: Union[str, List[str]],
-        group_cols: List[str] = None,
-        rank_cols_names: List[str] = None,
-        method='min',
-        ascending: bool = True
+    df,
+    value_cols: Union[str, List[str]],
+    group_cols: List[str] = None,
+    rank_cols_names: List[str] = None,
+    method='min',
+    ascending: bool = True,
 ):
     """
     This function creates rank columns based on numeric values to be ranked.
@@ -82,8 +82,9 @@ def rank(
     if group_cols is None:
         df[rank_cols_names] = df[value_cols].rank(method=method, ascending=ascending)
     else:
-        df[rank_cols_names] = (df.groupby(group_cols)[value_cols]
-                                 .rank(method=method, ascending=ascending))
+        df[rank_cols_names] = df.groupby(group_cols)[value_cols].rank(
+            method=method, ascending=ascending
+        )
 
     if method != 'average':
         df[rank_cols_names] = df[rank_cols_names].astype('int')

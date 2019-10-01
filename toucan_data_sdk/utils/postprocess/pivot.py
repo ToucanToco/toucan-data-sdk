@@ -7,12 +7,12 @@ from toucan_data_sdk.utils.helpers import get_temp_column_name
 
 
 def pivot(
-        df,
-        index: List[str],
-        column: str,
-        value: str,
-        agg_function: str = 'mean',
-        values_to_pivot: List[str] = None
+    df,
+    index: List[str],
+    column: str,
+    value: str,
+    agg_function: str = 'mean',
+    values_to_pivot: List[str] = None,
 ):
     """
     Pivot the data. Reverse operation of melting
@@ -55,31 +55,21 @@ def pivot(
     |   toto   |  wave 1 |  300   | 250  | 450  |
     """
     if df.dtypes[value].type == np.object_:
-        df = pd.pivot_table(df, index=index,
-                            columns=column,
-                            values=value,
-                            aggfunc=lambda x: ' '.join(x))
+        df = pd.pivot_table(
+            df, index=index, columns=column, values=value, aggfunc=lambda x: ' '.join(x)
+        )
     else:
-        df = pd.pivot_table(df, index=index,
-                            columns=column,
-                            values=value,
-                            aggfunc=agg_function)
+        df = pd.pivot_table(df, index=index, columns=column, values=value, aggfunc=agg_function)
     df = df.reset_index()
     if values_to_pivot:
         df = df.melt(
-            id_vars=index+values_to_pivot,
-            value_vars=df.columns.difference(index+values_to_pivot))
+            id_vars=index + values_to_pivot,
+            value_vars=df.columns.difference(index + values_to_pivot),
+        )
     return df
 
 
-def pivot_by_group(
-        df,
-        variable,
-        value,
-        new_columns,
-        groups,
-        id_cols=None
-):
+def pivot_by_group(df, variable, value, new_columns, groups, id_cols=None):
     """
     Pivot a dataframe by group of variables
 
@@ -145,8 +135,7 @@ def pivot_by_group(
 
     param = param.T
     for column in param.columns:
-        df.loc[
-            df[temporary_colum].isin(param[column]), temporary_colum] = column
+        df.loc[df[temporary_colum].isin(param[column]), temporary_colum] = column
 
     df = pivot(df, index, temporary_colum, value)
     return df

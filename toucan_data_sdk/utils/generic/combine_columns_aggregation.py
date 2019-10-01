@@ -5,10 +5,10 @@ import pandas as pd
 
 
 def combine_columns_aggregation(
-        df,
-        id_cols: List[str],
-        cols_for_combination: Dict[str, str],
-        agg_func: Union[str, List[str], Dict[str, str]] = 'sum'
+    df,
+    id_cols: List[str],
+    cols_for_combination: Dict[str, str],
+    agg_func: Union[str, List[str], Dict[str, str]] = 'sum',
 ):
     """
     Aggregates data to reproduce "All" category for requester
@@ -31,12 +31,14 @@ def combine_columns_aggregation(
     """
     requesters_cols = list(cols_for_combination.keys())
     requester_combination = [
-        list(item) for i in range(0, len(requesters_cols) + 1)
-        for item in itertools.combinations(requesters_cols, i)]
+        list(item)
+        for i in range(0, len(requesters_cols) + 1)
+        for item in itertools.combinations(requesters_cols, i)
+    ]
     dfs_result = []
     for comb in requester_combination:
         df_tmp = df.groupby(id_cols + comb).agg(agg_func).reset_index()
-        for key in (set(cols_for_combination.keys()) - set(comb)):
+        for key in set(cols_for_combination.keys()) - set(comb):
             df_tmp[key] = cols_for_combination[key]
         dfs_result.append(df_tmp)
 

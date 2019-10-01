@@ -7,7 +7,7 @@ import pytest
 from requests import HTTPError
 
 from tests.tools import DF, DF2
-from toucan_data_sdk.sdk import ToucanDataSdk, InvalidQueryError
+from toucan_data_sdk.sdk import InvalidQueryError, ToucanDataSdk
 
 
 def gen_client(mocker):
@@ -26,9 +26,7 @@ def gen_client(mocker):
 @pytest.fixture(name='sdk', scope='function')
 def gen_data_sdk(mocker):
     sdk = ToucanDataSdk(
-        instance_url='https://api-myinstance.toucantoco.com',
-        small_app='demo',
-        auth=('', '')
+        instance_url='https://api-myinstance.toucantoco.com', small_app='demo', auth=('', '')
     )
     sdk.client = gen_client(mocker)
     yield sdk
@@ -39,8 +37,7 @@ def gen_data_sdk(mocker):
 @pytest.fixture(name='sdk_old', scope='function')
 def gen_data_sdk_old(mocker):
     sdk_old = ToucanDataSdk(
-        instance_url='https://api-myinstance.toucantoco.com/demo',
-        auth=('', '')
+        instance_url='https://api-myinstance.toucantoco.com/demo', auth=('', '')
     )
     sdk_old.client = gen_client(mocker)
     yield sdk_old
@@ -91,12 +88,9 @@ def gen_tmp_file2(tmp_dir):
 
 def test_datasources(sdk, mocker):
     """It should use the cache properly"""
-    mock_cache_exists = mocker.patch(
-        'toucan_data_sdk.sdk.ToucanDataSdk.cache_exists')
-    mock_read_cache = mocker.patch(
-        'toucan_data_sdk.sdk.ToucanDataSdk.read_from_cache')
-    mock_read_sdk = mocker.patch(
-        'toucan_data_sdk.sdk.ToucanDataSdk.read_datasources_from_sdk')
+    mock_cache_exists = mocker.patch('toucan_data_sdk.sdk.ToucanDataSdk.cache_exists')
+    mock_read_cache = mocker.patch('toucan_data_sdk.sdk.ToucanDataSdk.read_from_cache')
+    mock_read_sdk = mocker.patch('toucan_data_sdk.sdk.ToucanDataSdk.read_datasources_from_sdk')
     # 1. Cache directory exists
     mock_cache_exists.return_value = True
     mock_read_cache.return_value = {"domain_1": 1}
@@ -125,12 +119,9 @@ def test_datasources(sdk, mocker):
 
 def test_dfs_complex(sdk, mocker):
     """It should use the cache properly"""
-    mock_cache_exists = mocker.patch(
-        'toucan_data_sdk.sdk.ToucanDataSdk.cache_exists')
-    mock_read_cache = mocker.patch(
-        'toucan_data_sdk.sdk.ToucanDataSdk.read_from_cache')
-    mock_read_sdk = mocker.patch(
-        'toucan_data_sdk.sdk.ToucanDataSdk.read_datasources_from_sdk')
+    mock_cache_exists = mocker.patch('toucan_data_sdk.sdk.ToucanDataSdk.cache_exists')
+    mock_read_cache = mocker.patch('toucan_data_sdk.sdk.ToucanDataSdk.read_from_cache')
+    mock_read_sdk = mocker.patch('toucan_data_sdk.sdk.ToucanDataSdk.read_datasources_from_sdk')
 
     mock_cache_exists.side_effect = [True, False]
     mock_read_cache.return_value = {"domain_1": 1}
@@ -243,10 +234,8 @@ def test_basemaps(sdk):
 
 def test_sdk_compatibility(sdk_old, mocker):
     """It should use the cache properly"""
-    mock_cache_exists = mocker.patch(
-        'toucan_data_sdk.sdk.ToucanDataSdk.cache_exists')
-    mock_read_cache = mocker.patch(
-        'toucan_data_sdk.sdk.ToucanDataSdk.read_from_cache')
+    mock_cache_exists = mocker.patch('toucan_data_sdk.sdk.ToucanDataSdk.cache_exists')
+    mock_read_cache = mocker.patch('toucan_data_sdk.sdk.ToucanDataSdk.read_from_cache')
     mocker.patch('toucan_data_sdk.sdk.ToucanDataSdk.read_datasources_from_sdk')
 
     # 1. Cache directory exists
@@ -258,20 +247,49 @@ def test_sdk_compatibility(sdk_old, mocker):
 
 def test_get_domain(sdk):
     sdk.client.output_domain['my_domain'].post().json.return_value = {
-        'result': [{'_id': {'$oid': '5b449af2291ebbd9087f6260'}, 'toto': 2010,
-                    'label': 'Maladie', 'value': 4.2, 'domain': '0_201_1'},
-                   {'_id': {'$oid': '5b449af2291ebbd9087f6261'}, 'toto': 2010,
-                    'label': 'Accident Travail', 'value': 1.2, 'domain': '0_201_1'},
-                   {'_id': {'$oid': '5b449af2291ebbd9087f6262'}, 'toto': 2010,
-                    'label': 'Invalidité', 'value': 1.3, 'domain': '0_201_1'}],
-        'lastDocId': 'ab31cd'
+        'result': [
+            {
+                '_id': {'$oid': '5b449af2291ebbd9087f6260'},
+                'toto': 2010,
+                'label': 'Maladie',
+                'value': 4.2,
+                'domain': '0_201_1',
+            },
+            {
+                '_id': {'$oid': '5b449af2291ebbd9087f6261'},
+                'toto': 2010,
+                'label': 'Accident Travail',
+                'value': 1.2,
+                'domain': '0_201_1',
+            },
+            {
+                '_id': {'$oid': '5b449af2291ebbd9087f6262'},
+                'toto': 2010,
+                'label': 'Invalidité',
+                'value': 1.3,
+                'domain': '0_201_1',
+            },
+        ],
+        'lastDocId': 'ab31cd',
     }
     sdk.client.output_domain['my_domain']['ab31cd'].post().json.return_value = {
-        'result': [{'_id': {'$oid': '5b449af2291ebbd9087f6260'}, 'toto': 2011,
-                    'label': 'Maladie', 'value': 4.1, 'domain': '0_201_1'},
-                   {'_id': {'$oid': '5b449af2291ebbd9087f6261'}, 'toto': 2011,
-                    'label': 'Invalidité', 'value': 3.7, 'domain': '0_201_1'}],
-        'lastDocId': None
+        'result': [
+            {
+                '_id': {'$oid': '5b449af2291ebbd9087f6260'},
+                'toto': 2011,
+                'label': 'Maladie',
+                'value': 4.1,
+                'domain': '0_201_1',
+            },
+            {
+                '_id': {'$oid': '5b449af2291ebbd9087f6261'},
+                'toto': 2011,
+                'label': 'Invalidité',
+                'value': 3.7,
+                'domain': '0_201_1',
+            },
+        ],
+        'lastDocId': None,
     }
     dfs = sdk.get_domains(['my_domain'])
     assert set(dfs['my_domain']) == {'toto', 'label', 'value', 'domain'}
@@ -281,25 +299,25 @@ def test_get_domain(sdk):
 def test_get_domains(sdk):
     sdk.client.output_domain['bla'].post().json.side_effect = [
         {
-            'result': [{'_id': {'$oid': '5b449af2291ebbd9087f6260'}, 'toto': 2010,
-                        'domain': '0_201_1'}],
-            'lastDocId': 'ab31cd'
+            'result': [
+                {'_id': {'$oid': '5b449af2291ebbd9087f6260'}, 'toto': 2010, 'domain': '0_201_1'}
+            ],
+            'lastDocId': 'ab31cd',
         },
         {
             'result': [
-                {'_id': {'$oid': '5b449af2291ebbd9087f6260'}, 'tutu': 2011,
-                 'domain': '0_201_2'}],
-            'lastDocId': None
-        }
+                {'_id': {'$oid': '5b449af2291ebbd9087f6260'}, 'tutu': 2011, 'domain': '0_201_2'}
+            ],
+            'lastDocId': None,
+        },
     ]
     sdk.client.output_domain['bla']['ab31cd'].post().json.return_value = {
-        'result': [{'_id': {'$oid': '5b449af2291ebbd9087f6260'}, 'titi': 2011,
-                    'domain': '0_201_1'}],
-        'lastDocId': None
+        'result': [
+            {'_id': {'$oid': '5b449af2291ebbd9087f6260'}, 'titi': 2011, 'domain': '0_201_1'}
+        ],
+        'lastDocId': None,
     }
-    sdk.client.metadata.get().json.return_value = [
-        {'domain': 'a_domain'}, {'domain': 'b_domain'}
-    ]
+    sdk.client.metadata.get().json.return_value = [{'domain': 'a_domain'}, {'domain': 'b_domain'}]
     dfs = sdk.get_domains()
     assert set(dfs['a_domain']) == {'toto', 'titi', 'domain'}
     assert set(dfs['b_domain']) == {'tutu', 'domain'}
@@ -308,10 +326,8 @@ def test_get_domains(sdk):
 
 
 def test_domain_cache(mocker, sdk):
-    mock_cache_exists = mocker.patch(
-        'toucan_data_sdk.sdk.ToucanDataSdk.cache_exists')
-    mock_read_cache = mocker.patch(
-        'toucan_data_sdk.sdk.ToucanDataSdk.read_from_cache')
+    mock_cache_exists = mocker.patch('toucan_data_sdk.sdk.ToucanDataSdk.cache_exists')
+    mock_read_cache = mocker.patch('toucan_data_sdk.sdk.ToucanDataSdk.read_from_cache')
     mock_cache_exists.return_value = True
     mock_read_cache.return_value = {"domain_1": 1}
     assert sdk.get_domains('domain_1') == {"domain_1": 1}

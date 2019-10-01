@@ -3,11 +3,7 @@ from typing import Dict, List, Union
 Agg = Dict[str, str]  # dict of size 1: mapping colomn -> aggregation function
 
 
-def add_aggregation_columns(
-        df, *,
-        group_cols: Union[str, List[str]],
-        aggregations: Dict[str, Agg]
-):
+def add_aggregation_columns(df, *, group_cols: Union[str, List[str]], aggregations: Dict[str, Agg]):
     """
     Add new columns containing aggregations values on existing columns
 

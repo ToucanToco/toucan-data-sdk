@@ -1,5 +1,6 @@
-import pandas as pd
 import logging
+
+import pandas as pd
 
 
 def cumsum(df, new_column: str, column: str, index: list, date_column: str, date_format: str):

@@ -1,19 +1,20 @@
-import pandas as pd
 from typing import Dict
+
+import pandas as pd
 
 from ..helpers import setlocale
 
 
 def date_requester_generator(
-        df: pd.DataFrame,
-        date_column: str,
-        frequency: str,
-        date_column_format: str = None,
-        format: str = '%Y-%m-%d',
-        granularities: Dict[str, str] = None,
-        others_format: Dict[str, str] = None,
-        times_delta: Dict[str, str] = None,
-        locale: str = None
+    df: pd.DataFrame,
+    date_column: str,
+    frequency: str,
+    date_column_format: str = None,
+    format: str = '%Y-%m-%d',
+    granularities: Dict[str, str] = None,
+    others_format: Dict[str, str] = None,
+    times_delta: Dict[str, str] = None,
+    locale: str = None,
 ) -> pd.DataFrame:
     """
     From a dataset containing dates in a column, return a dataset
@@ -115,7 +116,8 @@ def date_requester_generator(
                 result_df[col_name] += list(date_range_datetime.strftime(other_format))
 
             for col_name, time_delta in times_delta.items():
-                result_df[col_name] += list((date_range_datetime + pd.Timedelta(time_delta))
-                                            .strftime(granularity_format))
+                result_df[col_name] += list(
+                    (date_range_datetime + pd.Timedelta(time_delta)).strftime(granularity_format)
+                )
 
     return pd.DataFrame(result_df)

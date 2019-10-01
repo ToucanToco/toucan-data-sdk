@@ -40,12 +40,13 @@ def convert_datetime_to_str(df, *, column: str, format: str, new_column: str = N
 
 
 def change_date_format(
-        df, *,
-        column: str,
-        output_format: str,
-        input_format: str = None,
-        new_column: str = None,
-        new_time_zone=None
+    df,
+    *,
+    column: str,
+    output_format: str,
+    input_format: str = None,
+    new_column: str = None,
+    new_time_zone=None,
 ):
     """
     Convert the format of a date
@@ -90,9 +91,11 @@ def change_date_format(
     Europe  | 2016-03
     """
     new_column = new_column or column
-    df[new_column] = (pd.to_datetime(df[column], format=input_format, utc=True)
-                      .dt.tz_convert(new_time_zone)
-                      .dt.strftime(output_format))
+    df[new_column] = (
+        pd.to_datetime(df[column], format=input_format, utc=True)
+        .dt.tz_convert(new_time_zone)
+        .dt.strftime(output_format)
+    )
     return df
 
 

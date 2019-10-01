@@ -22,19 +22,19 @@ rows2 = [
 ]
 
 
-@pytest.mark.parametrize('df', [
-    pd.DataFrame(rows1 + rows2),  # test for single dataframe
-    pd.concat([pd.DataFrame(rows1), pd.DataFrame(rows2)])  # test for concatenated dataframe
-])
+@pytest.mark.parametrize(
+    'df',
+    [
+        pd.DataFrame(rows1 + rows2),  # test for single dataframe
+        pd.concat([pd.DataFrame(rows1), pd.DataFrame(rows2)]),  # test for concatenated dataframe
+    ],
+)
 def test_if_else(df):
     config = {
         'if': '`the rating` == 3',
-        'then': {
-            'postprocess': 'formula',
-            'formula': '("the rating" + clean) // 2'
-        },
+        'then': {'postprocess': 'formula', 'formula': '("the rating" + clean) // 2'},
         'else': 'Hihi',
-        'new_column': 'new'
+        'new_column': 'new',
     }
     res = if_else(df, **config)
     assert res.columns.tolist() == ['country', 'city', 'clean', 'the rating', 'new']
@@ -49,14 +49,11 @@ def test_if_else(df):
                 'postprocess': 'concat',
                 'columns': ['country', 'city'],
                 'sep': ' -> ',
-                'new_column': 'concated'
+                'new_column': 'concated',
             },
-            {
-                'postprocess': 'upper',
-                'column': 'concated',
-            }
+            {'postprocess': 'upper', 'column': 'concated'},
         ],
-        'new_column': 'new'
+        'new_column': 'new',
     }
     res = if_else(df, **config)
     assert res.columns.tolist() == ['country', 'city', 'clean', 'the rating', 'concated', 'new']
@@ -70,17 +67,13 @@ def test_if_else(df):
             'postprocess': 'if_else',
             'if': 'country == "Germany"',
             'then': 'G',
-            'else': 'Other'
+            'else': 'Other',
         },
-        'new_column': 'new'
+        'new_column': 'new',
     }
     res = if_else(df, **config)
     assert res['new'].tolist() == ['F', 'G', 'F', 'Other']
 
-    config = {
-        'if': 'country == "France"',
-        'then': 'F',
-        'new_column': 'new'
-    }
+    config = {'if': 'country == "France"', 'then': 'F', 'new_column': 'new'}
     res = if_else(df, **config)
     assert res['new'].tolist() == ['F', None, 'F', None]

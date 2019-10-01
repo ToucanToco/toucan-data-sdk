@@ -5,11 +5,8 @@ import time
 
 import pytest
 
-from toucan_data_sdk.utils.decorators import (
-    cache as etl_cache,
-    method_cache,
-    setup_cachedir
-)
+from toucan_data_sdk.utils.decorators import cache as etl_cache
+from toucan_data_sdk.utils.decorators import method_cache, setup_cachedir
 
 
 @pytest.fixture
@@ -23,11 +20,13 @@ def cache():
 
 def test_cache_typeerrors(cache):
     with pytest.raises(TypeError):
+
         @cache(check_param=42)
         def foo1():
             pass
 
     with pytest.raises(TypeError):
+
         @cache(limit='hey')
         def foo2():
             pass

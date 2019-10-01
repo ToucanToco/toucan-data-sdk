@@ -17,15 +17,14 @@ from toucan_data_sdk.utils.postprocess.math import (
     LOGGER,
     FormulaError,
     Token,
-    get_new_syntax_formula,
     _parse_formula,
+    get_new_syntax_formula,
 )
 
 
 def test_math_operations_with_column():
     """ It should return result for basic math operations with a column name"""
-    data = pd.DataFrame([{'value1': 10, 'value2': 20},
-                         {'value1': 17, 'value2': 5}])
+    data = pd.DataFrame([{'value1': 10, 'value2': 20}, {'value1': 17, 'value2': 5}])
     kwargs = {'new_column': 'result', 'column_1': 'value1', 'column_2': 'value2'}
 
     res = add(data, **kwargs)
@@ -41,14 +40,14 @@ def test_math_operations_with_column():
     assert res['result'].tolist() == expected_col
 
     res = divide(data, **kwargs)
-    expected_col = [.5, 3.4]
+    expected_col = [0.5, 3.4]
     assert res['result'].tolist() == expected_col
 
 
 def test_math_operations_with_number():
     """ It should return result for basic math operations with a constant number"""
     data = pd.DataFrame([{'value1': 10}, {'value1': 17}])
-    kwargs = {'new_column': 'value1', 'column_1': 'value1', 'column_2': .25}
+    kwargs = {'new_column': 'value1', 'column_1': 'value1', 'column_2': 0.25}
 
     res = add(data.copy(), **kwargs)
     expected_col = [10.25, 17.25]
@@ -74,7 +73,7 @@ def test_math_operations_with_number():
     assert res['result'].tolist() == expected_col
 
     res = divide(data.copy(), **kwargs)
-    expected_col = [.2, .08]
+    expected_col = [0.2, 0.08]
     assert res['result'].tolist() == expected_col
 
 
@@ -120,11 +119,37 @@ def test_old_parse_formula():
     assert old_parse_formula('a + b*3.1') == ['a', '+', 'b', '*', '3', '.', '1']
     assert old_parse_formula('a + "b*3.1"') == ['a', '+', 'b*3.1']
     assert old_parse_formula('("and-another" - yet_another) / (and - another)') == [
-        '(', 'and-another', '-', 'yet_another', ')', '/', '(', 'and', '-', 'another', ')'
+        '(',
+        'and-another',
+        '-',
+        'yet_another',
+        ')',
+        '/',
+        '(',
+        'and',
+        '-',
+        'another',
+        ')',
     ]
     assert old_parse_formula("pika + ('chu-uu'/10)") == ['pika', '+', '(', 'chu-uu', '/', '10', ')']
-    assert old_parse_formula('pika + (\'chu-uu\'/10)') == ['pika', '+', '(', 'chu-uu', '/', '10', ')']
-    assert old_parse_formula("pika + (\"chu-uu\"/10)") == ['pika', '+', '(', 'chu-uu', '/', '10', ')']
+    assert old_parse_formula('pika + (\'chu-uu\'/10)') == [
+        'pika',
+        '+',
+        '(',
+        'chu-uu',
+        '/',
+        '10',
+        ')',
+    ]
+    assert old_parse_formula("pika + (\"chu-uu\"/10)") == [
+        'pika',
+        '+',
+        '(',
+        'chu-uu',
+        '/',
+        '10',
+        ')',
+    ]
     with pytest.raises(FormulaError) as e:
         old_parse_formula('pika + ("chu-uu/10)')
     assert str(e.value) == 'Missing closing quote in formula'
@@ -139,8 +164,10 @@ def test_get_new_syntax_formula():
     assert get_new_syntax_formula('pika + ("chu-uu"/10)') == '`pika`+(`chu-uu`/10)'
     assert get_new_syntax_formula('a + b*3.1') == '`a`+`b`*3.1'
     assert get_new_syntax_formula('a + "b*3.1"') == '`a`+`b*3.1`'
-    assert get_new_syntax_formula(
-        '("and-another" - yet_another) / (and - another)') == '(`and-another`-`yet_another`)/(`and`-`another`)'
+    assert (
+        get_new_syntax_formula('("and-another" - yet_another) / (and - another)')
+        == '(`and-another`-`yet_another`)/(`and`-`another`)'
+    )
     assert get_new_syntax_formula("pika + ('chu-uu'/10)") == '`pika`+(`chu-uu`/10)'
     assert get_new_syntax_formula('pika + (\'chu-uu\'/10)') == '`pika`+(`chu-uu`/10)'
     assert get_new_syntax_formula("pika + (\"chu-uu\"/10)") == '`pika`+(`chu-uu`/10)'
@@ -148,8 +175,15 @@ def test_get_new_syntax_formula():
 
 # DEPRECATED: OLD SYNTAX
 def test_formula_old_syntax(mocker):
-    df = pd.DataFrame({'a': [1, 3], 'b': [2, 4], 'other col': [3, 5],
-                       'yet_another': [2, 2], 'and-another': [2, 2]})
+    df = pd.DataFrame(
+        {
+            'a': [1, 3],
+            'b': [2, 4],
+            'other col': [3, 5],
+            'yet_another': [2, 2],
+            'and-another': [2, 2],
+        }
+    )
 
     with pytest.raises(FormulaError) as exc_info:
         formula(df, new_column='c', formula='a, + b')
@@ -198,8 +232,15 @@ def test_formula_old_syntax(mocker):
 
 
 def test_formula():
-    df = pd.DataFrame({'a': [1, 3], 'b': [2, 4], 'other col': [3, 5],
-                       'yet_another': [2, 2], 'and-another': [2, 2]})
+    df = pd.DataFrame(
+        {
+            'a': [1, 3],
+            'b': [2, 4],
+            'other col': [3, 5],
+            'yet_another': [2, 2],
+            'and-another': [2, 2],
+        }
+    )
 
     with pytest.raises(FormulaError) as exc_info:
         formula(df, new_column='c', formula='`a,` + `b`')
@@ -258,12 +299,14 @@ def test_formula_number_columns():
 
 
 # ~~ round_values & absolute_values ~~~
-data = pd.DataFrame([
-    {'ENTITY': 'A', 'VALUE_1': -1.563, 'VALUE_2': -1.563},
-    {'ENTITY': 'A', 'VALUE_1': 0.423, 'VALUE_2': 0.423},
-    {'ENTITY': 'A', 'VALUE_1': 0, 'VALUE_2': 0},
-    {'ENTITY': 'A', 'VALUE_1': -1.612, 'VALUE_2': 1.612}
-])
+data = pd.DataFrame(
+    [
+        {'ENTITY': 'A', 'VALUE_1': -1.563, 'VALUE_2': -1.563},
+        {'ENTITY': 'A', 'VALUE_1': 0.423, 'VALUE_2': 0.423},
+        {'ENTITY': 'A', 'VALUE_1': 0, 'VALUE_2': 0},
+        {'ENTITY': 'A', 'VALUE_1': -1.612, 'VALUE_2': 1.612},
+    ]
+)
 
 
 def test_round_values():

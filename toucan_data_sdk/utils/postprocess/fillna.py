@@ -1,7 +1,7 @@
 from numpy import nan
 
 
-def fillna(df, column: str, value=None,  column_value=None):
+def fillna(df, column: str, value=None, column_value=None):
     """
     Can fill NaN values from a column with a given value or a column
 

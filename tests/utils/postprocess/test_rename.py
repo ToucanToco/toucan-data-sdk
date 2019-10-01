@@ -1,4 +1,5 @@
 import pandas as pd
+
 from toucan_data_sdk.utils.postprocess import rename
 
 
@@ -8,7 +9,7 @@ def test_rename():
     config = {
         'values': {'world': {'fr': 'monde'}},
         'columns': {'hello': {'fr': 'bonjour'}},
-        'locale': 'fr'
+        'locale': 'fr',
     }
     df = rename(data, **config)
     res = [{k: v for k, v in zip(df.columns, row)} for row in df.values]
@@ -21,7 +22,7 @@ def test_rename_unknown_locale_with_en():
     config = {
         'values': {'world': {'en': 'WORLD'}},
         'columns': {'hello': {'en': 'HELLO'}},
-        'locale': 'fr'
+        'locale': 'fr',
     }
     df = rename(data, **config)
     res = [{k: v for k, v in zip(df.columns, row)} for row in df.values]
@@ -34,7 +35,7 @@ def test_rename_unknown_locale_without_en():
     config = {
         'values': {'world': {'fr': 'monde'}},
         'columns': {'hello': {'fr': 'bonjour'}},
-        'locale': 'it'
+        'locale': 'it',
     }
     df = rename(data, **config)
     res = [{k: v for k, v in zip(df.columns, row)} for row in df.values]
