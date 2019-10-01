@@ -1,43 +1,46 @@
 version: 2
 
 jobs:
-  main:
+  lint:
     docker:
-      - image: circleci/python:3.7
+      - image: circleci/python:3.6
     steps:
       - checkout
-      - run: sudo sed -i -e 's/^# en_US.UTF-8/en_US.UTF-8/; s/^# de_DE.UTF-8/de_DE.UTF-8/' /etc/locale.gen
-      - run: sudo locale-gen
-      - run: sudo pip install tox codecov
-      - run: tox -e flake8,coverage
-      - run: codecov --token=d84070ff-f638-4632-91c4-437ca7d45e2e
+      - run: sudo make install
+      - run: make lint
+  mypy:
+    docker:
+      - image: circleci/python:3.6
+    steps:
+      - checkout
+      - run: sudo make install
+      - run: make mypy
   py36:
     docker:
       - image: circleci/python:3.6
     steps:
       - checkout
+      - run: sudo make install
       - run: sudo sed -i -e 's/^# en_US.UTF-8/en_US.UTF-8/; s/^# de_DE.UTF-8/de_DE.UTF-8/' /etc/locale.gen
       - run: sudo locale-gen
-      - run: sudo pip install tox
-      - run: tox -e py36
+      - run: make test
+      - run: sudo pip install codecov
+      - run: codecov --token=d84070ff-f638-4632-91c4-437ca7d45e2e
   py37:
     docker:
       - image: circleci/python:3.7
     steps:
       - checkout
+      - run: sudo make install
       - run: sudo sed -i -e 's/^# en_US.UTF-8/en_US.UTF-8/; s/^# de_DE.UTF-8/de_DE.UTF-8/' /etc/locale.gen
       - run: sudo locale-gen
-      - run: sudo pip install tox
-      - run: tox -e py37
+      - run: make test
 
 workflows:
   version: 2
   build:
     jobs:
-      - main
-      - py36:
-          requires:
-            - main
-      - py37:
-          requires:
-            - main
+      - lint
+      - mypy
+      - py36
+      - py37
