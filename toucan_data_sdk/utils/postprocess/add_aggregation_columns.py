@@ -62,9 +62,10 @@ def add_aggregation_columns(df, *, group_cols: Union[str, List[str]], aggregatio
     |    B   | 2018 |    60   |    6    |    110     |     60     |     6.5     |
 
     """
+    df = df.reset_index(drop=True)
     group = df.groupby(group_cols)
     for new_col, aggs in aggregations.items():
         assert len(aggs) == 1
-        (col, agg), *_ = aggs.items()
+        [(col, agg)] = aggs.items()
         df[new_col] = group[col].transform(agg)
     return df
