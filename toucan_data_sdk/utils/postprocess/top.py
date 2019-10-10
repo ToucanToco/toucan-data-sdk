@@ -84,7 +84,7 @@ def top(
             del df[temp_column]
         return df[::sorted_order]
 
-    return _top(df) if group is None else df.groupby(group).apply(_top)
+    return _top(df) if group is None else df.groupby(group).apply(_top).reset_index(drop=True)
 
 
 def top_group(
