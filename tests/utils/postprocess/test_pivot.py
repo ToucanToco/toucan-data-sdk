@@ -25,7 +25,7 @@ def test_pivot():
         [
             {'variable': 'toto', 'wave': 'wave1', 'year': 2014, 'value': 'value1'},
             {'variable': 'toto', 'wave': 'wave1', 'year': 2015, 'value': 'value2'},
-            {'variable': 'toto', 'wave': 'wave1', 'year': 2016, 'value': 'value3'},
+            {'variable': 'toto', 'wave': 'wave1', 'year': 2016, 'value': 3},  # mixed dtypes
             {'variable': 'toto', 'wave': 'wave1', 'year': 2016, 'value': 'value4'},
             {'variable': 'toto', 'wave': 'wave1', 'year': 2014, 'value': 'value5'},
         ]
@@ -33,7 +33,7 @@ def test_pivot():
     res = pivot(data_obj, **kwargs)
     assert res[2014][0] == 'value1 value5'
     assert res[2015][0] == 'value2'
-    assert res[2016][0] == 'value3 value4'
+    assert res[2016][0] == '3 value4'
 
 
 def test_pivot_agg_sum():
