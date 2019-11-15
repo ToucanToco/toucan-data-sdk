@@ -55,6 +55,8 @@ def pivot(
     |   toto   |  wave 1 |  300   | 250  | 450  |
     """
     if df.dtypes[value].type == np.object_:
+        # Force the value column to be str-only (because mixed dtypes causes errors)
+        df[value] = df[value].astype(str)
         df = pd.pivot_table(
             df, index=index, columns=column, values=value, aggfunc=lambda x: ' '.join(x)
         )
