@@ -1,7 +1,7 @@
-Location,Type,population,value,Country,Region,City
-Montreuil,City,9,3.5,France,Idf,Montreuil
-Paris,City,200,3.3,France,Idf,Paris
-Lille,City,20,2.7,France,Nord,Lille
-Idf,Region,209,6.8,France,Idf,
-Nord,Region,20,2.7,France,Nord,
+Location,Type,population,value,Country,Region,City,Parent
+Montreuil,City,9,3.5,France,Idf,Montreuil,Idf
+Paris,City,200,3.3,France,Idf,Paris,Idf
+Lille,City,20,2.7,France,Nord,Lille,Nord
+Idf,Region,209,6.8,France,Idf,,France
+Nord,Region,20,2.7,France,Nord,,France
 France,Country,229,9.5,France,,

@@ -19,8 +19,12 @@ def test_roll():
         groupby_vars=['value', 'population'],
         value_name='Location',
         var_name='Type',
+        parent_name='Parent',
     )
-    res_df = res_df[['Location', 'Type', 'population', 'value', 'Country', 'Region', 'City']]
+    res_df = res_df[
+        ['Location', 'Type', 'population', 'value', 'Country', 'Region', 'City', 'Parent']
+    ]
+
     expected_output = pd.read_csv(os.path.join(fixtures_base_dir, 'roll_up.csv'))
     assert res_df.equals(expected_output)
 
