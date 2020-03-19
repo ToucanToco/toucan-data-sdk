@@ -82,5 +82,5 @@ def test_compute_cumsum_new_value_cols_error():
             new_value_cols=['a', 'b'],
         )
 
-    expected = "`value_cols` and `new_value_cols` needs to have the same number of elements"
+    expected = '`value_cols` and `new_value_cols` needs to have the same number of elements'
     assert str(exc_info.value) == expected

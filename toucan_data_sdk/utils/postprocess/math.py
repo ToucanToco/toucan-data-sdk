@@ -204,8 +204,8 @@ def formula(df, *, new_column: str, formula: str):
         old_formula = formula
         formula = get_new_syntax_formula(old_formula)
         LOGGER.warning(
-            f"DEPRECATED: You should always use ` for your columns. "
-            f"Old syntax: {old_formula!r}, new syntax: {formula!r}"
+            f'DEPRECATED: You should always use ` for your columns. '
+            f'Old syntax: {old_formula!r}, new syntax: {formula!r}'
         )
     tokens = _parse_formula(formula)
     expression_splitted = []

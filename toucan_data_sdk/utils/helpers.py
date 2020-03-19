@@ -70,7 +70,7 @@ def get_param_value_from_func_call(param_name, func, call_args, call_kwargs):
     params_list = signature.parameters.keys()
     if param_name not in params_list:
         raise TypeError(
-            f"'{param_name}' not found in {func.__name__}" f"parameters list ([{params_list}])"
+            f"'{param_name}' not found in {func.__name__} parameters list ([{params_list}])"
         )
     call = signature.bind(*call_args, **call_kwargs)
     call.apply_defaults()

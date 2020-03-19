@@ -8,15 +8,15 @@ def test_replace():
 
     df = pd.DataFrame(
         [
-            {'year': 2016, 'month': "jan."},
-            {'year': 2016, 'month': "feb."},
-            {'year': 2017, 'month': "jan."},
+            {'year': 2016, 'month': 'jan.'},
+            {'year': 2016, 'month': 'feb.'},
+            {'year': 2017, 'month': 'jan.'},
         ]
     )
     config = {
         'column': 'month',
         'new_column': 'month_int',
-        'to_replace': {"jan.": 1, "feb.": 2, "mar.": 3},
+        'to_replace': {'jan.': 1, 'feb.': 2, 'mar.': 3},
     }
     expected_result = [1, 2, 1]
     df = replace(df, **config)

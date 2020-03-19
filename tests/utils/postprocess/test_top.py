@@ -26,7 +26,7 @@ def test_top():
             {'variable': 'toto', 'Category': 1, 'value': 300},
         ]
     )
-    kwargs = {"value": 'value', "limit": 3, "order": "desc"}
+    kwargs = {'value': 'value', 'limit': 3, 'order': 'desc'}
     df = top(data, **kwargs).reset_index(drop=True)
     assert df.equals(expected)
 
@@ -41,7 +41,7 @@ def test_top():
             {'variable': 'toto', 'Category': 1, 'value': 100},
         ]
     )
-    kwargs = {"group": ['variable', "Category"], "value": 'value', "limit": -2, "order": "desc"}
+    kwargs = {'group': ['variable', 'Category'], 'value': 'value', 'limit': -2, 'order': 'desc'}
     df = top(data, **kwargs)
     assert df.equals(expected)
 
@@ -90,11 +90,11 @@ def test_top_group():
         }
     )
     kwargs = {
-        "group": "Periode",
-        "value": 'Valeurs',
-        "aggregate_by": ["Label"],
-        "limit": 2,
-        "order": "desc",
+        'group': 'Periode',
+        'value': 'Valeurs',
+        'aggregate_by': ['Label'],
+        'limit': 2,
+        'order': 'desc',
     }
     df = top_group(data, **kwargs)
     assert df.equals(expected)
@@ -109,11 +109,11 @@ def test_top_group():
         }
     )
     kwargs = {
-        "group": None,
-        "value": 'Valeurs',
-        "aggregate_by": ["Label"],
-        "limit": 2,
-        "order": "desc",
+        'group': None,
+        'value': 'Valeurs',
+        'aggregate_by': ['Label'],
+        'limit': 2,
+        'order': 'desc',
     }
     df = top_group(data, **kwargs)
     assert df.equals(expected)
@@ -128,12 +128,12 @@ def test_top_group():
         }
     )
     kwargs = {
-        "group": ["Periode"],
-        "value": 'Valeurs',
-        "aggregate_by": ["Label"],
-        "limit": 2,
-        "function": "mean",
-        "order": "desc",
+        'group': ['Periode'],
+        'value': 'Valeurs',
+        'aggregate_by': ['Label'],
+        'limit': 2,
+        'function': 'mean',
+        'order': 'desc',
     }
     df = top_group(data, **kwargs)
     assert df.equals(expected)

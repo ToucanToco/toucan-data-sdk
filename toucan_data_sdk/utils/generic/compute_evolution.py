@@ -250,13 +250,13 @@ def apply_merge(df, df_offseted, group_cols, how, offseted_suffix, raise_duplica
 
     if df_offseted_deduplicated.shape[0] != df_offseted.shape[0] and how == 'left':
         msg = (
-            "A dataframe for which you want to compute evolutions "
-            "has duplicated values against the id_cols you indicated."
+            'A dataframe for which you want to compute evolutions '
+            'has duplicated values against the id_cols you indicated.'
         )
         if raise_duplicate_error:
             raise DuplicateRowsError(msg)
         else:
-            logging.getLogger(__name__).warning(f"Warning: {msg}")
+            logging.getLogger(__name__).warning(f'Warning: {msg}')
 
     df_with_offseted_values = pd.merge(
         df, df_offseted_deduplicated, how=how, on=group_cols, suffixes=['', offseted_suffix]

@@ -93,26 +93,26 @@ def test_datasources(sdk, mocker):
     mock_read_sdk = mocker.patch('toucan_data_sdk.sdk.ToucanDataSdk.read_datasources_from_sdk')
     # 1. Cache directory exists
     mock_cache_exists.return_value = True
-    mock_read_cache.return_value = {"domain_1": 1}
-    assert sdk.get_dfs() == {"domain_1": 1}
+    mock_read_cache.return_value = {'domain_1': 1}
+    assert sdk.get_dfs() == {'domain_1': 1}
 
     # 2. Cache directory does not exist
     mock_read_cache.reset_mock()
     mock_cache_exists.return_value = False
-    mock_read_sdk.return_value = {"domain_2": 1}
-    assert sdk.get_dfs() == {"domain_2": 1}
+    mock_read_sdk.return_value = {'domain_2': 1}
+    assert sdk.get_dfs() == {'domain_2': 1}
     mock_read_cache.assert_not_called()
 
     # 3. Cache directory exists with one domain
     mock_cache_exists.return_value = True
-    mock_read_cache.return_value = {"domain_1": 1}
-    assert sdk.get_dfs(['a']) == {"domain_1": 1}
+    mock_read_cache.return_value = {'domain_1': 1}
+    assert sdk.get_dfs(['a']) == {'domain_1': 1}
 
     # 4. Cache directory doesn't exists with one domain
     mock_read_cache.reset_mock()
     mock_cache_exists.return_value = False
-    mock_read_sdk.return_value = {"domain_2": 1}
-    assert sdk.get_dfs(['a']) == {"domain_2": 1}
+    mock_read_sdk.return_value = {'domain_2': 1}
+    assert sdk.get_dfs(['a']) == {'domain_2': 1}
     mock_read_cache.assert_not_called()
     assert sdk.small_app_url == 'https://api-myinstance.toucantoco.com/demo'
 
@@ -124,9 +124,9 @@ def test_dfs_complex(sdk, mocker):
     mock_read_sdk = mocker.patch('toucan_data_sdk.sdk.ToucanDataSdk.read_datasources_from_sdk')
 
     mock_cache_exists.side_effect = [True, False]
-    mock_read_cache.return_value = {"domain_1": 1}
-    mock_read_sdk.return_value = {"domain_2": 1}
-    assert sdk.get_dfs(['a', 'b']) == {"domain_1": 1, "domain_2": 1}
+    mock_read_cache.return_value = {'domain_1': 1}
+    mock_read_sdk.return_value = {'domain_2': 1}
+    assert sdk.get_dfs(['a', 'b']) == {'domain_1': 1, 'domain_2': 1}
 
 
 def test_dfs_http_error(sdk_error):
@@ -240,8 +240,8 @@ def test_sdk_compatibility(sdk_old, mocker):
 
     # 1. Cache directory exists
     mock_cache_exists.return_value = True
-    mock_read_cache.return_value = {"domain_1": 1}
-    assert sdk_old.get_dfs() == {"domain_1": 1}
+    mock_read_cache.return_value = {'domain_1': 1}
+    assert sdk_old.get_dfs() == {'domain_1': 1}
     assert sdk_old.small_app_url == 'https://api-myinstance.toucantoco.com/demo'
 
 
@@ -329,8 +329,8 @@ def test_domain_cache(mocker, sdk):
     mock_cache_exists = mocker.patch('toucan_data_sdk.sdk.ToucanDataSdk.cache_exists')
     mock_read_cache = mocker.patch('toucan_data_sdk.sdk.ToucanDataSdk.read_from_cache')
     mock_cache_exists.return_value = True
-    mock_read_cache.return_value = {"domain_1": 1}
-    assert sdk.get_domains('domain_1') == {"domain_1": 1}
+    mock_read_cache.return_value = {'domain_1': 1}
+    assert sdk.get_domains('domain_1') == {'domain_1': 1}
 
 
 def test_traceback(sdk):
@@ -342,7 +342,7 @@ def test_traceback(sdk):
                 self.content = f.read()
 
         def json(self):
-            return {'test': "yo"}
+            return {'test': 'yo'}
 
     sdk.client.tracebacks.latest.get.return_value = Response(True)
     tb_values = sdk.load_latest_traceback()
@@ -351,4 +351,4 @@ def test_traceback(sdk):
 
     sdk.client.tracebacks.latest.get.return_value = Response(False)
     tb = sdk.load_latest_traceback()
-    assert {'test': "yo"} == tb
+    assert {'test': 'yo'} == tb

@@ -31,7 +31,7 @@ def test_sort_values_invalid_parameters_length():
     )
 
     with pytest.raises(AssertionError):
-        sort(data, ["variable", 'Category'], order=['asc'])
+        sort(data, ['variable', 'Category'], order=['asc'])
 
 
 def test_sort_values_simple():

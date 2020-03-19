@@ -132,7 +132,7 @@ def test_old_parse_formula():
         ')',
     ]
     assert old_parse_formula("pika + ('chu-uu'/10)") == ['pika', '+', '(', 'chu-uu', '/', '10', ')']
-    assert old_parse_formula('pika + (\'chu-uu\'/10)') == [
+    assert old_parse_formula('pika + (\'chu-uu\'/10)') == [  # noqa: Q0
         'pika',
         '+',
         '(',
@@ -141,7 +141,7 @@ def test_old_parse_formula():
         '10',
         ')',
     ]
-    assert old_parse_formula("pika + (\"chu-uu\"/10)") == [
+    assert old_parse_formula("pika + (\"chu-uu\"/10)") == [  # noqa: Q0
         'pika',
         '+',
         '(',
@@ -167,8 +167,8 @@ def test_get_new_syntax_formula():
     old = '("and-another" - yet_another) / (and - another)'
     assert get_new_syntax_formula(old) == '(`and-another`-`yet_another`)/(`and`-`another`)'
     assert get_new_syntax_formula("pika + ('chu-uu'/10)") == '`pika`+(`chu-uu`/10)'
-    assert get_new_syntax_formula('pika + (\'chu-uu\'/10)') == '`pika`+(`chu-uu`/10)'
-    assert get_new_syntax_formula("pika + (\"chu-uu\"/10)") == '`pika`+(`chu-uu`/10)'
+    assert get_new_syntax_formula('pika + (\'chu-uu\'/10)') == '`pika`+(`chu-uu`/10)'  # noqa: Q0
+    assert get_new_syntax_formula("pika + (\"chu-uu\"/10)") == '`pika`+(`chu-uu`/10)'  # noqa: Q0
 
 
 # DEPRECATED: OLD SYNTAX

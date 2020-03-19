@@ -9,7 +9,7 @@ def test_melt():
         [{'column_1': 'S45', 'column_2': 'lalaland', 'info_1': 10, 'info_2': 20, 'info_3': None}]
     )
 
-    kwargs = {"id": ['column_1', 'column_2'], "value": ['info_1', 'info_2', 'info_3']}
+    kwargs = {'id': ['column_1', 'column_2'], 'value': ['info_1', 'info_2', 'info_3']}
 
     res = melt(data, **kwargs)
     res2 = melt(data, **kwargs, dropna=True)

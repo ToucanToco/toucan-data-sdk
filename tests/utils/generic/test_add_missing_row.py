@@ -146,4 +146,4 @@ def test_add_missing_row_index_date_error():
             complete_index={'type': 'my_date'},
         )
 
-    assert "Unknown complete index type: my_date" == str(e_info.value)
+    assert str(e_info.value) == 'Unknown complete index type: my_date'

@@ -49,7 +49,7 @@ def test_log_shapes(mocker):
 def test_log_message(mocker):
     logger = mocker.MagicMock()
 
-    @log_message(logger, "yolo")
+    @log_message(logger, 'yolo')
     def foo():
         pass
 

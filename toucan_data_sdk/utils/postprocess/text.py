@@ -64,7 +64,7 @@ def _generate_basic_str_postprocess(method_name, docstring):
         return df
 
     f.__name__ = method_name
-    f.__doc__ = f'''
+    f.__doc__ = f"""
     {docstring}
     See [pandas doc](
     https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.str.{method_name}.html) for more information
@@ -78,7 +78,7 @@ def _generate_basic_str_postprocess(method_name, docstring):
 
     *optional :*
     - `new_column` (*str*): the destination column (if not set, `column` will be used)
-    '''
+    """
     return f
 
 
@@ -155,7 +155,7 @@ def _generate_strip_str_postprocess(method_name, docstring):
         return df
 
     f.__name__ = method_name
-    f.__doc__ = f'''
+    f.__doc__ = f"""
     {docstring}
     See [pandas doc](
     https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.str.{method_name}.html) for more information
@@ -170,7 +170,7 @@ def _generate_strip_str_postprocess(method_name, docstring):
     *optional :*
     - `to_strip` (*str*): set of characters to be removed
     - `new_column` (*str*): the destination column (if not set, `column` will be used)
-    '''
+    """
     return f
 
 
@@ -205,7 +205,7 @@ def _generate_width_str_postprocess(method_name, docstring):
         return df
 
     f.__name__ = method_name
-    f.__doc__ = f'''
+    f.__doc__ = f"""
     {docstring}
     See [pandas doc](
     https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.str.{method_name}.html) for more information
@@ -221,7 +221,7 @@ def _generate_width_str_postprocess(method_name, docstring):
     *optional :*
     - `fillchar` (*str*): additional character for filling
     - `new_column` (*str*): the destination column (if not set, `column` will be used)
-    '''
+    """
     return f
 
 
@@ -260,7 +260,7 @@ def _generate_split_str_postprocess(method_name, docstring):
         return df
 
     f.__name__ = method_name
-    f.__doc__ = f'''
+    f.__doc__ = f"""
     {docstring}
     See [pandas doc](
     https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.str.{method_name}.html) for more information
@@ -276,7 +276,7 @@ def _generate_split_str_postprocess(method_name, docstring):
     - `sep` (*str*): string or regular expression to split on
     - `limit` (*int*): limit number of splits in output (by default, there is no limit)
     - `new_columns` (*list*): the destination columns (by default, new columns will be added automatically)
-    '''
+    """
     return f
 
 
@@ -309,7 +309,7 @@ def _generate_partition_str_postprocess(method_name, docstring):
         return df
 
     f.__name__ = method_name
-    f.__doc__ = f'''
+    f.__doc__ = f"""
     {docstring}
     See [pandas doc](
     https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.str.{method_name}.html) for more information
@@ -324,7 +324,7 @@ def _generate_partition_str_postprocess(method_name, docstring):
 
     *optional :*
     - `sep` (*str*): string or regular expression to split on
-    '''
+    """
     return f
 
 
@@ -365,7 +365,7 @@ def _generate_find_str_postprocess(method_name, docstring):
         return df
 
     f.__name__ = method_name
-    f.__doc__ = f'''
+    f.__doc__ = f"""
     {docstring}
     See [pandas doc](
     https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.str.{method_name}.html) for more information
@@ -382,7 +382,7 @@ def _generate_find_str_postprocess(method_name, docstring):
     - `start` (*int*): left edge index
     - `end` (*int*): right edge index
     - `new_column` (*str*): the destination column (if not set, `column` will be used)
-    '''
+    """
     return f
 
 
@@ -441,7 +441,7 @@ def _generate_with_str_postprocess(method_name, docstring):
         f':param na: (default: NaN) object shown if element tested is not a string\n'
         f':return: the transformed dataframe'
     )
-    f.__doc__ = f'''
+    f.__doc__ = f"""
     {docstring}
     See [pandas doc](
     https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.str.{method_name}.html) for more information
@@ -457,7 +457,7 @@ def _generate_with_str_postprocess(method_name, docstring):
     *optional :*
     - `na`: object shown if element tested is not a string
     - `new_column` (*str*): the destination column (if not set, `column` will be used)
-    '''
+    """
     return f
 
 
