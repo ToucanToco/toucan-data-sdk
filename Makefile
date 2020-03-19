@@ -1,4 +1,6 @@
 .DEFAULT_GOAL := all
+isort = isort -rc toucan_data_sdk tests setup.py
+black = black toucan_data_sdk tests setup.py
 
 .PHONY: install
 install:
@@ -7,14 +9,14 @@ install:
 
 .PHONY: format
 format:
-	isort -rc -w 100 toucan_data_sdk tests
-	black -S -l 100 --target-version py36 toucan_data_sdk tests
+	$(isort)
+	$(black)
 
 .PHONY: lint
 lint:
-	flake8 toucan_data_sdk tests
-	isort -c -rc -w 100 toucan_data_sdk tests
-	black -S -l 100 --target-version py36 --check toucan_data_sdk tests
+	flake8 toucan_data_sdk tests setup.py
+	$(isort) --check-only
+	$(black) --check
 
 .PHONY: mypy
 mypy:
@@ -25,7 +27,7 @@ test:
 	pytest --cov-fail-under=100 --cov=toucan_data_sdk --cov-report term-missing
 
 .PHONY: all
-all: test mypy lint
+all: lint mypy test
 
 .PHONY: clean
 clean:
