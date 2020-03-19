@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, List, Union
+from typing import Dict, List, Optional, Union
 
 import numpy as np
 import pandas as pd
@@ -75,6 +75,7 @@ def compute_evolution_by_frequency(
     |           |          220 |        2011|         20|
     |         C |          100 |        2011|       null|
     """
+    fillna: Optional[int]
     if missing_date_as_zero:
         how = 'outer'
         fillna = 0

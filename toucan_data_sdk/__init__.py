@@ -1,1 +1,1 @@
-from .sdk import ToucanDataSdk
+from .sdk import ToucanDataSdk  # noqa: F401

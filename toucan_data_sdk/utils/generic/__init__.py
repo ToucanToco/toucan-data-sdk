@@ -1,3 +1,4 @@
+# flake8: noqa
 # Spreadsheets doc:
 # https://drive.google.com/drive/folders/0B56th7Lb-9vScy0tMlpIeGNxQ0E
 

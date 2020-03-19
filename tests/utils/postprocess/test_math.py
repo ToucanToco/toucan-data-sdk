@@ -164,10 +164,8 @@ def test_get_new_syntax_formula():
     assert get_new_syntax_formula('pika + ("chu-uu"/10)') == '`pika`+(`chu-uu`/10)'
     assert get_new_syntax_formula('a + b*3.1') == '`a`+`b`*3.1'
     assert get_new_syntax_formula('a + "b*3.1"') == '`a`+`b*3.1`'
-    assert (
-        get_new_syntax_formula('("and-another" - yet_another) / (and - another)')
-        == '(`and-another`-`yet_another`)/(`and`-`another`)'
-    )
+    old = '("and-another" - yet_another) / (and - another)'
+    assert get_new_syntax_formula(old) == '(`and-another`-`yet_another`)/(`and`-`another`)'
     assert get_new_syntax_formula("pika + ('chu-uu'/10)") == '`pika`+(`chu-uu`/10)'
     assert get_new_syntax_formula('pika + (\'chu-uu\'/10)') == '`pika`+(`chu-uu`/10)'
     assert get_new_syntax_formula("pika + (\"chu-uu\"/10)") == '`pika`+(`chu-uu`/10)'

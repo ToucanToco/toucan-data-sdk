@@ -5,8 +5,7 @@ import time
 
 import pytest
 
-from toucan_data_sdk.utils.decorators import cache as etl_cache
-from toucan_data_sdk.utils.decorators import method_cache, setup_cachedir
+from toucan_data_sdk.utils.decorators import cache as etl_cache, method_cache, setup_cachedir
 
 
 @pytest.fixture
