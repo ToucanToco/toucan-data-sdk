@@ -37,7 +37,7 @@ def combine_columns_aggregation(
     ]
     dfs_result = []
     for comb in requester_combination:
-        df_tmp = df.groupby(id_cols + comb).agg(agg_func).reset_index()
+        df_tmp = df.fillna(method='ffill').groupby(id_cols + comb).agg(agg_func).reset_index()
         for key in set(cols_for_combination.keys()) - set(comb):
             df_tmp[key] = cols_for_combination[key]
         dfs_result.append(df_tmp)

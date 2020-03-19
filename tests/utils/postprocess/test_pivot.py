@@ -101,7 +101,7 @@ def test_pivot_with_value_to_pivot():
         'values_to_pivot': ['REF'],
     }
     res = pivot(data, **kwargs)
-    assert res.columns.contains('REF')
+    assert 'REF' in res.columns
     assert res.shape[0] == 4
     assert set(res.Type) == {'A', 'B'}
 
@@ -124,8 +124,8 @@ def test_pivot_with_value_to_pivot():
         'values_to_pivot': ['REF', 'REF2'],
     }
     res = pivot(data, **kwargs)
-    assert res.columns.contains('REF')
-    assert res.columns.contains('REF2')
+    assert 'REF' in res.columns
+    assert 'REF2' in res.columns
     assert res.shape[0] == 4
     assert set(res.Type) == {'A', 'B'}
 

@@ -112,7 +112,7 @@ def add_years(dateobj, nb_years):
     return dateobj.replace(year=year, day=min(lastday, dateobj.day))
 
 
-def parse_date(datestr: str, date_fmt: str) -> date:
+def parse_date(datestr: str, date_fmt: str) -> pd.Timestamp:
     """parse `datestr` and return corresponding date object.
 
     `datestr` should be a string matching `date_fmt` and parseable by `strptime`
@@ -143,13 +143,14 @@ def parse_date(datestr: str, date_fmt: str) -> date:
     match = rgx.match(datestr)
     # if regexp doesn't match, date must match the expected format
     if match is None:
-        return _norm_date(datestr, date_fmt)
-    datestr = match.group('date').strip()
-    dateobj = _norm_date(datestr, date_fmt)
-    offset = match.group('offset')
-    if offset:
-        return add_offset(dateobj, offset, match.group('sign'))
-    return dateobj
+        dateobj = _norm_date(datestr, date_fmt)
+    else:
+        datestr = match.group('date').strip()
+        dateobj = _norm_date(datestr, date_fmt)
+        offset = match.group('offset')
+        if offset:
+            dateobj = add_offset(dateobj, offset, match.group('sign'))
+    return pd.Timestamp(dateobj)
 
 
 def filter_by_date(

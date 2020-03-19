@@ -56,7 +56,7 @@ def test_if_else(df):
         'new_column': 'new',
     }
     res = if_else(df, **config)
-    assert res.columns.tolist() == ['country', 'city', 'clean', 'the rating', 'concated', 'new']
+    assert res.columns.tolist() == ['country', 'city', 'clean', 'the rating', 'new', 'concated']
     assert res[['country', 'city', 'clean', 'the rating']].equals(df)
     assert res['new'].tolist() == ['FRANCE -> PARIS', 'GERMANY -> MUNICH', 7, 7]
 
