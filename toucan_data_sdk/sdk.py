@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 class ToucanDataSdk:
-    def __init__(self, instance_url, auth, small_app=None, stage="staging"):
+    def __init__(self, instance_url, auth, small_app=None, stage='staging'):
         instance_url = instance_url.strip().rstrip('/')
         if small_app is None:
             small_app = instance_url.split('/')[-1]
@@ -48,7 +48,7 @@ class ToucanDataSdk:
 
     def get_domains(self, domains=None):
         if domains is None:
-            domains = [meta["domain"] for meta in self.client.metadata.get().json()]
+            domains = [meta['domain'] for meta in self.client.metadata.get().json()]
         domains_cache = [domain for domain in domains if self.cache_exists(domain)]
         domains_sdk = [domain for domain in domains if domain not in domains_cache]
         if len(domains_cache) > 0:

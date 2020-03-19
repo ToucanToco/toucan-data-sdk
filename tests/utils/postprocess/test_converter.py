@@ -15,9 +15,9 @@ def test_convert_str_to_datetime():
     config = {'column': 'date', 'format': '%Y-%m'}
     df = pd.DataFrame(
         [
-            {'date': '2016-01', 'city': "Rennes"},
-            {'date': '2016-01', 'city': "Nantes"},
-            {'date': '2017-05', 'city': "Paris"},
+            {'date': '2016-01', 'city': 'Rennes'},
+            {'date': '2016-01', 'city': 'Nantes'},
+            {'date': '2017-05', 'city': 'Paris'},
         ]
     )
     expected_result = [pd.Timestamp('20160101'), pd.Timestamp('20160101'), pd.Timestamp('20170501')]
@@ -29,9 +29,9 @@ def test_convert_datetime_to_str():
     """ It should replace data in the dataframe """
     df = pd.DataFrame(
         [
-            {'date': pd.Timestamp('20160101'), 'city': "Rennes"},
-            {'date': pd.Timestamp('20160106'), 'city': "Nantes"},
-            {'date': pd.Timestamp('20170501'), 'city': "Paris"},
+            {'date': pd.Timestamp('20160101'), 'city': 'Rennes'},
+            {'date': pd.Timestamp('20160106'), 'city': 'Nantes'},
+            {'date': pd.Timestamp('20170501'), 'city': 'Paris'},
         ]
     )
     expected_result = ['2016-01', '2016-01', '2017-05']
@@ -51,9 +51,9 @@ def test_change_date_format():
     """ It should replace data in the dataframe """
     df = pd.DataFrame(
         [
-            {'date': pd.Timestamp('20160101'), 'city': "Rennes"},
-            {'date': pd.Timestamp('20160106'), 'city': "Nantes"},
-            {'date': pd.Timestamp('20170501'), 'city': "Paris"},
+            {'date': pd.Timestamp('20160101'), 'city': 'Rennes'},
+            {'date': pd.Timestamp('20160106'), 'city': 'Nantes'},
+            {'date': pd.Timestamp('20170501'), 'city': 'Paris'},
         ]
     )
 
@@ -82,25 +82,25 @@ def test_change_date_format():
     # convert time-zone from non explicit timezone
     df = pd.DataFrame(
         [
-            {'date': "2018-11-13 08:00:02.091000", 'city': "Rennes"},
-            {'date': "2018-11-13 12:01:05.091000", 'city': "Nantes"},
-            {'date': "2018-11-13 10:12:09.091000", 'city': "Paris"},
+            {'date': '2018-11-13 08:00:02.091000', 'city': 'Rennes'},
+            {'date': '2018-11-13 12:01:05.091000', 'city': 'Nantes'},
+            {'date': '2018-11-13 10:12:09.091000', 'city': 'Paris'},
         ]
     )
-    expected_result = ["09:00", "13:01", "11:12"]
-    config = {'column': 'date', 'output_format': '%H:%M', 'new_time_zone': "Europe/Paris"}
+    expected_result = ['09:00', '13:01', '11:12']
+    config = {'column': 'date', 'output_format': '%H:%M', 'new_time_zone': 'Europe/Paris'}
     df_new = change_date_format(df, **config)
     assert list(df_new.date) == expected_result
 
     # Non convert time-zone from explicit timezone (+1)
     df = pd.DataFrame(
         [
-            {'date': "2018-11-13 10:00:02.091000+01:00", 'city': "Rennes"},
-            {'date': "2018-11-13 14:01:05.091000+01:00", 'city': "Nantes"},
-            {'date': "2018-11-13 12:12:09.091000+01:00", 'city': "Paris"},
+            {'date': '2018-11-13 10:00:02.091000+01:00', 'city': 'Rennes'},
+            {'date': '2018-11-13 14:01:05.091000+01:00', 'city': 'Nantes'},
+            {'date': '2018-11-13 12:12:09.091000+01:00', 'city': 'Paris'},
         ]
     )
-    expected_result = ["09:00", "13:01", "11:12"]
+    expected_result = ['09:00', '13:01', '11:12']
     config = {'column': 'date', 'output_format': '%H:%M'}
     df_new = change_date_format(df, **config)
     assert list(df_new.date) == expected_result
@@ -108,26 +108,26 @@ def test_change_date_format():
     # convert time-zone from explicit timezone (+0)
     df = pd.DataFrame(
         [
-            {'date': "2018-11-13 08:00:02.091000+00:00", 'city': "Rennes"},
-            {'date': "2018-11-13 12:01:05.091000+00:00", 'city': "Nantes"},
-            {'date': "2018-11-13 10:12:09.091000+00:00", 'city': "Paris"},
+            {'date': '2018-11-13 08:00:02.091000+00:00', 'city': 'Rennes'},
+            {'date': '2018-11-13 12:01:05.091000+00:00', 'city': 'Nantes'},
+            {'date': '2018-11-13 10:12:09.091000+00:00', 'city': 'Paris'},
         ]
     )
-    expected_result = ["09:00", "13:01", "11:12"]
-    config = {'column': 'date', 'output_format': '%H:%M', 'new_time_zone': "Europe/Paris"}
+    expected_result = ['09:00', '13:01', '11:12']
+    config = {'column': 'date', 'output_format': '%H:%M', 'new_time_zone': 'Europe/Paris'}
     df_new = change_date_format(df, **config)
     assert list(df_new.date) == expected_result
 
     # convert time-zone from explicit timezone (+2)
     df = pd.DataFrame(
         [
-            {'date': "2018-11-13 10:00:02.091000+02:00", 'city': "Rennes"},
-            {'date': "2018-11-13 14:01:05.091000+02:00", 'city': "Nantes"},
-            {'date': "2018-11-13 12:12:09.091000+02:00", 'city': "Paris"},
+            {'date': '2018-11-13 10:00:02.091000+02:00', 'city': 'Rennes'},
+            {'date': '2018-11-13 14:01:05.091000+02:00', 'city': 'Nantes'},
+            {'date': '2018-11-13 12:12:09.091000+02:00', 'city': 'Paris'},
         ]
     )
-    expected_result = ["08:00", "12:01", "10:12"]
-    config = {'column': 'date', 'output_format': '%H:%M', 'new_time_zone': "UTC"}
+    expected_result = ['08:00', '12:01', '10:12']
+    config = {'column': 'date', 'output_format': '%H:%M', 'new_time_zone': 'UTC'}
     df_new = change_date_format(df, **config)
     assert list(df_new.date) == expected_result
 

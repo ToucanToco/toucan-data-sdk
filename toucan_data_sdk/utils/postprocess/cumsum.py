@@ -7,7 +7,7 @@ def cumsum(df, new_column: str, column: str, index: list, date_column: str, date
     """
     DEPRECATED - please use `compute_cumsum` instead
     """
-    logging.getLogger(__name__).warning(f"DEPRECATED: use compute_cumsum")
+    logging.getLogger(__name__).warning('DEPRECATED: use compute_cumsum')
     date_temp = '__date_temp__'
     if isinstance(index, str):
         index = [index]

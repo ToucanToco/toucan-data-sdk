@@ -74,7 +74,7 @@ def rank(
     value_cols = [value_cols] if not isinstance(value_cols, list) else value_cols
     for col in value_cols:
         if not np.issubdtype(df[col].dtype, np.number):
-            raise TypeError(col + " specified in value_cols must be of numeric type")
+            raise TypeError(f'{col} specified in value_cols must be of numeric type')
 
     if rank_cols_names is None:
         rank_cols_names = [x + '_rank' for x in value_cols]
