@@ -214,8 +214,9 @@ def filter_by_date(
         mask = (df[filtercol] >= parse_date(start, date_format)) & (
             df[filtercol] < parse_date(stop, date_format)
         )
-    elif stop is None:
+    # atdate is None and start or stop is None
+    elif start is not None and stop is None:
         mask = df[filtercol] >= parse_date(start, date_format)
-    elif start is None:
+    elif stop is not None and start is None:
         mask = df[filtercol] < parse_date(stop, date_format)
     return df[mask].drop(filtercol, axis=1)

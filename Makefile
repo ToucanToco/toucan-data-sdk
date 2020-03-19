@@ -20,7 +20,7 @@ lint:
 
 .PHONY: mypy
 mypy:
-	mypy --ignore-missing-imports --no-strict-optional toucan_data_sdk
+	mypy toucan_data_sdk
 
 .PHONY: test
 test:

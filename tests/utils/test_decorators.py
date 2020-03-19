@@ -1,8 +1,14 @@
 import pandas as pd
 import pytest
 
-from toucan_data_sdk.utils.decorators import _logger as catch_logger
-from toucan_data_sdk.utils.decorators import domain, log, log_message, log_shapes, log_time
+from toucan_data_sdk.utils.decorators import (
+    _logger as catch_logger,
+    domain,
+    log,
+    log_message,
+    log_shapes,
+    log_time,
+)
 
 
 def test_log_time(mocker):
