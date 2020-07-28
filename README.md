@@ -14,9 +14,7 @@ For usage: `pip install toucan_data_sdk`
 
 For dev:
 
-Install the module in editable mode: `pip install -e .`
-
-And install the test requirements: `pip install '.[test]'`
+Install the module in editable mode and with test requirements: `pip install -e '.[test]'`
 
 # Usage
 
