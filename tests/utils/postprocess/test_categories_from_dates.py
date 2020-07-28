@@ -2,10 +2,9 @@ from datetime import date, timedelta
 
 import pandas as pd
 import pytest
+from pandas.testing import assert_frame_equal
 
 from toucan_data_sdk.utils.postprocess import categories_from_dates
-
-from .test_filter_by_date import assert_frame_equal_noindex
 
 BEFORE_YESTERDAY = (date.today() - timedelta(days=2)).strftime('%Y-%m-%d')
 YESTERDAY = (date.today() - timedelta(days=1)).strftime('%Y-%m-%d')
@@ -78,7 +77,7 @@ def test_categories_from_dates(sample_data):
         'Category 3',
         'Category 3',
     ]
-    assert_frame_equal_noindex(df, expected)
+    assert_frame_equal(df, expected)
 
 
 def test_categories_from_dates_with_offset(sample_data):
@@ -99,7 +98,7 @@ def test_categories_from_dates_with_offset(sample_data):
         'Category 2',
     ]
     df = categories_from_dates(df, 'date', 'my_categories', range_steps=['(TODAY)-10days', 'TODAY'])
-    assert_frame_equal_noindex(df, expected)
+    assert_frame_equal(df, expected)
 
 
 def test_categories_from_dates_with_category_names(sample_data):
@@ -126,4 +125,4 @@ def test_categories_from_dates_with_category_names(sample_data):
         range_steps=['(TODAY)-10days', '(TODAY)+1days'],
         category_names=['Old', 'Recent', 'Futur'],
     )
-    assert_frame_equal_noindex(df, expected)
+    assert_frame_equal(df, expected)

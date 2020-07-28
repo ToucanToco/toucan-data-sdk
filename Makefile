@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := all
-isort = isort -rc toucan_data_sdk tests setup.py
+isort = isort toucan_data_sdk tests setup.py
 black = black toucan_data_sdk tests setup.py
 
 .PHONY: install
