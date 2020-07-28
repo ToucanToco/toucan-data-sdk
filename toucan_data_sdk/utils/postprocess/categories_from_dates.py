@@ -96,9 +96,12 @@ def categories_from_dates(
     df[date_col_at_date_format] = pd.to_datetime(df[date_col], format=date_format)
     df[new_column] = ''
 
+    # first category
     df[new_column][
         df[date_col_at_date_format] < parse_date(range_steps[0], date_format)
     ] = category_names[0]
+
+    # second to before last category
     for i in range(len(range_steps[:-1])):
         start = range_steps[i]
         stop = range_steps[i + 1]
@@ -106,8 +109,10 @@ def categories_from_dates(
             df[date_col_at_date_format] >= parse_date(start, date_format)
         )
         df[new_column][mask] = category_names[i + 1]
+
+    # last category
     df[new_column][
         df[date_col_at_date_format] >= parse_date(range_steps[-1], date_format)
     ] = category_names[-1]
 
-    return df.drop(date_col_at_date_format, axis=1)
+    return df.drop(columns=date_col_at_date_format)
