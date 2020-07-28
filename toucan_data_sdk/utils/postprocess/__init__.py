@@ -1,6 +1,7 @@
 # flake8: noqa
 from .add_aggregation_columns import add_aggregation_columns
 from .argmax import argmax, argmin
+from .categories_from_dates import categories_from_dates
 from .converter import cast, change_date_format, convert_datetime_to_str, convert_str_to_datetime
 from .cumsum import cumsum
 from .fillna import fillna
