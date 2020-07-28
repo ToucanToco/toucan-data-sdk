@@ -16,9 +16,9 @@ def _basic_math_operation(df, new_column, column_1, column_2, op):
     Will create a new column named `new_column`
     """
     if not isinstance(column_1, (str, int, float)):
-        raise TypeError(f'column_1 must be a string, an integer or a float')
+        raise TypeError('column_1 must be a string, an integer or a float')
     if not isinstance(column_2, (str, int, float)):
-        raise TypeError(f'column_2 must be a string, an integer or a float')
+        raise TypeError('column_2 must be a string, an integer or a float')
 
     if isinstance(column_1, str):
         column_1 = df[column_1]
