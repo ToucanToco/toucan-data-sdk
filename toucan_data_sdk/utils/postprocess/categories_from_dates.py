@@ -15,7 +15,7 @@ def categories_from_dates(
     date_format: str = '%Y-%m-%d',
 ):
     """
-    Create a new column of categories based on a date column
+    Create a new column of categories based on a date column.
     This function will gather into categories dates from the date column
     based on range steps.
 
@@ -29,22 +29,21 @@ def categories_from_dates(
 
     *mandatory :*
     - `date_col` (*str*): name of the date column
-    - `new_column` (*str*): name of the categories column to be created
-    - `range_steps` (*list* of *str*): a list of valid date. Each date should be a string
-    matching `date_fmt` and parseable by `strptime`
-    but some offset can also be added using `(datestr) + OFFSET` or `(datestr) -
-    OFFSET` syntax. When using this syntax, `OFFSET` should be understable by
-    `pandas.Timedelta` (cf.
-    http://pandas.pydata.org/pandas-docs/stable/timedeltas.html) and `w`, `week`
-    `month` and `year` offset keywords are also accepted. `datestr` MUST be wrapped
-    with parenthesis. Additionally, the following symbolic names are supported: `TODAY`,
-    `YESTERDAY`, `TOMORROW`.
+    - `new_column` (*str*): name of the column for created categories
+    - `range_steps` (*list* of *str*): a list of valid dates.
+    Each date should be a string matching `date_fmt` and parsable by `strptime`
+    but some offset can also be added using `(datestr) + OFFSET` or `(datestr) - OFFSET` syntax.
+    When using this syntax, `OFFSET` should be understable by `pandas.Timedelta`
+    (see http://pandas.pydata.org/pandas-docs/stable/timedeltas.html)
+    and `w`, `week`, `month` and `year` offset keywords are also accepted.
+    Additionally, the following symbolic names are supported: `TODAY`, `YESTERDAY`, `TOMORROW`.
+    _NOTE_: `datestr` **MUST** be wrapped with parenthesis.
 
     *optional :*
-    - `category_names` (*list* of *str*): names of the categories to be created. This list must have a length equal to range_step **plus one**
+    - `category_names` (*list* of *str*): names of the categories to be created.
+    This list must have a length equal to `range_step` **plus one**
     - `date_format` (*str*): expected date format in column `date_col` (see [available formats](
     https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior)
-
 
     ### Example:
 
