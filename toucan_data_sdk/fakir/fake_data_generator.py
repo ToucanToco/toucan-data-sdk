@@ -27,7 +27,11 @@ def fake_data_generator(conf: List[dict]) -> pd.DataFrame:
     # Then add all the 'number' columns
     number_confs = [x for x in conf if x['type'] == 'number']
     for num_conf in number_confs:
-        num_column = np.random.uniform(low=num_conf.get('min', 0), high=num_conf.get('max', num_conf.get('min', 0)+10), size=df.shape[0])
+        num_column = np.random.uniform(
+            low=num_conf.get('min', 0),
+            high=num_conf.get('max', num_conf.get('min', 0) + 10),
+            size=df.shape[0],
+        )
         df[num_conf.get('name', 'Unnamed')] = num_column.round(num_conf.get('digits', 4))
 
     return df
