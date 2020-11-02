@@ -151,7 +151,7 @@ def compute_evolution_by_criteria(
 
     **Output**
 
-    |   id_cols |    value_col |    month|	value_offseted	| evolution_computed|
+    |   id_cols |    value_col |    month|   value_offseted | evolution_computed|
     |:---------:|:------------:|:-------:|:----------------:|:-----------------:|
     |         A |          100 |        1|               250|               -150|
     |           |          250 |       12|               250|                  0|

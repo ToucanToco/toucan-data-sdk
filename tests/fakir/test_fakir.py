@@ -27,6 +27,37 @@ def test_fake_data_generator():
     assert fake_data.shape == (3 * 3 * 2, 5)
 
 
+def test_fake_data_generator_with_edge_case_conf():
+    """It should not throw any errors"""
+    # label has no `name` key
+    fake_data_generator(
+        [{'type': 'label', 'values': ['A', 'B']}, {'type': 'number', 'min': 0, 'max': 25}]
+    )
+    # label has no `values` key:
+    fake_data_generator(
+        [{'type': 'label', 'name': 'toto'}, {'type': 'number', 'min': 0, 'max': 25}]
+    )
+    # label has neither `name` or `values` key
+    fake_data_generator([{'type': 'label'}, {'type': 'number', 'min': 0, 'max': 25}])
+
+    # number has no `name` key:
+    fake_data_generator(
+        [{'type': 'label', 'values': ['A', 'B'], 'name': 'toto'}, {'type': 'number', 'min': 0}]
+    )
+    # number has no `max` key:
+    fake_data_generator(
+        [{'type': 'label', 'values': ['A', 'B'], 'name': 'toto'}, {'type': 'number', 'min': 0}]
+    )
+    # number has no `min` key:
+    fake_data_generator(
+        [{'type': 'label', 'values': ['A', 'B'], 'name': 'toto'}, {'type': 'number', 'max': -12}]
+    )
+    # number has neither `max` or `min` key:
+    fake_data_generator(
+        [{'type': 'label', 'values': ['A', 'B'], 'name': 'toto'}, {'type': 'number'}]
+    )
+
+
 def test_predict_number_of_row_from_conf():
     conf = [{'values': ['a', 'b', 'c'], 'type': 'label'}, {'min': 0, 'max': 10, 'type': 'number'}]
     assert predict_number_of_row_from_conf(conf) == 3
@@ -45,3 +76,9 @@ def test_predict_number_of_row_from_conf():
         {'min': 0, 'max': 10, 'type': 'number'},
     ]
     assert predict_number_of_row_from_conf(conf) == 3 * 2 * 4
+
+
+def test_predict_number_of_row_from_conf_edge_case():
+    """It should not throw any errors"""
+    conf = [{'min': 0, 'max': 10, 'type': 'number', 'name': 'number'}]
+    assert predict_number_of_row_from_conf(conf) == 0

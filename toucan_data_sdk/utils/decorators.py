@@ -231,17 +231,17 @@ def domain(domain_name):
 def cache(  # noqa: C901
     requires=None, disabled=False, applied_on_method=False, check_param=True, limit=None
 ):
-    """ Avoid to recompute a function if its parameters and its source code doesnt have changed.
+    """Avoid to recompute a function if its parameters and its source code doesnt have changed.
 
-        Args:
-            requires: list of dependencies (functions or function names)
-            disabled (bool): disable the cache mecanism for this function (useful if you
-                                 only want to use the dependency mecanism)
-            applied_on_method (bool): ignore the first argument (useful to ignore "self")
-            check_param (True, False or a str): the name of the parameter to check.
-                                                    False to not check any of them.
-                                                    True (default) to check all of them.
-            limit (int or None): number of cache entries to keep (no limit by default)
+    Args:
+        requires: list of dependencies (functions or function names)
+        disabled (bool): disable the cache mecanism for this function (useful if you
+                             only want to use the dependency mecanism)
+        applied_on_method (bool): ignore the first argument (useful to ignore "self")
+        check_param (True, False or a str): the name of the parameter to check.
+                                                False to not check any of them.
+                                                True (default) to check all of them.
+        limit (int or None): number of cache entries to keep (no limit by default)
     """
     if not requires:
         requires = []
@@ -263,8 +263,8 @@ def cache(  # noqa: C901
         cache.memories = {}  # dict of {thread_id -> joblib.Memory object}
 
     def decorator(func):
-        """ This code is executed when the augment module is read (when decorator is applied).
-            Here we populate cache.funcs_references and cache.dependencies to use them later. """
+        """This code is executed when the augment module is read (when decorator is applied).
+        Here we populate cache.funcs_references and cache.dependencies to use them later."""
         cache.funcs_references[func.__name__] = get_orig_function(func)
         dependencies_names = []
         for requirement in requires:
@@ -280,8 +280,8 @@ def cache(  # noqa: C901
 
         @wraps(func)
         def wrapper(*args, **kwargs):
-            """ This code is executed when a decorated function is actually executed.
-                It uses the previously built dependency tree (see above). """
+            """This code is executed when a decorated function is actually executed.
+            It uses the previously built dependency tree (see above)."""
             current_memory = cache.memories.get(current_thread().name)
             if disabled is True or current_memory is None:
                 return func(*args, **kwargs)
@@ -350,8 +350,8 @@ method_cache = partial(cache, applied_on_method=True)
 
 
 def setup_cachedir(cachedir, mmap_mode=None, bytes_limit=None):
-    """ This function injects a joblib.Memory object in the cache() function
-        (in a thread-specific slot of its 'memories' attribute). """
+    """This function injects a joblib.Memory object in the cache() function
+    (in a thread-specific slot of its 'memories' attribute)."""
     if not hasattr(cache, 'memories'):
         cache.memories = {}
 

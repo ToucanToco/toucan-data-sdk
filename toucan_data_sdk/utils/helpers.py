@@ -44,8 +44,8 @@ def setlocale(name: Optional[str]):
 
 
 def get_orig_function(f):
-    """ Make use of the __wrapped__ attribute to find the original function
-        of a decorated function. """
+    """Make use of the __wrapped__ attribute to find the original function
+    of a decorated function."""
     try:
         while True:
             f = f.__wrapped__
@@ -133,8 +133,8 @@ def slugify(name, separator='-'):
 
 
 def resolve_dependencies(func_name, dependencies):
-    """ Given a function name and a mapping of function dependencies,
-        returns a list of *all* the dependencies for this function. """
+    """Given a function name and a mapping of function dependencies,
+    returns a list of *all* the dependencies for this function."""
 
     def _resolve_deps(func_name, func_deps):
         """ Append dependencies recursively to func_deps (accumulator) """
