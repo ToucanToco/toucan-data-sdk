@@ -85,3 +85,9 @@ def test_predict_number_of_row_from_conf():
         {'min': 0, 'max': 10, 'type': 'number'},
     ]
     assert predict_number_of_row_from_conf(conf) == 3 * 2 * 4
+
+
+def predict_number_of_row_from_conf_edge_case():
+    """It should not throw any errors"""
+    conf = [ {'min': 0, 'max': 10, 'type': 'number', 'name': 'number'}]
+    assert predict_number_of_row_from_conf(conf) == 0
