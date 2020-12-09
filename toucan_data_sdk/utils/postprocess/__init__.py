@@ -20,3 +20,4 @@ from .sort import sort
 from .text import *
 from .top import top, top_group
 from .waterfall import waterfall
+from .linear_regression import predict_linear
