@@ -9,6 +9,7 @@ from .filter import drop_duplicates, query
 from .filter_by_date import filter_by_date
 from .groupby import groupby
 from .if_else import if_else
+from .linear_regression import predict_linear
 from .math import absolute_values, add, divide, formula, multiply, round_values, subtract
 from .melt import melt
 from .percentage import percentage
@@ -20,4 +21,3 @@ from .sort import sort
 from .text import *
 from .top import top, top_group
 from .waterfall import waterfall
-from .linear_regression import predict_linear
