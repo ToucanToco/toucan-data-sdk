@@ -127,9 +127,9 @@ def if_else(df, *, if_, then_, else_=None, new_column):
     | France   |   Nice   |    3  |      4     | 3.5  |
     |  Hell    | HellCity |   -10 |      0     | -5.0 |
     """
-    # If the index is not monotonic (e.g. if the dataframe is a concatenation
+    # If the index is not unique (e.g. if the dataframe is a concatenation
     # of multiple dataframes), recompute it
-    if not df.index.is_monotonic_increasing:
+    if not df.index.is_unique:
         df.index = pd.RangeIndex(len(df.index))
 
     if_sub_df = df.query(if_)
