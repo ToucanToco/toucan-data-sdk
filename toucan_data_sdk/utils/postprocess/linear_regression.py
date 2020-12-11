@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 
-def predict_linear(df, *, variable_column: str, target_column: str):
+def predict_linear(df, *, variable_column: str, target_column: str, input_format: str = None):
     """
     Compute the linear regression of a target_column from a variable_column
     (dtypes of the columns must be numeric).
@@ -14,6 +14,8 @@ def predict_linear(df, *, variable_column: str, target_column: str):
      dtype should be datetime
     - `target_column` (*str*): name of the column containing the target to predict
     https://towardsdatascience.com/linear-regression-from-scratch-cd0dee067f72
+    *optional :*
+    - `input_format` (*str*): format of the input values (by default let the parser detect it)
     # return a dataframe with values (original & predicted), value_is_prediction == True where values
     # were predicted and lower_bound/higher_bound for confidence interval
     """
@@ -22,14 +24,10 @@ def predict_linear(df, *, variable_column: str, target_column: str):
     original_variable_column = df[variable_column].tolist()
     # As we'll have dates as X variable we should make them ordinal to capture seasonality
     # For example in a date format with dd-mm-yyyy try to extract dayoftheyear (e.g 11/12/2020 is 346)
-    # if the date format is only mm-yyyy try to extract monthoftheyear (e.g. 12/2020 is 12)
-
-    if len(df[variable_column].iloc[0]) >= 10:  # if dates seem to be like dd-mm-yyyy ......
-        df[variable_column] = df[variable_column].apply(lambda x: pd.to_datetime(x, dayfirst=True))
-        df[variable_column] = df[variable_column].dt.dayofyear
-    else:  # else dates seem to be mm-yyyy
-        df[variable_column] = df[variable_column].apply(lambda x: pd.to_datetime(x))
-        df[variable_column] = df[variable_column].dt.month
+    df[variable_column] = df[variable_column].apply(
+        lambda x: pd.to_datetime(x, dayfirst=True, format=input_format)
+    )
+    df[variable_column] = df[variable_column].dt.dayofyear
 
     # Get variables & targets to train the model
     df_train = df[~df[target_column].isnull()]
