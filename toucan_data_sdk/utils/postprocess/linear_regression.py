@@ -14,16 +14,20 @@ def predict_linear(df, *, variable_column: str, target_column: str):
      dtype should be datetime
     - `target_column` (*str*): name of the column containing the target to predict
     https://towardsdatascience.com/linear-regression-from-scratch-cd0dee067f72
+    # return a dataframe with values (original & predicted), value_is_prediction == True where values
+    # were predicted and lower_bound/higher_bound for confidence interval
     """
     # Use only variable_column & target_column
     df = df[[variable_column, target_column]]
     original_variable_column = df[variable_column].tolist()
-    # As we'll mostly use dates as X variable we should make them numeric for the prediction
-    # we'll try to extract the day and if not possible, the month
-    if len(df[variable_column].iloc[0]) >= 10:
+    # As we'll have dates as X variable we should make them ordinal to capture seasonality
+    # For example in a date format with dd-mm-yyyy try to extract dayoftheyear (e.g 11/12/2020 is 346)
+    # if the date format is only mm-yyyy try to extract monthoftheyear (e.g. 12/2020 is 12)
+
+    if len(df[variable_column].iloc[0]) >= 10:  # if dates seem to be like dd-mm-yyyy ......
         df[variable_column] = df[variable_column].apply(lambda x: pd.to_datetime(x, dayfirst=True))
         df[variable_column] = df[variable_column].dt.dayofyear
-    else:
+    else:  # else dates seem to be mm-yyyy
         df[variable_column] = df[variable_column].apply(lambda x: pd.to_datetime(x))
         df[variable_column] = df[variable_column].dt.month
 
@@ -69,6 +73,5 @@ def predict_linear(df, *, variable_column: str, target_column: str):
     final[f'{target_column}_is_prediction'].fillna(False, inplace=True)
     final[f'{target_column}_lower_bound'].fillna(final[target_column], inplace=True)
     final[f'{target_column}_higher_bound'].fillna(final[target_column], inplace=True)
-    # return a dataframe with values (original & predicted), value_is_prediction == True where values
-    # were predicted and lower_bound/higher_bound for confidence interval
+
     return final
