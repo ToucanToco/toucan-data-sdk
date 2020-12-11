@@ -27,6 +27,7 @@ rows2 = [
     [
         pd.DataFrame(rows1 + rows2),  # test for single dataframe
         pd.concat([pd.DataFrame(rows1), pd.DataFrame(rows2)]),  # test for concatenated dataframe
+        pd.concat([pd.DataFrame(rows1, index=[0, 0]), pd.DataFrame(rows2, index=[0, 0])]),  # test with not unique df.index
     ],
 )
 def test_if_else(df):
