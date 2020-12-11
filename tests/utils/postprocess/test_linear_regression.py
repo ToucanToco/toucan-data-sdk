@@ -24,7 +24,6 @@ def test_predict_linear():
         }
     )
     result = predict_linear(test_df, variable_column='date', target_column='value')
-    print(result)
     assert result.columns.tolist() == [
         'date',
         'value',
@@ -60,7 +59,6 @@ def test_predict_linear():
         }
     )
     result = predict_linear(test_df, variable_column='date', target_column='value')
-    print(result)
     assert result.columns.tolist() == [
         'date',
         'value',
