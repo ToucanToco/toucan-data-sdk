@@ -15,13 +15,14 @@ logger = logging.getLogger(__name__)
 
 
 class ToucanDataSdk:
-    def __init__(self, instance_url, auth, small_app=None, stage='staging'):
+    def __init__(self, instance_url, auth, small_app=None, stage='staging', enable_cache=True):
         instance_url = instance_url.strip().rstrip('/')
         if small_app is None:
             small_app = instance_url.split('/')[-1]
             instance_url = '/'.join(instance_url.split('/')[:-1])
         self.small_app_url = instance_url + (('/' + small_app) if small_app else '')
         self.client = ToucanClient(self.small_app_url, auth=auth, stage=stage)
+        self.enable_cache = enable_cache
         self.EXTRACTION_CACHE_PATH = os.path.join(
             'extraction_cache', slugify(instance_url, separator='_'), small_app
         )
@@ -134,13 +135,9 @@ class ToucanDataSdk:
         return joblib.load(file_path)
 
     def write(self, dfs):
-        """
-        Args:
-            data (str | byte):
+        if self.enable_cache is False:
+            return
 
-        Returns:
-            dict: Dict[str, DataFrame]
-        """
         if not os.path.exists(self.EXTRACTION_CACHE_PATH):
             os.makedirs(self.EXTRACTION_CACHE_PATH)
 
@@ -150,6 +147,9 @@ class ToucanDataSdk:
             logger.info(f'Cache entry added: {file_path}')
 
     def cache_exists(self, domain=None):
+        if self.enable_cache is False:
+            return False
+
         if domain is not None:
             path = os.path.join(self.EXTRACTION_CACHE_PATH, domain)
             return os.path.exists(path) and os.path.isfile(path)

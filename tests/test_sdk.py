@@ -178,6 +178,22 @@ def test_write(sdk, mocker):
         assert 'b' in os.listdir(extraction_dir)
 
 
+def test_cache_disabled(sdk, mocker):
+    mocker.patch.object(sdk, 'enable_cache', new=False, create=True)
+    mock_extract = mocker.patch('toucan_data_sdk.sdk.extract')
+    mock_extract.return_value = {'a': DF, 'b': DF2}
+
+    assert not sdk.cache_exists()
+
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        extraction_dir = os.path.join(tmp_dir, sdk.EXTRACTION_CACHE_PATH)
+        sdk.EXTRACTION_CACHE_PATH = extraction_dir
+
+        sdk.write({'a': DF, 'b': DF2})
+
+        assert not os.path.exists(extraction_dir)
+
+
 def test_invalidate_cache(sdk):
     with tempfile.TemporaryDirectory() as tmp_dir:
         extraction_dir = os.path.join(tmp_dir, sdk.EXTRACTION_CACHE_PATH)

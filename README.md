@@ -27,7 +27,7 @@ from toucan_data_sdk import ToucanDataSdk
 instance_url = 'https://api-demo.toucantoco.com'
 auth = ('<username>', getpass.getpass())
 
-sdk = ToucanDataSdk(instance_url, small_app='demo', auth=auth)
+sdk = ToucanDataSdk(instance_url, small_app='demo', auth=auth, enable_cache=True)
 dfs = sdk.get_dfs()
 ```
 
