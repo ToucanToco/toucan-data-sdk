@@ -20,6 +20,11 @@ def test_no_op():
     assert json_to_table(data, 'name').equals(data)
 
 
+def test_empty_df():
+    empty_df = pd.DataFrame({'name': [], 'x': []})
+    assert json_to_table(empty_df, 'name').equals(empty_df)
+
+
 def test_multiple_cols_incl_no_op():
     """Should process relevant columns even if one is not json"""
     assert json_to_table(data, ['name', 'adict_col']).equals(

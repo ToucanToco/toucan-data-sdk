@@ -1,9 +1,14 @@
 import uuid
-from typing import List
+from typing import Any, List
 
-from pandas import DataFrame, json_normalize
+from pandas import DataFrame, Series, json_normalize
 
 INTERNAL_SEP = str(uuid.uuid1())
+
+
+def _first_valid_value(serie: Series) -> Any:
+    first_valid_index = serie.first_valid_index()
+    return serie[first_valid_index] if first_valid_index is not None else None
 
 
 def json_to_table(df: DataFrame, columns: List[str], sep: str = '.') -> DataFrame:
@@ -16,13 +21,14 @@ def json_to_table(df: DataFrame, columns: List[str], sep: str = '.') -> DataFram
     *mandatory*
     - `columns` (*list*) : topmost level key containing nested objects
     *optional :*
-    - `sep` (*str*) : separator used to build nested objects path in final output column names default is `.`
+    - `sep` (*str*) : separator used to build nested objects path in final output column names
+                      (default is `.`)
     """
 
     if isinstance(columns, str):  # support for a single column name as a string
         columns = [columns]
 
-    merge_on = [c for c in df.columns if type(df[c][df[c].first_valid_index()]) not in (list, dict)]
+    merge_on = [c for c in df.columns if not isinstance(_first_valid_value(df[c]), (list, dict))]
     if merge_on == []:
         raise ValueError(
             'Data should have at least one column with simple data type (not list or dict)'
@@ -34,17 +40,15 @@ def json_to_table(df: DataFrame, columns: List[str], sep: str = '.') -> DataFram
     for col in columns:
 
         serie = df[col]
-        first_valid_value = serie[serie.first_valid_index()]
+        first_valid_value = _first_valid_value(serie)
 
-        if not isinstance(first_valid_value, list) and not isinstance(first_valid_value, dict):
+        if not isinstance(first_valid_value, (list, dict)):
             continue
 
         elif isinstance(first_valid_value, dict):  # creates new columns
-
             df_nz = json_normalize(data=data, sep=INTERNAL_SEP)
 
         elif isinstance(first_valid_value, list):  # creates new lines
-
             df_nz = json_normalize(
                 data=data,
                 meta=merge_on,
@@ -53,12 +57,12 @@ def json_to_table(df: DataFrame, columns: List[str], sep: str = '.') -> DataFram
                 sep=INTERNAL_SEP,
             )
 
-        # which columns where added ?
+        # which columns were added ?
         new_cols = [c for c in df_nz.columns if c.startswith(f'{col}{INTERNAL_SEP}')]
 
         # which columns still need to be processed ?
         compound_types_cols = [
-            c for c in new_cols if type(df_nz[c][df_nz[c].first_valid_index()]) in (list, dict)
+            c for c in new_cols if isinstance(_first_valid_value(df_nz[c]), (list, dict))
         ]
 
         ret_data = (
