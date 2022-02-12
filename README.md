@@ -69,7 +69,5 @@ $ make test
 
 # Development
 
-## PEP8
-
-New code must be PEP8-valid (with a maximum of 100 chars): tests wont pass if code is not.
-To see PEP8 errors, run `pycodestyle <path_to_file_name>` or recursively: `pycodestyle -r .`
+You need to install [poetry](https://python-poetry.org/) either globally or in a virtualenv.
+Then run `make install`
