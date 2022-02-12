@@ -1,30 +1,29 @@
 .DEFAULT_GOAL := all
-isort = isort toucan_data_sdk tests setup.py
-black = black toucan_data_sdk tests setup.py
+black = poetry run black toucan_data_sdk tests
+isort = poetry run isort toucan_data_sdk tests
 
 .PHONY: install
 install:
-	pip install -U setuptools pip
-	pip install -e '.[test]'
+	poetry install
+	poetry run pre-commit install
 
 .PHONY: format
 format:
-	$(isort)
-	$(black)
+	poetry run pre-commit run --all-files
 
 .PHONY: lint
 lint:
-	flake8 toucan_data_sdk tests setup.py
+	poetry run flake8 toucan_data_sdk tests
+	$(black) --diff --check
 	$(isort) --check-only
-	$(black) --check
 
 .PHONY: mypy
 mypy:
-	mypy toucan_data_sdk
+	poetry run mypy .
 
 .PHONY: test
 test:
-	pytest --cov-fail-under=100 --cov=toucan_data_sdk --cov-report term-missing
+	poetry run pytest --cov=toucan_data_sdk --cov-report xml --cov-report term-missing
 
 .PHONY: all
 all: lint mypy test
@@ -33,12 +32,12 @@ all: lint mypy test
 clean:
 	rm -rf `find . -name __pycache__`
 	rm -f `find . -type f -name '*.py[co]' `
-	rm -rf .coverage build dist *.egg-info .pytest_cache .mypy_cache
+	rm -rf .coverage coverage.xml build dist *.egg-info .pytest_cache .mypy_cache
 
 .PHONY: build
 build:
-	python setup.py sdist bdist_wheel
+	poetry build
 
 .PHONY: upload
 upload:
-	twine upload dist/*
+	poetry publish
