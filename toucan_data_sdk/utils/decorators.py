@@ -36,9 +36,9 @@ Note:
     The decorators get applied in order from bottom to top.
 
 """
-import collections
 import logging
 import time
+from collections.abc import Callable
 from functools import partial, wraps
 from hashlib import md5
 from threading import current_thread
@@ -245,7 +245,7 @@ def cache(  # noqa: C901
     """
     if not requires:
         requires = []
-    elif isinstance(requires, collections.Callable):
+    elif isinstance(requires, Callable):
         requires = [requires]
 
     if not isinstance(check_param, (bool, str)):
@@ -268,7 +268,7 @@ def cache(  # noqa: C901
         cache.funcs_references[func.__name__] = get_orig_function(func)
         dependencies_names = []
         for requirement in requires:
-            if isinstance(requirement, collections.Callable):
+            if isinstance(requirement, Callable):
                 req_name = requirement.__name__
                 cache.funcs_references[req_name] = get_orig_function(requirement)
             elif requirement not in cache.funcs_references:
