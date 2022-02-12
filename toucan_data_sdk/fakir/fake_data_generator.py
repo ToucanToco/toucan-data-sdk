@@ -1,11 +1,11 @@
 from itertools import product
-from typing import List
+from typing import Any, Dict, List
 
 import numpy as np
 import pandas as pd
 
 
-def fake_data_generator(conf: List[dict]) -> pd.DataFrame:
+def fake_data_generator(conf: List[Dict[str, Any]]) -> pd.DataFrame:
     """
     `conf` is a list of dictionaries like
       {'type': 'label', 'values': ['Paris', 'Marseille', 'Lyons'], 'name': 'Cities'}
