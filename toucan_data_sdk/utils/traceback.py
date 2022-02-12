@@ -1,6 +1,7 @@
 import io
 import os
 import types
+from typing import Any, Dict
 
 import joblib
 
@@ -51,7 +52,7 @@ def _print_tb(exc_value, tb):
     print(exc_value)
 
 
-def _inject_into_globals(tb):
+def _inject_into_globals(tb: Any) -> Dict[str, Any]:
     tb_values = {}
     for k, v in tb.tb_frame.f_globals.items():
         if k not in globals():
@@ -62,7 +63,7 @@ def _inject_into_globals(tb):
     return tb_values
 
 
-def load_traceback(filename):
+def load_traceback(filename: str) -> Dict[str, Any]:
     stb = joblib.load(filename)
     os.remove(filename)
     exc_type, exc_value, tb = _from_serializable_traceback(stb)

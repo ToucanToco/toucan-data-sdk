@@ -127,7 +127,7 @@ def check_params_columns_duplicate(cols_name: List[str]) -> bool:
         return True
 
 
-def slugify(name, separator="-"):
+def slugify(name: str, separator: str = "-") -> str:
     """Returns a slugified name (we allow _ to be used)"""
     return _slugify(name, regex_pattern=re.compile("[^-_a-z0-9]+"), separator=separator)
 

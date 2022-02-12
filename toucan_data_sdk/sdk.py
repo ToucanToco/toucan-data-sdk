@@ -3,6 +3,7 @@ import os
 import shutil
 import tempfile
 import zipfile
+from typing import Any, Dict, List, Literal, Optional, Union
 
 import joblib
 import pandas as pd
@@ -15,7 +16,14 @@ logger = logging.getLogger(__name__)
 
 
 class ToucanDataSdk:
-    def __init__(self, instance_url, auth, small_app=None, stage="staging", enable_cache=True):
+    def __init__(
+        self,
+        instance_url: str,
+        auth: Dict[str, Any],
+        small_app: Optional[str] = None,
+        stage: Optional[Literal["staging"]] = "staging",
+        enable_cache: bool = True,
+    ) -> None:
         instance_url = instance_url.strip().rstrip("/")
         if small_app is None:
             small_app = instance_url.split("/")[-1]
@@ -27,7 +35,7 @@ class ToucanDataSdk:
             "extraction_cache", slugify(instance_url, separator="_"), small_app
         )
 
-    def get_datasources(self, domains=None):
+    def get_datasources(self, domains: Optional[List[str]] = None) -> Dict[str, pd.DataFrame]:
         if domains is not None and isinstance(domains, list):
             dfs = {}
             domains_cache = [domain for domain in domains if self.cache_exists(domain)]
@@ -47,7 +55,7 @@ class ToucanDataSdk:
     # alias
     get_dfs = get_datasources
 
-    def get_domains(self, domains=None):
+    def get_domains(self, domains: Optional[List[str]] = None) -> Dict[str, pd.DataFrame]:
         if domains is None:
             domains = [meta["domain"] for meta in self.client.metadata.get().json()]
         domains_cache = [domain for domain in domains if self.cache_exists(domain)]
@@ -58,7 +66,7 @@ class ToucanDataSdk:
             dfs = self.read_domains_from_sdk(domains_sdk)
         return dfs
 
-    def invalidate_cache(self, domains=None):
+    def invalidate_cache(self, domains: Optional[List[str]] = None) -> None:
         if domains is not None and isinstance(domains, list):
             for domain in domains:
                 try:
@@ -71,19 +79,21 @@ class ToucanDataSdk:
             except (OSError, IOError) as e:  # For Python 2.7+ compatibility
                 logger.error("failed to remove cache for : " + str(e))
 
-    def get_augment(self):
+    def get_augment(self) -> Any:
         return self.client.config.augment.get().text
 
-    def get_etl(self):
+    def get_etl(self) -> Any:
         return self.client.config.etl.get().json()
 
-    def query_basemaps(self, query):
+    def query_basemaps(self, query: Dict[str, Any]) -> Any:
         if isinstance(query, dict):
             return self.client.basemaps.post(json=query).json()
         else:
             raise InvalidQueryError(f"Query {query} should be a dict, {type(query)} found.")
 
-    def read_datasources_from_sdk(self, domains=None):
+    def read_datasources_from_sdk(
+        self, domains: Optional[List[str]] = None
+    ) -> Dict[str, pd.DataFrame]:
         # Extract all domains if domains_sdk is null
         resp = self.client.sdk.post(json={"domains": domains})
         resp.raise_for_status()
@@ -92,7 +102,7 @@ class ToucanDataSdk:
         logger.info(f"Data {domains} fetched and cached")
         return dfs
 
-    def read_domains_from_sdk(self, domains):
+    def read_domains_from_sdk(self, domains: List[str]) -> Dict[str, pd.DataFrame]:
         dfs = {}
         for domain in domains:
             # first page
@@ -110,11 +120,7 @@ class ToucanDataSdk:
         self.write(dfs)
         return dfs
 
-    def read_from_cache(self, domains=None):
-        """
-        Returns:
-            dict: Dict[str, DataFrame]
-        """
+    def read_from_cache(self, domains: Optional[List[str]] = None) -> Dict[str, pd.DataFrame]:
         logger.info(f"Reading data from cache ({self.EXTRACTION_CACHE_PATH})")
         if domains is not None and isinstance(domains, list):
             dfs = {domain: self.read_entry(domain) for domain in domains}
@@ -122,19 +128,12 @@ class ToucanDataSdk:
             dfs = {name: self.read_entry(name) for name in os.listdir(self.EXTRACTION_CACHE_PATH)}
         return dfs
 
-    def read_entry(self, file_name):
-        """
-        Args:
-            file_name (str):
-
-        Returns:
-            pd.DataFrame:
-        """
+    def read_entry(self, file_name: str) -> pd.DataFrame:
         file_path = os.path.join(self.EXTRACTION_CACHE_PATH, file_name)
         logger.info(f"Reading cache entry: {file_path}")
         return joblib.load(file_path)
 
-    def write(self, dfs):
+    def write(self, dfs: Dict[str, pd.DataFrame]) -> None:
         if self.enable_cache is False:
             return
 
@@ -146,7 +145,7 @@ class ToucanDataSdk:
             joblib.dump(df, filename=file_path)
             logger.info(f"Cache entry added: {file_path}")
 
-    def cache_exists(self, domain=None):
+    def cache_exists(self, domain: Optional[str] = None) -> bool:
         if self.enable_cache is False:
             return False
 
@@ -157,7 +156,7 @@ class ToucanDataSdk:
             path = self.EXTRACTION_CACHE_PATH
             return os.path.exists(path) and os.path.isdir(path)
 
-    def load_latest_traceback(self):
+    def load_latest_traceback(self) -> Any:
         tb = self.client.tracebacks.latest.get()
         if tb.ok is False:
             return tb.json()
@@ -167,11 +166,7 @@ class ToucanDataSdk:
             return load_traceback(".tb.dump")
 
 
-def extract_zip(zip_file_path):
-    """
-    Returns:
-        dict: Dict[str, DataFrame]
-    """
+def extract_zip(zip_file_path: str) -> Dict[str, pd.DataFrame]:
     dfs = {}
     with zipfile.ZipFile(zip_file_path, mode="r") as z_file:
         names = z_file.namelist()
@@ -188,15 +183,7 @@ def extract_zip(zip_file_path):
     return dfs
 
 
-def extract(data):
-    """
-    Args:
-        data (str | byte):
-
-    Returns:
-        dict: Dict[str, DataFrame]
-
-    """
+def extract(data: bytes) -> Dict[str, pd.DataFrame]:
     _, tmp_file_path = tempfile.mkstemp()
     try:
         with open(tmp_file_path, "wb") as tmp_file:
