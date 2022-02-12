@@ -11,7 +11,7 @@ def pivot(
     index: List[str],
     column: str,
     value: str,
-    agg_function: str = 'mean',
+    agg_function: str = "mean",
     values_to_pivot: List[str] = None,
 ):
     """
@@ -58,7 +58,7 @@ def pivot(
         # Force the value column to be str-only (because mixed dtypes causes errors)
         df[value] = df[value].astype(str)
         df = pd.pivot_table(
-            df, index=index, columns=column, values=value, aggfunc=lambda x: ' '.join(x)
+            df, index=index, columns=column, values=value, aggfunc=lambda x: " ".join(x)
         )
     else:
         df = pd.pivot_table(df, index=index, columns=column, values=value, aggfunc=agg_function)

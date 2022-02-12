@@ -7,7 +7,7 @@ from uuid import uuid4
 
 import pandas as pd
 
-TIMEDELTA_RGX = re.compile(r'\s*(?P<num>\d+)\s*(?P<unit>\w+)$')
+TIMEDELTA_RGX = re.compile(r"\s*(?P<num>\d+)\s*(?P<unit>\w+)$")
 
 
 def _norm_date(datestr: str, date_fmt: str) -> date:
@@ -28,7 +28,7 @@ def _norm_date(datestr: str, date_fmt: str) -> date:
 
     """
     try:
-        days = {'TODAY': 0, 'YESTERDAY': -1, 'TOMORROW': 1}[datestr.upper()]
+        days = {"TODAY": 0, "YESTERDAY": -1, "TOMORROW": 1}[datestr.upper()]
         return date.today() + pd.Timedelta(days=days)
     except KeyError:
         return datetime.strptime(datestr, date_fmt).date()
@@ -42,7 +42,7 @@ def add_offset(dateobj, hr_offset: str, sign: str):
     - "m", "month', "months" for a month (i.e. no day computation, just increment the month)
     - "y", "year", "years" for a year (i.e. no day computation, just increment the year)
     """
-    sign_coeff = 1 if sign == '+' else -1
+    sign_coeff = 1 if sign == "+" else -1
     try:
         return dateobj + sign_coeff * pd.Timedelta(hr_offset)
     except ValueError:
@@ -50,16 +50,16 @@ def add_offset(dateobj, hr_offset: str, sign: str):
         match = TIMEDELTA_RGX.match(hr_offset)
         if match is not None:
             groups = match.groupdict()
-            unit = groups['unit'].lower()[0]
-            num = sign_coeff * int(groups['num'])
+            unit = groups["unit"].lower()[0]
+            num = sign_coeff * int(groups["num"])
             # is it a week ?
-            if unit == 'w':
+            if unit == "w":
                 return dateobj + num * timedelta(weeks=1)
             # or a month ?
-            if unit == 'm':
+            if unit == "m":
                 return add_months(dateobj, num)
             # or a year ?
-            if unit == 'y':
+            if unit == "y":
                 return add_years(dateobj, num)
         # we did what we could, just re-raise the original exception
         raise
@@ -138,25 +138,25 @@ def parse_date(datestr: str, date_fmt: str) -> pd.Timestamp:
     Returns: The `date` object. If date could not be parsed, a ValueError will
         be raised.
     """
-    rgx = re.compile(r'\((?P<date>.*)\)(\s*(?P<sign>[+-])(?P<offset>.*))?$')
+    rgx = re.compile(r"\((?P<date>.*)\)(\s*(?P<sign>[+-])(?P<offset>.*))?$")
     datestr = datestr.strip()
     match = rgx.match(datestr)
     # if regexp doesn't match, date must match the expected format
     if match is None:
         dateobj = _norm_date(datestr, date_fmt)
     else:
-        datestr = match.group('date').strip()
+        datestr = match.group("date").strip()
         dateobj = _norm_date(datestr, date_fmt)
-        offset = match.group('offset')
+        offset = match.group("offset")
         if offset:
-            dateobj = add_offset(dateobj, offset, match.group('sign'))
+            dateobj = add_offset(dateobj, offset, match.group("sign"))
     return pd.Timestamp(dateobj)
 
 
 def filter_by_date(
     df,
     date_col: str,
-    date_format: str = '%Y-%m-%d',
+    date_format: str = "%Y-%m-%d",
     start: str = None,
     stop: str = None,
     atdate: str = None,

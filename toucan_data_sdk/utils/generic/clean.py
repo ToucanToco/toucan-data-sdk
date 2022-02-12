@@ -2,12 +2,12 @@ from toucan_data_sdk.utils.helpers import slugify
 
 
 def get_category_cols(df, threshold):
-    obj_df = df.select_dtypes(include=['object'])
+    obj_df = df.select_dtypes(include=["object"])
     return [col for col in obj_df.columns if len(obj_df[col].unique()) < threshold]
 
 
 def get_int_cols(df):
-    float_df = df.select_dtypes(include=['floating'])
+    float_df = df.select_dtypes(include=["floating"])
     return [col for col in float_df.columns if all(x.is_integer() for x in float_df[col])]
 
 
@@ -21,9 +21,9 @@ def clean_dataframe(df, is_slugify=True, threshold=50, rename_cols=None):
     if is_slugify:
         df = df.rename(columns=slugify)
 
-    df = df.dropna(axis=1, how='all')
+    df = df.dropna(axis=1, how="all")
     for column in get_category_cols(df, threshold=threshold):
-        df[column] = df[column].astype('category')
+        df[column] = df[column].astype("category")
     for column in get_int_cols(df):
         df[column] = df[column].astype(int)
 

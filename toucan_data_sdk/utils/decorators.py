@@ -74,7 +74,7 @@ def catch(logger):
             try:
                 return func(*args, **kwargs)
             except Exception:
-                logger.warning(f'Exception raised in decorator: {func.__name__}')
+                logger.warning(f"Exception raised in decorator: {func.__name__}")
 
         return wrapper
 
@@ -93,21 +93,21 @@ def _get_dfs_shapes(*args, **kwargs):
 
 @catch(_logger)
 def _log_shapes(logger, func_name, input_shapes, output_shapes):
-    logger.info(f'{func_name} - {input_shapes} -> {output_shapes}')
+    logger.info(f"{func_name} - {input_shapes} -> {output_shapes}")
 
 
 @catch(_logger)
 def _log_time(logger, func_name, start, end):
     duration = (end - start) * 1000
-    logger.info(f'{func_name} - time: {duration:0.1f} ms')
+    logger.info(f"{func_name} - time: {duration:0.1f} ms")
 
 
 @catch(_logger)
 def _log_message(logger, func_name, message):
-    logger.info(f'{func_name} - {message}')
+    logger.info(f"{func_name} - {message}")
 
 
-def log_message(logger, message=''):
+def log_message(logger, message=""):
     """
     Decorator to log a message before executing a function
     """
@@ -165,7 +165,7 @@ def log_shapes(logger):
     return decorator
 
 
-def log(logger=None, start_message='Starting...', end_message='Done...'):
+def log(logger=None, start_message="Starting...", end_message="Done..."):
     """
     Basic log decorator
     Can be used as :
@@ -179,11 +179,11 @@ def log(logger=None, start_message='Starting...', end_message='Done...'):
 
         @wraps(f)
         def timed(*args, **kwargs):
-            logger.info(f'{f.__name__} - {start_message}')
+            logger.info(f"{f.__name__} - {start_message}")
             start = time.time()
             res = f(*args, **kwargs)
             end = time.time()
-            logger.info(f'{f.__name__} - {end_message} (took {end - start:.2f}s)')
+            logger.info(f"{f.__name__} - {end_message} (took {end - start:.2f}s)")
             return res
 
         return timed
@@ -215,7 +215,7 @@ def domain(domain_name):
         def wrapper(*args, **kwargs):
             dfs, *args = args
             if not isinstance(dfs, dict):
-                raise TypeError(f'{dfs} is not a dict')
+                raise TypeError(f"{dfs} is not a dict")
             df = dfs.pop(domain_name)
             df = func(df, *args, **kwargs)
             return {domain_name: df, **dfs}
@@ -255,11 +255,11 @@ def cache(  # noqa: C901
 
     # We keep data in the function attributes so that this data
     # is not erased between two calls:
-    if not hasattr(cache, 'funcs_references'):
+    if not hasattr(cache, "funcs_references"):
         cache.funcs_references = {}  # dict of {function_name -> function_object (or None)}
-    if not hasattr(cache, 'dependencies'):
+    if not hasattr(cache, "dependencies"):
         cache.dependencies = {}  # dict of {function_name -> [list of function names]}
-    if not hasattr(cache, 'memories'):
+    if not hasattr(cache, "memories"):
         cache.memories = {}  # dict of {thread_id -> joblib.Memory object}
 
     def decorator(func):
@@ -288,7 +288,7 @@ def cache(  # noqa: C901
 
             # if cache is enabled, we compute the md5 hash of the concatenated source codes
             # of all the dependencies.
-            concatenated_source_code = ''
+            concatenated_source_code = ""
             dependencies = resolve_dependencies(func.__name__, cache.dependencies)
             for func_name in dependencies:
                 function = cache.funcs_references[func_name]
@@ -300,8 +300,8 @@ def cache(  # noqa: C901
 
             # Add extra parameters so that joblib checks they didnt have changed:
             tmp_extra_kwargs = {
-                '__func_dependencies_hash__': md5_hash,
-                '__original_func_name__': func.__name__,
+                "__func_dependencies_hash__": md5_hash,
+                "__original_func_name__": func.__name__,
             }
 
             if check_param is True:
@@ -327,7 +327,7 @@ def cache(  # noqa: C901
                     check_only_param_value = get_param_value_from_func_call(
                         param_name=check_param, func=func, call_args=args, call_kwargs=kwargs
                     )
-                    tmp_extra_kwargs['__check_only__'] = check_only_param_value
+                    tmp_extra_kwargs["__check_only__"] = check_only_param_value
 
                 @wraps(func)
                 def f(**tmp_extra_kwargs):
@@ -352,7 +352,7 @@ method_cache = partial(cache, applied_on_method=True)
 def setup_cachedir(cachedir, mmap_mode=None, bytes_limit=None):
     """This function injects a joblib.Memory object in the cache() function
     (in a thread-specific slot of its 'memories' attribute)."""
-    if not hasattr(cache, 'memories'):
+    if not hasattr(cache, "memories"):
         cache.memories = {}
 
     memory = joblib.Memory(

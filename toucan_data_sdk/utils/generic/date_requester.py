@@ -10,7 +10,7 @@ def date_requester_generator(
     date_column: str,
     frequency: str,
     date_column_format: str = None,
-    format: str = '%Y-%m-%d',
+    format: str = "%Y-%m-%d",
     granularities: Dict[str, str] = None,
     others_format: Dict[str, str] = None,
     times_delta: Dict[str, str] = None,
@@ -90,12 +90,12 @@ def date_requester_generator(
         start_date = pd.to_datetime(df[date_column], format=date_column_format).min()
         end_date = pd.to_datetime(df[date_column], format=date_column_format).max()
 
-        granularities = granularities or {'date': format}
+        granularities = granularities or {"date": format}
         others_format = others_format or {}
         times_delta = times_delta or {}
 
         # Base DataFrame
-        columns_list = ['DATE', 'DATETIME', 'GRANULARITY', *others_format, *times_delta]
+        columns_list = ["DATE", "DATETIME", "GRANULARITY", *others_format, *times_delta]
         result_df: Dict[str, Any] = {col_name: [] for col_name in columns_list}
 
         # Generate the range
@@ -108,9 +108,9 @@ def date_requester_generator(
             date_range_datetime = date_range[first_index]
             date_range_label = date_range_label.unique()
 
-            result_df['DATE'] += list(date_range_label)
-            result_df['DATETIME'] += list(date_range_datetime)
-            result_df['GRANULARITY'] += [granularity_name] * len(date_range_label)
+            result_df["DATE"] += list(date_range_label)
+            result_df["DATETIME"] += list(date_range_datetime)
+            result_df["GRANULARITY"] += [granularity_name] * len(date_range_label)
 
             for col_name, other_format in others_format.items():
                 result_df[col_name] += list(date_range_datetime.strftime(other_format))

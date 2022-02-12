@@ -1,6 +1,9 @@
 from typing import List
 
-from toucan_data_sdk.utils.helpers import ParamsValueError, check_params_columns_duplicate
+from toucan_data_sdk.utils.helpers import (
+    ParamsValueError,
+    check_params_columns_duplicate,
+)
 
 
 def compute_cumsum(
@@ -65,7 +68,7 @@ def compute_cumsum(
         new_value_cols = value_cols
     if len(value_cols) != len(new_value_cols):
         raise ParamsValueError(
-            '`value_cols` and `new_value_cols` needs ' 'to have the same number of elements'
+            "`value_cols` and `new_value_cols` needs " "to have the same number of elements"
         )
 
     check_params_columns_duplicate(id_cols + reference_cols + cols_to_keep + value_cols)

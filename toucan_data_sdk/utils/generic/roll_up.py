@@ -9,10 +9,10 @@ def roll_up(
     levels: List[str],
     groupby_vars: List[str],
     extra_groupby_cols: List[str] = None,
-    var_name: str = 'type',
-    value_name: str = 'value',
-    parent_name: str = 'parent',
-    agg_func: str = 'sum',
+    var_name: str = "type",
+    value_name: str = "value",
+    parent_name: str = "parent",
+    agg_func: str = "sum",
     drop_levels: List[str] = None,
 ):
     """

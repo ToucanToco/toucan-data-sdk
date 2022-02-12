@@ -12,7 +12,7 @@ def categories_from_dates(
     new_column: str,
     range_steps: List[str],
     category_names: Optional[List[str]] = None,
-    date_format: str = '%Y-%m-%d',
+    date_format: str = "%Y-%m-%d",
 ):
     """
     Create a new column of categories based on a date column.
@@ -86,15 +86,15 @@ def categories_from_dates(
     |  2019-01-04  |      1     |   Recent   |
     """
 
-    category_names = category_names or [f'Category {i+1}' for i in range(len(range_steps) + 1)]
+    category_names = category_names or [f"Category {i+1}" for i in range(len(range_steps) + 1)]
     if len(range_steps) == 0:
-        raise TypeError('range_steps should not have length 0')
+        raise TypeError("range_steps should not have length 0")
     if len(range_steps) + 1 != len(category_names):
-        raise TypeError('category_names should have length len(range_steps)+1')
+        raise TypeError("category_names should have length len(range_steps)+1")
 
     date_col_at_date_format = str(uuid4())
     df[date_col_at_date_format] = pd.to_datetime(df[date_col], format=date_format)
-    df[new_column] = ''
+    df[new_column] = ""
 
     # first category
     df[new_column][

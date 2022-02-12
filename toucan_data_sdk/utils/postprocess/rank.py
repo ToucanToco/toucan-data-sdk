@@ -8,7 +8,7 @@ def rank(
     value_cols: Union[str, List[str]],
     group_cols: List[str] = None,
     rank_cols_names: List[str] = None,
-    method='min',
+    method="min",
     ascending: bool = True,
 ):
     """
@@ -74,10 +74,10 @@ def rank(
     value_cols = [value_cols] if not isinstance(value_cols, list) else value_cols
     for col in value_cols:
         if not np.issubdtype(df[col].dtype, np.number):
-            raise TypeError(f'{col} specified in value_cols must be of numeric type')
+            raise TypeError(f"{col} specified in value_cols must be of numeric type")
 
     if rank_cols_names is None:
-        rank_cols_names = [x + '_rank' for x in value_cols]
+        rank_cols_names = [x + "_rank" for x in value_cols]
 
     if group_cols is None:
         df[rank_cols_names] = df[value_cols].rank(method=method, ascending=ascending)
@@ -86,7 +86,7 @@ def rank(
             method=method, ascending=ascending
         )
 
-    if method != 'average':
-        df[rank_cols_names] = df[rank_cols_names].astype('int')
+    if method != "average":
+        df[rank_cols_names] = df[rank_cols_names].astype("int")
 
     return df

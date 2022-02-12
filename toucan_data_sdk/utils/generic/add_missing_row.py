@@ -2,7 +2,10 @@ from typing import Any, Dict, List, Sequence, Union
 
 import pandas as pd
 
-from toucan_data_sdk.utils.helpers import ParamsValueError, check_params_columns_duplicate
+from toucan_data_sdk.utils.helpers import (
+    ParamsValueError,
+    check_params_columns_duplicate,
+)
 
 
 def add_missing_row(
@@ -72,12 +75,12 @@ def add_missing_row(
         cols_for_index = [reference_col] + cols_to_keep
     check_params_columns_duplicate(id_cols + cols_for_index)
 
-    if method == 'between' or method == 'between_and_after':
-        df['start'] = df.groupby(id_cols)[reference_col].transform(min)
-        id_cols += ['start']
-    if method == 'between' or method == 'between_and_before':
-        df['end'] = df.groupby(id_cols)[reference_col].transform(max)
-        id_cols += ['end']
+    if method == "between" or method == "between_and_after":
+        df["start"] = df.groupby(id_cols)[reference_col].transform(min)
+        id_cols += ["start"]
+    if method == "between" or method == "between_and_before":
+        df["end"] = df.groupby(id_cols)[reference_col].transform(max)
+        id_cols += ["end"]
 
     names = id_cols + cols_for_index
     new_df = df.set_index(names)
@@ -86,17 +89,17 @@ def add_missing_row(
     if complete_index is None:
         complex_index_values: Union[Any, tuple] = df.groupby(cols_for_index).sum().index.values
     elif isinstance(complete_index, dict):
-        if complete_index['type'] == 'date':
-            freq = complete_index['freq']
-            date_format = complete_index['format']
-            start = complete_index['start']
-            end = complete_index['end']
+        if complete_index["type"] == "date":
+            freq = complete_index["freq"]
+            date_format = complete_index["format"]
+            start = complete_index["start"]
+            end = complete_index["end"]
             if isinstance(freq, dict):
                 freq = pd.DateOffset(**{k: int(v) for k, v in freq.items()})
             new_index = pd.date_range(start=start, end=end, freq=freq)
             complex_index_values = new_index.strftime(date_format).values
         else:
-            raise ParamsValueError(f'Unknown complete index type: ' f'{complete_index["type"]}')
+            raise ParamsValueError(f"Unknown complete index type: " f'{complete_index["type"]}')
     else:
         complex_index_values = list(complete_index)
 
@@ -112,11 +115,11 @@ def add_missing_row(
     new_index = pd.MultiIndex.from_tuples(new_tuples_index, names=names)
     new_df = new_df.reindex(new_index).reset_index()
 
-    if method == 'between' or method == 'between_and_after':
-        new_df = new_df[new_df[reference_col] >= new_df['start']]
-        del new_df['start']
-    if method == 'between' or method == 'between_and_before':
-        new_df = new_df[new_df[reference_col] <= new_df['end']]
-        del new_df['end']
+    if method == "between" or method == "between_and_after":
+        new_df = new_df[new_df[reference_col] >= new_df["start"]]
+        del new_df["start"]
+    if method == "between" or method == "between_and_before":
+        new_df = new_df[new_df[reference_col] <= new_df["end"]]
+        del new_df["end"]
 
     return new_df

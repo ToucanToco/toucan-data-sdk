@@ -45,7 +45,7 @@ def fillna(df, column: str, value=None, column_value=None):
         df[column] = nan
 
     if value is not None and column_value is not None:
-        raise ValueError('You cannot set both the parameters value and column_value')
+        raise ValueError("You cannot set both the parameters value and column_value")
 
     if value is not None:
         df[column] = df[column].fillna(value)

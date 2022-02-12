@@ -19,9 +19,9 @@ CURRENT_LOCALE = locale.getlocale()
 
 def get_temp_column_name(df) -> str:
     """Small helper to get a new column name that does not already exist"""
-    temp_column_name = '__tmp__'
+    temp_column_name = "__tmp__"
     while temp_column_name in df.columns:
-        temp_column_name += '_'
+        temp_column_name += "_"
     return temp_column_name
 
 
@@ -31,13 +31,13 @@ def setlocale(name: Optional[str]):
     Context manager to set a locale ('en', 'fr', 'de', ...)
     """
     if name is not None:
-        name = locale.normalize(f'{name}.UTF-8')
+        name = locale.normalize(f"{name}.UTF-8")
     with LOCALE_LOCK:
         saved = locale.setlocale(locale.LC_ALL)
         try:
             yield locale.setlocale(locale.LC_ALL, name)
         except Exception:
-            logger.warning(f'Impossible to set locale from {name!r}')
+            logger.warning(f"Impossible to set locale from {name!r}")
             yield saved
         finally:
             locale.setlocale(locale.LC_ALL, saved)
@@ -89,7 +89,7 @@ def get_func_sourcecode(func):
 
     def getsource(func):
         lines, lnum = getsourcelines(func)
-        return ''.join(lines)
+        return "".join(lines)
 
     def getsourcelines(func):
         lines, lnum = findsource(func)
@@ -101,7 +101,7 @@ def get_func_sourcecode(func):
         lines = linecache.getlines(file, module.__dict__)
         code = func.__code__
         lnum = code.co_firstlineno - 1
-        pat = re.compile(r'^(\s*def\s)|(\s*async\s+def\s)|(.*(?<!\w)lambda(:|\s))|^(\s*@)')
+        pat = re.compile(r"^(\s*def\s)|(\s*async\s+def\s)|(.*(?<!\w)lambda(:|\s))|^(\s*@)")
         while lnum > 0:
             if pat.match(lines[lnum]):
                 break
@@ -122,14 +122,14 @@ def check_params_columns_duplicate(cols_name: List[str]) -> bool:
     params = [column for column in cols_name if column is not None]
     if len(set(params)) != len(params):
         duplicates = set([x for x in params if params.count(x) > 1])
-        raise ParamsValueError(f'Duplicate declaration of column(s) {duplicates} in the parameters')
+        raise ParamsValueError(f"Duplicate declaration of column(s) {duplicates} in the parameters")
     else:
         return True
 
 
-def slugify(name, separator='-'):
+def slugify(name, separator="-"):
     """Returns a slugified name (we allow _ to be used)"""
-    return _slugify(name, regex_pattern=re.compile('[^-_a-z0-9]+'), separator=separator)
+    return _slugify(name, regex_pattern=re.compile("[^-_a-z0-9]+"), separator=separator)
 
 
 def resolve_dependencies(func_name, dependencies):
@@ -137,7 +137,7 @@ def resolve_dependencies(func_name, dependencies):
     returns a list of *all* the dependencies for this function."""
 
     def _resolve_deps(func_name, func_deps):
-        """ Append dependencies recursively to func_deps (accumulator) """
+        """Append dependencies recursively to func_deps (accumulator)"""
         if func_name in func_deps:
             return
 

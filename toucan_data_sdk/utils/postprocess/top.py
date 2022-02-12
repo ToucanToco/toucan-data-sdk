@@ -9,7 +9,7 @@ def top(
     df,
     value: str,
     limit: int,
-    order: str = 'asc',
+    order: str = "asc",
     group: Union[str, List[str]] = None,
     date_format: str = None,
 ):
@@ -66,9 +66,9 @@ def top(
     |   lala   |    2     |  350  |
     |   lala   |    2     |  450  |
     """
-    ascending = order != 'desc'
+    ascending = order != "desc"
     limit = int(limit)
-    filter_func = 'nlargest' if (limit > 0) ^ ascending else 'nsmallest'
+    filter_func = "nlargest" if (limit > 0) ^ ascending else "nsmallest"
     sorted_order = 1 if limit > 0 else -1
     df = df.copy()
 
@@ -92,8 +92,8 @@ def top_group(
     aggregate_by: List[str],
     value: str,
     limit: int,
-    order: str = 'asc',
-    function: str = 'sum',
+    order: str = "asc",
+    function: str = "sum",
     group: Union[str, List[str]] = None,
 ):
     """

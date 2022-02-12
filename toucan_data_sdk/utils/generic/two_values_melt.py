@@ -49,8 +49,8 @@ def two_values_melt(
     |         B |       avg|           40 |             2 |
     |         B |       avg|          250 |             5 |
     """
-    value_name_first = value_name + '_first'
-    value_name_second = value_name + '_second'
+    value_name_first = value_name + "_first"
+    value_name_second = value_name + "_second"
 
     # Melt on the first value columns
     melt_first_value = pd.melt(
@@ -79,4 +79,4 @@ def two_values_melt(
 
     on_cols = list(melt_first_value)
     on_cols.remove(value_name_first)
-    return pd.merge(melt_first_value, melt_second_value, on=on_cols, how='outer')
+    return pd.merge(melt_first_value, melt_second_value, on=on_cols, how="outer")

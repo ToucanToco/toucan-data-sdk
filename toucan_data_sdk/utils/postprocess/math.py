@@ -4,9 +4,9 @@ from typing import List
 
 LOGGER = logging.getLogger(__name__)
 
-MATH_CHARACTERS = '()+-/*%.'
+MATH_CHARACTERS = "()+-/*%."
 DEPRECATED_COLUMN_QUOTE_CHARS = ('"', "'")
-COLUMN_QUOTE_CHARS = ('`',)
+COLUMN_QUOTE_CHARS = ("`",)
 
 
 def _basic_math_operation(df, new_column, column_1, column_2, op):
@@ -16,9 +16,9 @@ def _basic_math_operation(df, new_column, column_1, column_2, op):
     Will create a new column named `new_column`
     """
     if not isinstance(column_1, (str, int, float)):
-        raise TypeError('column_1 must be a string, an integer or a float')
+        raise TypeError("column_1 must be a string, an integer or a float")
     if not isinstance(column_2, (str, int, float)):
-        raise TypeError('column_2 must be a string, an integer or a float')
+        raise TypeError("column_2 must be a string, an integer or a float")
 
     if isinstance(column_1, str):
         column_1 = df[column_1]
@@ -33,28 +33,28 @@ def add(df, new_column, column_1, column_2):
     """
     DEPRECATED -  use `formula` instead
     """
-    return _basic_math_operation(df, new_column, column_1, column_2, op='add')
+    return _basic_math_operation(df, new_column, column_1, column_2, op="add")
 
 
 def subtract(df, new_column, column_1, column_2):
     """
     DEPRECATED -  use `formula` instead
     """
-    return _basic_math_operation(df, new_column, column_1, column_2, op='sub')
+    return _basic_math_operation(df, new_column, column_1, column_2, op="sub")
 
 
 def multiply(df, new_column, column_1, column_2):
     """
     DEPRECATED -  use `formula` instead
     """
-    return _basic_math_operation(df, new_column, column_1, column_2, op='mul')
+    return _basic_math_operation(df, new_column, column_1, column_2, op="mul")
 
 
 def divide(df, new_column, column_1, column_2):
     """
     DEPRECATED -  use `formula` instead
     """
-    return _basic_math_operation(df, new_column, column_1, column_2, op='truediv')
+    return _basic_math_operation(df, new_column, column_1, column_2, op="truediv")
 
 
 def is_float(x):
@@ -83,7 +83,7 @@ class Token:
         if not self.quoted and (self.text in MATH_CHARACTERS or is_float(self.text)):
             return self.text
         else:
-            return f'`{self.text}`'
+            return f"`{self.text}`"
 
     def __len__(self):
         return len(self.text)
@@ -97,7 +97,7 @@ class Token:
 
 def _parse_formula(formula_str, quote_chars=COLUMN_QUOTE_CHARS) -> List[Token]:
     tokens = []
-    current_word = ''
+    current_word = ""
     quote_to_match = None
     for x in formula_str:
         if x in quote_chars and not quote_to_match:
@@ -105,18 +105,18 @@ def _parse_formula(formula_str, quote_chars=COLUMN_QUOTE_CHARS) -> List[Token]:
             continue
         if x == quote_to_match:
             tokens.append(Token(current_word, True))
-            current_word = ''
+            current_word = ""
             quote_to_match = None
             continue
         if quote_to_match or x not in MATH_CHARACTERS:
             current_word += x
         else:
             tokens.append(Token(current_word))
-            current_word = ''
+            current_word = ""
             tokens.append(Token(x))
     tokens.append(Token(current_word))
     if quote_to_match is not None:
-        raise FormulaError('Missing closing quote in formula')
+        raise FormulaError("Missing closing quote in formula")
     return [t for t in tokens if t]
 
 
@@ -126,7 +126,7 @@ def get_new_syntax_formula(formula: str) -> str:
     to get the new syntax from the deprecated one
     """
     tokens = _parse_formula(formula, quote_chars=DEPRECATED_COLUMN_QUOTE_CHARS)
-    return ''.join(t.get_text() for t in tokens)
+    return "".join(t.get_text() for t in tokens)
 
 
 def formula(df, *, new_column: str, formula: str):
@@ -200,12 +200,12 @@ def formula(df, *, new_column: str, formula: str):
     |   toto   |    10    |  300  | 290 |
 
     """
-    if '`' not in formula:  # OLD SYNTAX
+    if "`" not in formula:  # OLD SYNTAX
         old_formula = formula
         formula = get_new_syntax_formula(old_formula)
         LOGGER.warning(
-            f'DEPRECATED: You should always use ` for your columns. '
-            f'Old syntax: {old_formula!r}, new syntax: {formula!r}'
+            f"DEPRECATED: You should always use ` for your columns. "
+            f"Old syntax: {old_formula!r}, new syntax: {formula!r}"
         )
     tokens = _parse_formula(formula)
     expression_splitted = []
@@ -218,7 +218,7 @@ def formula(df, *, new_column: str, formula: str):
             expression_splitted.append(f'df["{t.text}"]')
         else:
             raise FormulaError(f'"{t.text}" is not a valid column name')
-    expression = ''.join(expression_splitted)
+    expression = "".join(expression_splitted)
     df[new_column] = eval(expression)
     return df
 

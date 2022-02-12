@@ -2,4 +2,3 @@
 max-line-length = 100
 ignore = Q000, W503
 exclude = __init__.py
-

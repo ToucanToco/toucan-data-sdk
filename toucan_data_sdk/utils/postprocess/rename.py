@@ -1,7 +1,7 @@
 from typing import Dict
 
 
-def _safe_translate(translations, locale, fallback_locale='en', default=None):
+def _safe_translate(translations, locale, fallback_locale="en", default=None):
     """return `locale` translation from `translations`.
 
     Fallback on `fallback_locale` if `locale` translation can't be found and
@@ -20,7 +20,7 @@ def rename(
     values: Dict[str, Dict[str, str]] = None,
     columns: Dict[str, Dict[str, str]] = None,
     locale: str = None,
-    fallback_locale='en',
+    fallback_locale="en",
 ):
     """
     Replaces data values and column names according to the locale

@@ -52,9 +52,9 @@ def compute_ffill_by_group(df, id_cols: List[str], reference_cols: List[str], va
     check_params_columns_duplicate(id_cols + reference_cols + [value_col])
     df = df.sort_values(by=id_cols + reference_cols)
     df = df.set_index(id_cols)
-    df['fill'] = 1 - df[value_col].isnull().astype(int)
-    df['fill'] = df.groupby(level=list(range(0, len(id_cols) - 1)))['fill'].cumsum()
+    df["fill"] = 1 - df[value_col].isnull().astype(int)
+    df["fill"] = df.groupby(level=list(range(0, len(id_cols) - 1)))["fill"].cumsum()
     df[value_col] = df[value_col].ffill()
-    df.loc[df['fill'] == 0, value_col] = None
-    del df['fill']
+    df.loc[df["fill"] == 0, value_col] = None
+    del df["fill"]
     return df.reset_index()

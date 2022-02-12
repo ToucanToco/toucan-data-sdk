@@ -49,6 +49,6 @@ def melt(df, id: List[str], value: List[str], dropna=False):
     df = df[(id + value)]
     df = pd.melt(df, id_vars=id, value_vars=value)
     if dropna:
-        df = df.dropna(subset=['value'])
+        df = df.dropna(subset=["value"])
 
     return df

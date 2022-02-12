@@ -1,7 +1,7 @@
 from typing import List, Union
 
 
-def sort(df, columns: Union[str, List[str]], order: Union[str, List[str]] = 'asc'):
+def sort(df, columns: Union[str, List[str]], order: Union[str, List[str]] = "asc"):
     """
 
     Sort the data by the value in specified columns
@@ -52,12 +52,12 @@ def sort(df, columns: Union[str, List[str]], order: Union[str, List[str]] = 'asc
     if isinstance(columns, str):
         columns = [columns]
     if isinstance(order, str):
-        assert order in ['asc', 'desc']
-        orders = [order == 'asc'] * len(columns)
+        assert order in ["asc", "desc"]
+        orders = [order == "asc"] * len(columns)
     else:
         assert len(order) == len(columns), "'columns' and 'order' lists must be of same length"
         orders = []
         for ord in order:
-            assert ord in ['asc', 'desc'], f"Got order value: {order}. Expected 'asc' or 'desc'"
-            orders.append(ord == 'asc')
+            assert ord in ["asc", "desc"], f"Got order value: {order}. Expected 'asc' or 'desc'"
+            orders.append(ord == "asc")
     return df.sort_values(columns, ascending=orders)

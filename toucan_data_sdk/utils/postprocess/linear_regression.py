@@ -61,15 +61,15 @@ def predict_linear(df, *, variable_column: str, target_column: str, input_format
         {
             variable_column: variables_for_prediction.values,
             target_column: target_predictions,
-            f'{target_column}_is_prediction': True,
-            f'{target_column}_lower_bound': lower_bound,
-            f'{target_column}_higher_bound': higher_bound,
+            f"{target_column}_is_prediction": True,
+            f"{target_column}_lower_bound": lower_bound,
+            f"{target_column}_higher_bound": higher_bound,
         }
     )
     final = pd.concat([df_train, predicted], axis=0)
     final[variable_column] = original_variable_column
-    final[f'{target_column}_is_prediction'].fillna(False, inplace=True)
-    final[f'{target_column}_lower_bound'].fillna(final[target_column], inplace=True)
-    final[f'{target_column}_higher_bound'].fillna(final[target_column], inplace=True)
+    final[f"{target_column}_is_prediction"].fillna(False, inplace=True)
+    final[f"{target_column}_lower_bound"].fillna(final[target_column], inplace=True)
+    final[f"{target_column}_higher_bound"].fillna(final[target_column], inplace=True)
 
     return final

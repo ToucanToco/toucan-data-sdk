@@ -13,10 +13,10 @@ def compute_evolution_by_frequency(
     date_col: Union[str, Dict[str, str]],
     value_col: str,
     freq=1,
-    method: str = 'abs',
-    format: str = 'column',
-    offseted_suffix: str = '_offseted',
-    evolution_col_name: str = 'evolution_computed',
+    method: str = "abs",
+    format: str = "column",
+    offseted_suffix: str = "_offseted",
+    evolution_col_name: str = "evolution_computed",
     missing_date_as_zero: bool = False,
     raise_duplicate_error: bool = True,
 ):
@@ -77,10 +77,10 @@ def compute_evolution_by_frequency(
     """
     fillna: Optional[int]
     if missing_date_as_zero:
-        how = 'outer'
+        how = "outer"
         fillna = 0
     else:
-        how = 'left'
+        how = "left"
         fillna = None
 
     return __compute_evolution(
@@ -104,10 +104,10 @@ def compute_evolution_by_criteria(
     id_cols: List[str],
     value_col: str,
     compare_to: str,
-    method: str = 'abs',
-    format: str = 'column',
-    offseted_suffix: str = '_offseted',
-    evolution_col_name: str = 'evolution_computed',
+    method: str = "abs",
+    format: str = "column",
+    offseted_suffix: str = "_offseted",
+    evolution_col_name: str = "evolution_computed",
     raise_duplicate_error: bool = True,
 ):
     """
@@ -172,11 +172,11 @@ def __compute_evolution(
     date_col=None,
     freq=1,
     compare_to=None,
-    method='abs',
-    format='column',
-    offseted_suffix='_offseted',
-    evolution_col_name='evolution_computed',
-    how='left',
+    method="abs",
+    format="column",
+    offseted_suffix="_offseted",
+    evolution_col_name="evolution_computed",
+    how="left",
     fillna=None,
     raise_duplicate_error=True,
 ):
@@ -206,12 +206,12 @@ def __compute_evolution(
         is_date_to_format = isinstance(date_col, dict) or (df[date_col].dtype == np.object)
         if is_date_to_format:
             if isinstance(date_col, dict):
-                date_format = date_col.get('format', None)
-                date_col = date_col['selector']
+                date_format = date_col.get("format", None)
+                date_col = date_col["selector"]
             else:
                 date_format = None
-            df['_' + date_col + '_copy_'] = pd.to_datetime(df[date_col], format=date_format)
-            date_col = '_' + date_col + '_copy_'
+            df["_" + date_col + "_copy_"] = pd.to_datetime(df[date_col], format=date_format)
+            date_col = "_" + date_col + "_copy_"
 
         is_freq_dict = isinstance(freq, dict)
         if is_freq_dict:
@@ -248,18 +248,18 @@ def __compute_evolution(
 def apply_merge(df, df_offseted, group_cols, how, offseted_suffix, raise_duplicate_error):
     df_offseted_deduplicated = df_offseted.drop_duplicates(subset=group_cols)
 
-    if df_offseted_deduplicated.shape[0] != df_offseted.shape[0] and how == 'left':
+    if df_offseted_deduplicated.shape[0] != df_offseted.shape[0] and how == "left":
         msg = (
-            'A dataframe for which you want to compute evolutions '
-            'has duplicated values against the id_cols you indicated.'
+            "A dataframe for which you want to compute evolutions "
+            "has duplicated values against the id_cols you indicated."
         )
         if raise_duplicate_error:
             raise DuplicateRowsError(msg)
         else:
-            logging.getLogger(__name__).warning(f'Warning: {msg}')
+            logging.getLogger(__name__).warning(f"Warning: {msg}")
 
     df_with_offseted_values = pd.merge(
-        df, df_offseted_deduplicated, how=how, on=group_cols, suffixes=['', offseted_suffix]
+        df, df_offseted_deduplicated, how=how, on=group_cols, suffixes=["", offseted_suffix]
     ).reset_index(drop=True)
 
     return df_with_offseted_values
@@ -273,9 +273,9 @@ def apply_fillna(df, value_col, offseted_suffix, fillna):
 
 
 def apply_method(df, evolution_col, value_col, offseted_suffix, method):
-    if method == 'abs':
+    if method == "abs":
         df[evolution_col] = df[value_col] - df[value_col + offseted_suffix]
-    elif method == 'pct':
+    elif method == "pct":
         df_value_as_float = df[value_col + offseted_suffix].astype(float)
         df[evolution_col] = (df[value_col].astype(float) - df_value_as_float) / df_value_as_float
     else:
@@ -283,7 +283,7 @@ def apply_method(df, evolution_col, value_col, offseted_suffix, method):
 
 
 def apply_format(df, evolution_col, format):
-    if format == 'df':
+    if format == "df":
         return df
     else:
         return df[evolution_col]

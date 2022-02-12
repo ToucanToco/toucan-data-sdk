@@ -114,30 +114,30 @@ def waterfall(
         return pd.concat([sub_waterfall(df) for df in list_of_sub_df], sort=False)
 
     groups = {
-        'upperGroup': {
-            'type': 'parent',
-            'id': 'upperGroup',
-            'order': {'by': ['upperGroup_order', 'groups'], 'ascending': [True, True]},
-            'obj': upperGroup,
+        "upperGroup": {
+            "type": "parent",
+            "id": "upperGroup",
+            "order": {"by": ["upperGroup_order", "groups"], "ascending": [True, True]},
+            "obj": upperGroup,
         }
     }
     if insideGroup is not None:
-        groups['insideGroup'] = {
-            'type': 'child',
-            'id': 'insideGroup',
-            'order': {
-                'by': ['type', 'insideGroup_order', 'label'],
-                'ascending': [False, True, True],
+        groups["insideGroup"] = {
+            "type": "child",
+            "id": "insideGroup",
+            "order": {
+                "by": ["type", "insideGroup_order", "label"],
+                "ascending": [False, True, True],
             },
-            'obj': insideGroup,
+            "obj": insideGroup,
         }
     # prepare the dataframe with standard column names
     df = _compute_rename(df, date, value, groups)
 
-    agg_conf = {'value': 'sum'}
-    agg_conf.update({f'{col}_label': 'first' for col in groups.keys()})
-    agg_conf.update({f'{col}_order': 'first' for col in groups.keys()})
-    df = df.groupby(list(groups.keys()) + ['date']).agg(agg_conf).reset_index()
+    agg_conf = {"value": "sum"}
+    agg_conf.update({f"{col}_label": "first" for col in groups.keys()})
+    agg_conf.update({f"{col}_order": "first" for col in groups.keys()})
+    df = df.groupby(list(groups.keys()) + ["date"]).agg(agg_conf).reset_index()
 
     df_start, df_end = _compute_start_end(df, start, end)
 
@@ -153,17 +153,17 @@ def waterfall(
 
 
 def _compute_rename(df, date, value, groups):
-    df = df.rename(columns={date: 'date', value: 'value'})
+    df = df.rename(columns={date: "date", value: "value"})
     for g_name, g in groups.items():
-        df = df.rename(columns={g['obj']['id']: g_name})
-        if 'label' not in g['obj']:
-            df[f'{g_name}_label'] = df[g_name]
+        df = df.rename(columns={g["obj"]["id"]: g_name})
+        if "label" not in g["obj"]:
+            df[f"{g_name}_label"] = df[g_name]
         else:
-            df.rename(columns={g['obj']['label']: f'{g_name}_label'}, inplace=True)
-        if 'groupsOrder' not in g['obj']:
-            df[f'{g_name}_order'] = pd.np.nan
+            df.rename(columns={g["obj"]["label"]: f"{g_name}_label"}, inplace=True)
+        if "groupsOrder" not in g["obj"]:
+            df[f"{g_name}_order"] = pd.np.nan
         else:
-            df.rename(columns={g['obj']['groupsOrder']: f'{g_name}_order'}, inplace=True)
+            df.rename(columns={g["obj"]["groupsOrder"]: f"{g_name}_order"}, inplace=True)
     return df
 
 
@@ -177,17 +177,17 @@ def _compute_start_end(df, start, end):
 
     """
     result = {}
-    time_dict = {'start': start, 'end': end}
-    totals = df.groupby('date').agg({'value': sum}).reset_index()
+    time_dict = {"start": start, "end": end}
+    totals = df.groupby("date").agg({"value": sum}).reset_index()
     for time_name, time in time_dict.items():
-        if not totals[totals['date'] == time['id']].empty:
-            value = totals.loc[totals['date'] == time['id'], 'value'].values[0]
+        if not totals[totals["date"] == time["id"]].empty:
+            value = totals.loc[totals["date"] == time["id"], "value"].values[0]
         else:
             value = 0
         result[time_name] = pd.DataFrame(
-            [{'value': value, 'label': time['label'], 'groups': time['label']}]
+            [{"value": value, "label": time["label"], "groups": time["label"]}]
         )
-    return result['start'], result['end']
+    return result["start"], result["end"]
 
 
 def _compute_value_diff(df, start, end, groups):
@@ -199,20 +199,20 @@ def _compute_value_diff(df, start, end, groups):
     Returns: Dataframe
 
     """
-    start_values = df[df['date'] == start['id']].copy()
-    end_values = df[df['date'] == end['id']].copy()
+    start_values = df[df["date"] == start["id"]].copy()
+    end_values = df[df["date"] == end["id"]].copy()
 
     merge_on = []
     for key, group in groups.items():
-        merge_on = merge_on + [key, f'{key}_label', f'{key}_order']
+        merge_on = merge_on + [key, f"{key}_label", f"{key}_order"]
 
-    df = start_values.merge(end_values, on=merge_on, how='outer', suffixes=('_start', '_end'))
+    df = start_values.merge(end_values, on=merge_on, how="outer", suffixes=("_start", "_end"))
 
     # necessary before calculating variation
-    df[['value_start', 'value_end']] = df[['value_start', 'value_end']].fillna(0)
-    df['value'] = df['value_end'] - df['value_start']
-    df.drop(['date_start', 'date_end', 'value_end'], axis=1, inplace=True)
-    df.rename(columns={'upperGroup': 'groups'}, inplace=True)
+    df[["value_start", "value_end"]] = df[["value_start", "value_end"]].fillna(0)
+    df["value"] = df["value_end"] - df["value_start"]
+    df.drop(["date_start", "date_end", "value_end"], axis=1, inplace=True)
+    df.rename(columns={"upperGroup": "groups"}, inplace=True)
     return df
 
 
@@ -226,10 +226,10 @@ def _compute_inside_group(df):
 
     """
     inside_group = df.copy()
-    inside_group['type'] = 'child'
-    inside_group['variation'] = inside_group['value'] / inside_group['value_start']
-    inside_group.drop(['upperGroup_label', 'insideGroup', 'value_start'], axis=1, inplace=True)
-    inside_group.rename(columns={'insideGroup_label': 'label'}, inplace=True)
+    inside_group["type"] = "child"
+    inside_group["variation"] = inside_group["value"] / inside_group["value_start"]
+    inside_group.drop(["upperGroup_label", "insideGroup", "value_start"], axis=1, inplace=True)
+    inside_group.rename(columns={"insideGroup_label": "label"}, inplace=True)
     return inside_group
 
 
@@ -243,36 +243,36 @@ def _compute_upper_group(df):
 
     """
     upper_group = (
-        df.groupby(['groups'])
+        df.groupby(["groups"])
         .agg(
             {
-                'value': sum,
-                'value_start': sum,
-                'upperGroup_label': 'first',
-                'upperGroup_order': 'first',
+                "value": sum,
+                "value_start": sum,
+                "upperGroup_label": "first",
+                "upperGroup_order": "first",
             }
         )
         .reset_index()
     )
-    upper_group['type'] = 'parent'
-    upper_group['variation'] = upper_group['value'] / upper_group['value_start']
-    upper_group.drop(['value_start'], axis=1, inplace=True)
-    upper_group.rename(columns={'upperGroup_label': 'label'}, inplace=True)
+    upper_group["type"] = "parent"
+    upper_group["variation"] = upper_group["value"] / upper_group["value_start"]
+    upper_group.drop(["value_start"], axis=1, inplace=True)
+    upper_group.rename(columns={"upperGroup_label": "label"}, inplace=True)
     return upper_group
 
 
 def _compute_order(df_start, df_end, df_middle, groups):
-    order = {'by': [], 'ascending': []}
+    order = {"by": [], "ascending": []}
     for key, group in groups.items():
-        order['by'] = order['by'] + group['order']['by']
-        order['ascending'] = order['ascending'] + group['order']['ascending']
+        order["by"] = order["by"] + group["order"]["by"]
+        order["ascending"] = order["ascending"] + group["order"]["ascending"]
 
     df_middle = df_middle.sort_values(**order)
 
     ret = pd.concat([df_start, df_middle, df_end])
 
     for key, elt in groups.items():
-        cond = ret['type'] == elt['type']
-        ret.loc[cond, 'order'] = ret.loc[cond, f'{key}_order']
-        ret.drop([f'{key}_order'], axis=1, inplace=True)
+        cond = ret["type"] == elt["type"]
+        ret.loc[cond, "order"] = ret.loc[cond, f"{key}_order"]
+        ret.drop([f"{key}_order"], axis=1, inplace=True)
     return ret

@@ -5,12 +5,16 @@ import time
 
 import pytest
 
-from toucan_data_sdk.utils.decorators import cache as etl_cache, method_cache, setup_cachedir
+from toucan_data_sdk.utils.decorators import (
+    cache as etl_cache,
+    method_cache,
+    setup_cachedir,
+)
 
 
 @pytest.fixture
 def cache():
-    cachedir = tempfile.mkdtemp(prefix='pytest_cache')
+    cachedir = tempfile.mkdtemp(prefix="pytest_cache")
     setup_cachedir(cachedir)
     yield etl_cache
     shutil.rmtree(cachedir)
@@ -26,7 +30,7 @@ def test_cache_typeerrors(cache):
 
     with pytest.raises(TypeError):
 
-        @cache(limit='hey')
+        @cache(limit="hey")
         def foo2():
             pass
 
@@ -54,7 +58,7 @@ def test_cache_check_param(cache):
     run_2 = foo(2)
     assert run_2 == 1
 
-    @cache(check_param='version')
+    @cache(check_param="version")
     def bar(x, version=1):
         return x
 
@@ -98,7 +102,7 @@ def test_cache_dependencies(cache):
     def foo2():
         return 2
 
-    @cache(requires=[foo2, 'foo3'])
+    @cache(requires=[foo2, "foo3"])
     def foo6():
         return foo2() * foo3()
 
@@ -108,7 +112,7 @@ def test_cache_dependencies(cache):
 
     assert foo6() == 6
 
-    @cache(requires=['nope'])
+    @cache(requires=["nope"])
     def foo():
         pass
 

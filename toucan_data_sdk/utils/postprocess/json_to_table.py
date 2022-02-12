@@ -11,7 +11,7 @@ def _first_valid_value(serie: Series) -> Any:
     return serie[first_valid_index] if first_valid_index is not None else None
 
 
-def json_to_table(df: DataFrame, columns: List[str], sep: str = '.') -> DataFrame:
+def json_to_table(df: DataFrame, columns: List[str], sep: str = ".") -> DataFrame:
     """
     Flatten JSON into a table shape. Add lines for each element of a nested array.
     Add columns for each keys of a nested object / dict.
@@ -31,10 +31,10 @@ def json_to_table(df: DataFrame, columns: List[str], sep: str = '.') -> DataFram
     merge_on = [c for c in df.columns if not isinstance(_first_valid_value(df[c]), (list, dict))]
     if merge_on == []:
         raise ValueError(
-            'Data should have at least one column with simple data type (not list or dict)'
+            "Data should have at least one column with simple data type (not list or dict)"
         )
 
-    data = df.to_dict(orient='records')  # json_normalize takes python objects as input
+    data = df.to_dict(orient="records")  # json_normalize takes python objects as input
     ret_data = df.copy()
 
     for col in columns:
@@ -53,12 +53,12 @@ def json_to_table(df: DataFrame, columns: List[str], sep: str = '.') -> DataFram
                 data=data,
                 meta=merge_on,
                 record_path=col,
-                record_prefix=f'{col}{INTERNAL_SEP}',
+                record_prefix=f"{col}{INTERNAL_SEP}",
                 sep=INTERNAL_SEP,
             )
 
         # which columns were added ?
-        new_cols = [c for c in df_nz.columns if c.startswith(f'{col}{INTERNAL_SEP}')]
+        new_cols = [c for c in df_nz.columns if c.startswith(f"{col}{INTERNAL_SEP}")]
 
         # which columns still need to be processed ?
         compound_types_cols = [
