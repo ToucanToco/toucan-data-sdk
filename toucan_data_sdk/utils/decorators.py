@@ -38,11 +38,10 @@ Note:
 """
 import logging
 import time
-from collections.abc import Callable
 from functools import partial, wraps
 from hashlib import md5
 from threading import current_thread
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 import joblib
 import pandas as pd
