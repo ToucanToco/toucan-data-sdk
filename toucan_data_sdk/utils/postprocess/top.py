@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import List, Optional, Union
 
 import pandas as pd
 
@@ -6,13 +6,13 @@ from toucan_data_sdk.utils.helpers import get_temp_column_name
 
 
 def top(
-    df,
+    df: pd.DataFrame,
     value: str,
     limit: int,
     order: str = "asc",
-    group: Union[str, List[str]] = None,
-    date_format: str = None,
-):
+    group: Union[str, List[str], None] = None,
+    date_format: Optional[str] = None,
+) -> pd.DataFrame:
     """
     Get the top or flop N results based on a column value for each specified group columns
 
@@ -72,7 +72,7 @@ def top(
     sorted_order = 1 if limit > 0 else -1
     df = df.copy()
 
-    def _top(df):
+    def _top(df: pd.DataFrame) -> pd.DataFrame:
         try:
             df = getattr(df, filter_func)(abs(limit), value)
         except TypeError:
@@ -88,14 +88,14 @@ def top(
 
 
 def top_group(
-    df,
+    df: pd.DataFrame,
     aggregate_by: List[str],
     value: str,
     limit: int,
     order: str = "asc",
     function: str = "sum",
-    group: Union[str, List[str]] = None,
-):
+    group: Union[str, List[str], None] = None,
+) -> pd.DataFrame:
     """
     Get the top or flop N results based on a function and a column value that agregates the input.
     The result is composed by all the original lines including only lines corresponding

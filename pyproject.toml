@@ -79,7 +79,6 @@ show_error_context = true
 exclude = [
     "decorators\\.py$",
     # postprocess functions
-    "postprocess/top\\.py$",
     "postprocess/waterfall\\.py$",
     # all tests
     "^tests"
