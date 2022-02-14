@@ -1,18 +1,30 @@
-from typing import Dict, List
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, TypedDict, Union
 
 import pandas as pd
 
+if TYPE_CHECKING:
+    from typing_extensions import NotRequired
+
+    class DateConfig(TypedDict):
+        label: str
+        id: Any
+
+    class GroupConfig(TypedDict):
+        label: str
+        id: Any
+        groupsOrder: NotRequired[List[str]]
+
 
 def waterfall(
-    df,
+    df: pd.DataFrame,
     date: str,
     value: str,
-    start: Dict[str, str],
-    end: Dict[str, str],
-    upperGroup: Dict[str, str],
-    insideGroup: Dict[str, str] = None,
-    filters: List[str] = None,
-):
+    start: "DateConfig",
+    end: "DateConfig",
+    upperGroup: "GroupConfig",
+    insideGroup: Optional["GroupConfig"] = None,
+    filters: Union[str, List[str], None] = None,
+) -> pd.DataFrame:
     """
     Return a line for each bars of a waterfall chart, totals, groups, subgroups.
     Compute the variation and variation rate for each line.
@@ -100,9 +112,9 @@ def waterfall(
         if isinstance(filters, str):
             filters = [filters]
 
-        def sub_waterfall(df):
+        def sub_waterfall(df: pd.DataFrame) -> pd.DataFrame:
             wa_df = waterfall(df, date, value, start, end, upperGroup, insideGroup)
-            for filters_col in filters:
+            for filters_col in filters:  # type: ignore[union-attr]
                 wa_df[filters_col] = df[filters_col].values[0]
             return wa_df
 
@@ -152,7 +164,9 @@ def waterfall(
     return ret
 
 
-def _compute_rename(df, date, value, groups):
+def _compute_rename(
+    df: pd.DataFrame, date: str, value: str, groups: Dict[str, Dict[str, Any]]
+) -> pd.DataFrame:
     df = df.rename(columns={date: "date", value: "value"})
     for g_name, g in groups.items():
         df = df.rename(columns={g["obj"]["id"]: g_name})
@@ -167,7 +181,9 @@ def _compute_rename(df, date, value, groups):
     return df
 
 
-def _compute_start_end(df, start, end):
+def _compute_start_end(
+    df: pd.DataFrame, start: "DateConfig", end: "DateConfig"
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """
     Compute two dataframes with value for start and end
     Args:
@@ -190,7 +206,9 @@ def _compute_start_end(df, start, end):
     return result["start"], result["end"]
 
 
-def _compute_value_diff(df, start, end, groups):
+def _compute_value_diff(
+    df: pd.DataFrame, start: "DateConfig", end: "DateConfig", groups: Dict[str, Dict[str, Any]]
+) -> pd.DataFrame:
     """
     Compute diff value between start and end
     Args:
@@ -202,7 +220,7 @@ def _compute_value_diff(df, start, end, groups):
     start_values = df[df["date"] == start["id"]].copy()
     end_values = df[df["date"] == end["id"]].copy()
 
-    merge_on = []
+    merge_on: List[str] = []
     for key, group in groups.items():
         merge_on = merge_on + [key, f"{key}_label", f"{key}_order"]
 
@@ -216,7 +234,7 @@ def _compute_value_diff(df, start, end, groups):
     return df
 
 
-def _compute_inside_group(df):
+def _compute_inside_group(df: pd.DataFrame) -> pd.DataFrame:
     """
     Compute inside Group
     Args:
@@ -233,7 +251,7 @@ def _compute_inside_group(df):
     return inside_group
 
 
-def _compute_upper_group(df):
+def _compute_upper_group(df: pd.DataFrame) -> pd.DataFrame:
     """
     Compute upperGroup
     Args:
@@ -261,8 +279,13 @@ def _compute_upper_group(df):
     return upper_group
 
 
-def _compute_order(df_start, df_end, df_middle, groups):
-    order = {"by": [], "ascending": []}
+def _compute_order(
+    df_start: pd.DataFrame,
+    df_end: pd.DataFrame,
+    df_middle: pd.DataFrame,
+    groups: Dict[str, Dict[str, Any]],
+) -> pd.DataFrame:
+    order: Dict[str, List[str]] = {"by": [], "ascending": []}
     for key, group in groups.items():
         order["by"] = order["by"] + group["order"]["by"]
         order["ascending"] = order["ascending"] + group["order"]["ascending"]
