@@ -1,9 +1,15 @@
-from typing import Dict, List, Union
+from typing import TYPE_CHECKING, Dict, List, Union
+
+if TYPE_CHECKING:
+    import pandas as pd
 
 
 def groupby(
-    df, *, group_cols: Union[str, List[str]], aggregations: Dict[str, Union[str, List[str]]]
-):
+    df: "pd.DataFrame",
+    *,
+    group_cols: Union[str, List[str]],
+    aggregations: Dict[str, Union[str, List[str]]],
+) -> "pd.DataFrame":
     """
     Aggregate values by groups.
 
