@@ -1,19 +1,22 @@
-from typing import List
+from typing import TYPE_CHECKING, List, Optional
 
 from toucan_data_sdk.utils.helpers import (
     ParamsValueError,
     check_params_columns_duplicate,
 )
 
+if TYPE_CHECKING:
+    import pandas as pd
+
 
 def compute_cumsum(
-    df,
+    df: "pd.DataFrame",
     id_cols: List[str],
     reference_cols: List[str],
     value_cols: List[str],
-    new_value_cols: List[str] = None,
-    cols_to_keep: List[str] = None,
-):
+    new_value_cols: Optional[List[str]] = None,
+    cols_to_keep: Optional[List[str]] = None,
+) -> "pd.DataFrame":
     """
     Compute cumsum for a group of columns.
 
