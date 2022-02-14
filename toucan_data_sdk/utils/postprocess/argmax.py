@@ -1,7 +1,12 @@
-from typing import List, Union
+from typing import TYPE_CHECKING, List, Union
+
+if TYPE_CHECKING:
+    import pandas as pd
 
 
-def argmax(df, column: str, groups: Union[str, List[str]] = None):
+def argmax(
+    df: "pd.DataFrame", column: str, groups: Union[str, List[str], None] = None
+) -> "pd.DataFrame":
     """
     Keep the row of the data corresponding to the maximal value in a column
 
@@ -47,7 +52,9 @@ def argmax(df, column: str, groups: Union[str, List[str]] = None):
     return df
 
 
-def argmin(df, column: str, groups: Union[str, List[str]] = None):
+def argmin(
+    df: "pd.DataFrame", column: str, groups: Union[str, List[str], None] = None
+) -> "pd.DataFrame":
     """
     Keep the row of the data corresponding to the minimal value in a column
 
