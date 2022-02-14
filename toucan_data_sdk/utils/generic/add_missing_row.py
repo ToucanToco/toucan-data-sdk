@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Sequence, Union
+from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
 
 import pandas as pd
 
@@ -12,9 +12,9 @@ def add_missing_row(
     df: pd.DataFrame,
     id_cols: List[str],
     reference_col: str,
-    complete_index: Union[Dict[str, str], Sequence[str]] = None,
-    method: str = None,
-    cols_to_keep: List[str] = None,
+    complete_index: Union[Dict[str, str], Sequence[str], None] = None,
+    method: Optional[str] = None,
+    cols_to_keep: Optional[List[str]] = None,
 ) -> pd.DataFrame:
     """
     Add missing row to a df base on a reference column
@@ -84,18 +84,18 @@ def add_missing_row(
 
     names = id_cols + cols_for_index
     new_df = df.set_index(names)
-    index_values: Union[Any, tuple] = df.groupby(id_cols).sum().index.values
+    index_values = df.groupby(id_cols).sum().index.values
 
     if complete_index is None:
-        complex_index_values: Union[Any, tuple] = df.groupby(cols_for_index).sum().index.values
+        complex_index_values = df.groupby(cols_for_index).sum().index.values
     elif isinstance(complete_index, dict):
         if complete_index["type"] == "date":
             freq = complete_index["freq"]
             date_format = complete_index["format"]
             start = complete_index["start"]
             end = complete_index["end"]
-            if isinstance(freq, dict):
-                freq = pd.DateOffset(**{k: int(v) for k, v in freq.items()})
+            if isinstance(freq, dict):  # type: ignore[unreachable]
+                freq = pd.DateOffset(**{k: int(v) for k, v in freq.items()})  # type: ignore[unreachable]
             new_index = pd.date_range(start=start, end=end, freq=freq)
             complex_index_values = new_index.strftime(date_format).values
         else:
@@ -103,12 +103,12 @@ def add_missing_row(
     else:
         complex_index_values = list(complete_index)
 
-    def get_tuple(x: Union[Any, tuple]) -> tuple:
+    def get_tuple(x: Any) -> Tuple[Any, ...]:
         if not isinstance(x, tuple):
             return (x,)
         return x
 
-    new_tuples_index: List[tuple] = [
+    new_tuples_index = [
         get_tuple(x) + get_tuple(y) for x in index_values for y in complex_index_values
     ]
 
