@@ -1,7 +1,17 @@
+from typing import TYPE_CHECKING, Optional, Union
+
 from numpy import nan
 
+if TYPE_CHECKING:
+    import pandas as pd
 
-def fillna(df, column: str, value=None, column_value=None):
+
+def fillna(
+    df: "pd.DataFrame",
+    column: str,
+    value: Union[int, str, None] = None,
+    column_value: Optional[str] = None,
+) -> "pd.DataFrame":
     """
     Can fill NaN values from a column with a given value or a column
 
