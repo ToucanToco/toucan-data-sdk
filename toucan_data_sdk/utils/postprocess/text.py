@@ -58,7 +58,7 @@ __all__ = (
 
 def _generate_basic_str_postprocess(
     method_name: str, docstring: str
-) -> Callable[[pd.DataFrame, str, Optional[str],], pd.DataFrame,]:
+) -> Callable[[pd.DataFrame, str, Optional[str]], pd.DataFrame]:
     def f(df: pd.DataFrame, column: str, new_column: Optional[str] = None) -> pd.DataFrame:
         method = getattr(df[column].str, method_name)
         new_column = new_column or column
@@ -151,7 +151,7 @@ isdecimal = _generate_basic_str_postprocess("isdecimal", doc)
 ###################################################################################################
 def _generate_strip_str_postprocess(
     method_name: str, docstring: str
-) -> Callable[[pd.DataFrame, str, Optional[str], Optional[str],], pd.DataFrame,]:
+) -> Callable[[pd.DataFrame, str, Optional[str], Optional[str]], pd.DataFrame]:
     def f(
         df: pd.DataFrame,
         column: str,
@@ -389,7 +389,7 @@ rpartition = _generate_partition_str_postprocess("rpartition", doc)
 ###################################################################################################
 def _generate_find_str_postprocess(
     method_name: str, docstring: str
-) -> Callable[[pd.DataFrame, str, str, int, Optional[int], Optional[str],], pd.DataFrame,]:
+) -> Callable[[pd.DataFrame, str, str, int, Optional[int], Optional[str]], pd.DataFrame]:
     def f(
         df: pd.DataFrame,
         column: str,

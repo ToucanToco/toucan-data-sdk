@@ -1,6 +1,6 @@
 import inspect
 from functools import wraps
-from typing import Any, Callable, Dict, List, TypeVar, Union
+from typing import Any, Dict, List, Union
 
 import pandas as pd
 

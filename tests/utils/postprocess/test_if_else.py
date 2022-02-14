@@ -8,9 +8,11 @@ from toucan_data_sdk.utils.postprocess import if_else
 
 def test_if_else_signature():
     assert if_else.__doc__.strip().startswith("The usual if...then...else... statement")
-    assert (
-        str(inspect.signature(if_else))
-        == "(df: pandas.core.frame.DataFrame, *, if: str, then: Union[str, int, float, Dict[str, Any], List[Dict[str, Any]]], else: Union[NoneType, str, int, float, Dict[str, Any], List[Dict[str, Any]]] = None, new_column: str) -> pandas.core.frame.DataFrame"
+    assert str(inspect.signature(if_else)) == (
+        "(df: pandas.core.frame.DataFrame, *, if: str, "
+        "then: Union[str, int, float, Dict[str, Any], List[Dict[str, Any]]], "
+        "else: Union[NoneType, str, int, float, Dict[str, Any], List[Dict[str, Any]]] = None, "
+        "new_column: str) -> pandas.core.frame.DataFrame"
     )
 
 

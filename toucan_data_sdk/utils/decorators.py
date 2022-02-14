@@ -38,7 +38,6 @@ Note:
 """
 import logging
 import time
-from ast import Call
 from collections.abc import Callable
 from functools import partial, wraps
 from hashlib import md5
