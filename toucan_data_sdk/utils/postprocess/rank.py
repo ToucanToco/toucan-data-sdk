@@ -1,16 +1,19 @@
-from typing import List, Union
+from typing import TYPE_CHECKING, List, Optional, Union
 
 import numpy as np
 
+if TYPE_CHECKING:
+    import pandas as pd
+
 
 def rank(
-    df,
+    df: "pd.DataFrame",
     value_cols: Union[str, List[str]],
-    group_cols: List[str] = None,
-    rank_cols_names: List[str] = None,
-    method="min",
+    group_cols: Optional[List[str]] = None,
+    rank_cols_names: Optional[List[str]] = None,
+    method: str = "min",
     ascending: bool = True,
-):
+) -> "pd.DataFrame":
     """
     This function creates rank columns based on numeric values to be ranked.
 
