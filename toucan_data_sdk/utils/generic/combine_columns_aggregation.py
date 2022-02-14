@@ -5,11 +5,11 @@ import pandas as pd
 
 
 def combine_columns_aggregation(
-    df,
+    df: pd.DataFrame,
     id_cols: List[str],
     cols_for_combination: Dict[str, str],
     agg_func: Union[str, List[str], Dict[str, str]] = "sum",
-):
+) -> pd.DataFrame:
     """
     Aggregates data to reproduce "All" category for requester
 
