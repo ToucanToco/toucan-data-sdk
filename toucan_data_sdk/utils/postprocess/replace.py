@@ -1,4 +1,12 @@
-def replace(df, column: str, new_column: str = None, **kwargs):
+from typing import TYPE_CHECKING, Any, Optional
+
+if TYPE_CHECKING:
+    import pandas as pd
+
+
+def replace(
+    df: "pd.DataFrame", column: str, new_column: Optional[str] = None, **kwargs: Any
+) -> "pd.DataFrame":
     """
     Change the label of a value or a columns within your data source.
     (Similar to `rename` but does not have the notion of locale)
