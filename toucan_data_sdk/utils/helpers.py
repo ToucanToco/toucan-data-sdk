@@ -56,17 +56,19 @@ def setlocale(name: Optional[str]) -> Generator[str, None, None]:
             locale.setlocale(locale.LC_ALL, saved)
 
 
-def get_orig_function(f):
+def get_orig_function(f: Callable[..., Any]) -> Callable[..., Any]:
     """Make use of the __wrapped__ attribute to find the original function
     of a decorated function."""
     try:
         while True:
-            f = f.__wrapped__
+            f = f.__wrapped__  # type: ignore[attr-defined]
     except AttributeError:
         return f
 
 
-def get_param_value_from_func_call(param_name, func, call_args, call_kwargs):
+def get_param_value_from_func_call(
+    param_name: str, func: Callable[..., Any], call_args: Sequence[Any], call_kwargs: Dict[str, Any]
+) -> Any:
     """
     Get the value of a function's parameter based on its signature
     and the call's args and kwargs.
