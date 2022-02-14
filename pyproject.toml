@@ -79,7 +79,6 @@ show_error_context = true
 exclude = [
     "decorators\\.py$",
     # postprocess functions
-    "postprocess/cumsum\\.py$",
     "postprocess/fillna\\.py$",
     "postprocess/filter_by_date\\.py$",
     "postprocess/filter\\.py$",

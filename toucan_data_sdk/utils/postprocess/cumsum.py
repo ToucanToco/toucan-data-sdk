@@ -1,9 +1,17 @@
 import logging
+from typing import List, Union
 
 import pandas as pd
 
 
-def cumsum(df, new_column: str, column: str, index: list, date_column: str, date_format: str):
+def cumsum(
+    df: pd.DataFrame,
+    new_column: str,
+    column: str,
+    index: Union[str, List[str]],
+    date_column: str,
+    date_format: str,
+) -> pd.DataFrame:
     """
     DEPRECATED - please use `compute_cumsum` instead
     """
