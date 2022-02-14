@@ -1,25 +1,27 @@
 import logging
-from typing import Dict, List, Optional, Union
+from typing import Any, Dict, List, Literal, Optional, Union
 
-import numpy as np
 import pandas as pd
 
 from toucan_data_sdk.utils.helpers import check_params_columns_duplicate
 
+EvolutionFormat = Literal["column", "df"]
+EvolutionMethod = Literal["abs", "pct"]
+
 
 def compute_evolution_by_frequency(
-    df,
+    df: pd.DataFrame,
     id_cols: List[str],
     date_col: Union[str, Dict[str, str]],
     value_col: str,
-    freq=1,
-    method: str = "abs",
-    format: str = "column",
+    freq: Union[int, pd.DateOffset, pd.Series, Dict[str, Any]] = 1,
+    method: EvolutionMethod = "abs",
+    format: EvolutionFormat = "column",
     offseted_suffix: str = "_offseted",
     evolution_col_name: str = "evolution_computed",
     missing_date_as_zero: bool = False,
     raise_duplicate_error: bool = True,
-):
+) -> pd.DataFrame:
     """
     This function answers the question: how has a value changed on a weekly, monthly, yearly basis ?
 
@@ -100,7 +102,7 @@ def compute_evolution_by_frequency(
 
 
 def compute_evolution_by_criteria(
-    df,
+    df: pd.DataFrame,
     id_cols: List[str],
     value_col: str,
     compare_to: str,
@@ -109,7 +111,7 @@ def compute_evolution_by_criteria(
     offseted_suffix: str = "_offseted",
     evolution_col_name: str = "evolution_computed",
     raise_duplicate_error: bool = True,
-):
+) -> pd.DataFrame:
     """
     This function answers the question: how has a value changed compare to a specific value ?
 
@@ -166,20 +168,20 @@ compute_evolution = compute_evolution_by_frequency
 
 
 def __compute_evolution(
-    df,
-    id_cols,
-    value_col,
-    date_col=None,
-    freq=1,
-    compare_to=None,
-    method="abs",
-    format="column",
-    offseted_suffix="_offseted",
-    evolution_col_name="evolution_computed",
-    how="left",
-    fillna=None,
-    raise_duplicate_error=True,
-):
+    df: pd.DataFrame,
+    id_cols: List[str],
+    value_col: str,
+    date_col: Union[str, Dict[str, str], None] = None,
+    freq: Union[int, pd.DateOffset, pd.Series, Dict[str, Any]] = 1,
+    compare_to: Optional[str] = None,
+    method: EvolutionMethod = "abs",
+    format: EvolutionFormat = "column",
+    offseted_suffix: str = "_offseted",
+    evolution_col_name: str = "evolution_computed",
+    how: str = "left",
+    fillna: Union[int, str, None] = None,
+    raise_duplicate_error: bool = True,
+) -> pd.DataFrame:
     """
     Compute an evolution column :
         - against a period distant from a fixed frequency.
@@ -203,7 +205,7 @@ def __compute_evolution(
         fillna(str/int): default None
     """
     if date_col is not None:
-        is_date_to_format = isinstance(date_col, dict) or (df[date_col].dtype == np.object)
+        is_date_to_format = isinstance(date_col, dict) or (df[date_col].dtype == object)
         if is_date_to_format:
             if isinstance(date_col, dict):
                 date_format = date_col.get("format", None)
@@ -212,9 +214,9 @@ def __compute_evolution(
                 date_format = None
             df["_" + date_col + "_copy_"] = pd.to_datetime(df[date_col], format=date_format)
             date_col = "_" + date_col + "_copy_"
+        assert isinstance(date_col, str)
 
-        is_freq_dict = isinstance(freq, dict)
-        if is_freq_dict:
+        if isinstance(freq, dict):
             freq = pd.DateOffset(**{k: int(v) for k, v in freq.items()})
 
         check_params_columns_duplicate(id_cols + [value_col, date_col])
@@ -245,7 +247,14 @@ def __compute_evolution(
     return apply_format(df_with_offseted_values, evolution_col_name, format)
 
 
-def apply_merge(df, df_offseted, group_cols, how, offseted_suffix, raise_duplicate_error):
+def apply_merge(
+    df: pd.DataFrame,
+    df_offseted: pd.DataFrame,
+    group_cols: List[str],
+    how: str,
+    offseted_suffix: str,
+    raise_duplicate_error: bool,
+) -> pd.DataFrame:
     df_offseted_deduplicated = df_offseted.drop_duplicates(subset=group_cols)
 
     if df_offseted_deduplicated.shape[0] != df_offseted.shape[0] and how == "left":
@@ -265,14 +274,22 @@ def apply_merge(df, df_offseted, group_cols, how, offseted_suffix, raise_duplica
     return df_with_offseted_values
 
 
-def apply_fillna(df, value_col, offseted_suffix, fillna):
+def apply_fillna(
+    df: pd.DataFrame, value_col: str, offseted_suffix: str, fillna: Union[str, int, None]
+) -> None:
     if fillna is not None:
         df[[value_col, value_col + offseted_suffix]] = df[
             [value_col, value_col + offseted_suffix]
         ].fillna(fillna)
 
 
-def apply_method(df, evolution_col, value_col, offseted_suffix, method):
+def apply_method(
+    df: pd.DataFrame,
+    evolution_col: str,
+    value_col: str,
+    offseted_suffix: str,
+    method: EvolutionMethod,
+) -> None:
     if method == "abs":
         df[evolution_col] = df[value_col] - df[value_col + offseted_suffix]
     elif method == "pct":
@@ -282,7 +299,9 @@ def apply_method(df, evolution_col, value_col, offseted_suffix, method):
         raise ValueError("method has to be either 'abs' or 'pct'")
 
 
-def apply_format(df, evolution_col, format):
+def apply_format(
+    df: pd.DataFrame, evolution_col: str, format: EvolutionFormat
+) -> Union[pd.DataFrame, pd.Series]:
     if format == "df":
         return df
     else:
