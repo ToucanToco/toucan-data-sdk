@@ -1,9 +1,14 @@
-from typing import Dict, List, Union
+from typing import TYPE_CHECKING, Dict, List, Union
 
 Agg = Dict[str, str]  # dict of size 1: mapping colomn -> aggregation function
 
+if TYPE_CHECKING:
+    import pandas as pd
 
-def add_aggregation_columns(df, *, group_cols: Union[str, List[str]], aggregations: Dict[str, Agg]):
+
+def add_aggregation_columns(
+    df: "pd.DataFrame", *, group_cols: Union[str, List[str]], aggregations: Dict[str, Agg]
+) -> "pd.DataFrame":
     """
     Add new columns containing aggregations values on existing columns
 
