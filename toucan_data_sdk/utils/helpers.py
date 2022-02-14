@@ -7,17 +7,30 @@ import shutil
 import threading
 from contextlib import contextmanager
 from pathlib import Path
-from typing import List, Optional
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Dict,
+    Generator,
+    List,
+    Optional,
+    Sequence,
+    Tuple,
+)
 
-from joblib._store_backends import StoreBackendBase
+from joblib._store_backends import CacheItemInfo, StoreBackendBase
 from slugify import slugify as _slugify
+
+if TYPE_CHECKING:
+    import pandas as pd
 
 logger = logging.getLogger(__name__)
 LOCALE_LOCK = threading.Lock()
 CURRENT_LOCALE = locale.getlocale()
 
 
-def get_temp_column_name(df) -> str:
+def get_temp_column_name(df: "pd.DataFrame") -> str:
     """Small helper to get a new column name that does not already exist"""
     temp_column_name = "__tmp__"
     while temp_column_name in df.columns:
@@ -26,7 +39,7 @@ def get_temp_column_name(df) -> str:
 
 
 @contextmanager
-def setlocale(name: Optional[str]):
+def setlocale(name: Optional[str]) -> Generator[str, None, None]:
     """
     Context manager to set a locale ('en', 'fr', 'de', ...)
     """
@@ -77,7 +90,7 @@ def get_param_value_from_func_call(param_name, func, call_args, call_kwargs):
     return call.arguments[param_name]
 
 
-def get_func_sourcecode(func):
+def get_func_sourcecode(func: Callable[..., Any]) -> str:
     """
     Try to get sourcecode using standard inspect.getsource().
     If the function comes from a module which has been created dynamically
@@ -87,15 +100,15 @@ def get_func_sourcecode(func):
              the original module code.
     """
 
-    def getsource(func):
+    def getsource(func: Callable[..., Any]) -> str:
         lines, lnum = getsourcelines(func)
         return "".join(lines)
 
-    def getsourcelines(func):
+    def getsourcelines(func: Callable[..., Any]) -> Tuple[Sequence[str], int]:
         lines, lnum = findsource(func)
         return inspect.getblock(lines[lnum:]), lnum + 1
 
-    def findsource(func):
+    def findsource(func: Callable[..., Any]) -> Tuple[List[str], int]:
         file = getfile(func)  # file path
         module = inspect.getmodule(func, file)
         lines = linecache.getlines(file, module.__dict__)
@@ -108,9 +121,9 @@ def get_func_sourcecode(func):
             lnum = lnum - 1  # pragma: no cover
         return lines, lnum
 
-    def getfile(func):
+    def getfile(func: Callable[..., Any]) -> str:
         module = inspect.getmodule(func)
-        return module.__file__
+        return module.__file__  # type: ignore
 
     try:
         return inspect.getsource(func)
@@ -129,14 +142,14 @@ def check_params_columns_duplicate(cols_name: List[str]) -> bool:
 
 def slugify(name: str, separator: str = "-") -> str:
     """Returns a slugified name (we allow _ to be used)"""
-    return _slugify(name, regex_pattern=re.compile("[^-_a-z0-9]+"), separator=separator)
+    return _slugify(name, regex_pattern="[^-_a-z0-9]+", separator=separator)
 
 
-def resolve_dependencies(func_name, dependencies):
+def resolve_dependencies(func_name: str, dependencies: Dict[str, List[str]]) -> List[str]:
     """Given a function name and a mapping of function dependencies,
     returns a list of *all* the dependencies for this function."""
 
-    def _resolve_deps(func_name, func_deps):
+    def _resolve_deps(func_name: str, func_deps: List[str]) -> None:
         """Append dependencies recursively to func_deps (accumulator)"""
         if func_name in func_deps:
             return
@@ -145,7 +158,7 @@ def resolve_dependencies(func_name, dependencies):
         for dep in dependencies.get(func_name, []):
             _resolve_deps(dep, func_deps)
 
-    func_deps = []
+    func_deps: List[str] = []
     _resolve_deps(func_name, func_deps)
     return sorted(func_deps)
 
@@ -156,7 +169,7 @@ def clean_cachedir_old_entries(cachedir: StoreBackendBase, func_name: str, limit
         raise ValueError("'limit' must be greater or equal to 1")
 
     cache_entries = get_cachedir_entries(cachedir, func_name)
-    cache_entries = sorted(cache_entries, key=lambda e: e.last_access, reverse=True)
+    cache_entries = sorted(cache_entries, key=lambda e: e.last_access, reverse=True)  # type: ignore[no-any-return]
     cache_entries_to_remove = cache_entries[limit:]
     for entry in cache_entries_to_remove:
         shutil.rmtree(entry.path, ignore_errors=True)
@@ -164,7 +177,7 @@ def clean_cachedir_old_entries(cachedir: StoreBackendBase, func_name: str, limit
     return len(cache_entries_to_remove)
 
 
-def get_cachedir_entries(cachedir: StoreBackendBase, func_name: str) -> list:
+def get_cachedir_entries(cachedir: StoreBackendBase, func_name: str) -> List[CacheItemInfo]:
     entries = cachedir.get_items()
     return [e for e in entries if Path(e.path).parent.name == func_name]
 

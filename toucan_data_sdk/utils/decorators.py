@@ -42,6 +42,7 @@ from collections.abc import Callable
 from functools import partial, wraps
 from hashlib import md5
 from threading import current_thread
+from typing import Optional
 
 import joblib
 import pandas as pd
@@ -57,7 +58,7 @@ from .helpers import (
 _logger = logging.getLogger(__name__)
 
 
-def catch(logger):
+def catch(logger: logging.Logger) -> Callable:
     """
     Decorator to catch an exception and don't raise it.
     Logs information if a decorator failed.
@@ -337,7 +338,7 @@ def cache(  # noqa: C901
                 result = f(**tmp_extra_kwargs)
 
             if limit is not None:
-                clean_cachedir_old_entries(f.store_backend, func.__name__, limit)
+                clean_cachedir_old_entries(f.store_backend, func.__name__, limit)  # type: ignore[attr-defined]
 
             return result
 
@@ -349,14 +350,16 @@ def cache(  # noqa: C901
 method_cache = partial(cache, applied_on_method=True)
 
 
-def setup_cachedir(cachedir, mmap_mode=None, bytes_limit=None):
+def setup_cachedir(
+    cachedir: str, mmap_mode: Optional[str] = None, bytes_limit: Optional[int] = None
+) -> joblib.Memory:
     """This function injects a joblib.Memory object in the cache() function
     (in a thread-specific slot of its 'memories' attribute)."""
     if not hasattr(cache, "memories"):
-        cache.memories = {}
+        cache.memories = {}  # type: ignore[attr-defined]
 
     memory = joblib.Memory(
         location=cachedir, verbose=0, mmap_mode=mmap_mode, bytes_limit=bytes_limit
     )
-    cache.memories[current_thread().name] = memory
+    cache.memories[current_thread().name] = memory  # type: ignore[attr-defined]
     return memory

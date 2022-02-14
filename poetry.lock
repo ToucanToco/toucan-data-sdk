@@ -528,6 +528,14 @@ python-versions = ">=3.8,<4.0"
 requests = ">=2.27.1,<3.0.0"
 
 [[package]]
+name = "types-python-slugify"
+version = "5.0.3"
+description = "Typing stubs for python-slugify"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "types-requests"
 version = "2.27.9"
 description = "Typing stubs for requests"
@@ -588,7 +596,7 @@ testing = ["coverage (>=4)", "coverage-enable-subprocess (>=1)", "flaky (>=3)", 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "89649c5414fd19344284104bc7e1e8472dec1afa5b66099b3689061458739c64"
+content-hash = "bffd3cbbb8c8f3c00bb451ff548653615fe6ab3c1cfce1698cb59719201eb2ec"
 
 [metadata.files]
 atomicwrites = [
@@ -923,6 +931,10 @@ tomli = [
 toucan-client = [
     {file = "toucan_client-1.1.1-py3-none-any.whl", hash = "sha256:0d8047c7c7c627cf4640a5834d6d10cd1bdb5a6a7d8f8e75847ed91a78e0013f"},
     {file = "toucan_client-1.1.1.tar.gz", hash = "sha256:db51600144557ba6ca52c5aec4360ccda4c11913ee5dbd81094e2b60fcf5d6ab"},
+]
+types-python-slugify = [
+    {file = "types-python-slugify-5.0.3.tar.gz", hash = "sha256:76169f4a6d40896fea76fb45a25c50ac7ba2ca03eee759ecac322a05fe4dd21c"},
+    {file = "types_python_slugify-5.0.3-py3-none-any.whl", hash = "sha256:a5761d3c55e949f8ace0694eb5be81210087084bb78df495de14ee5eaad6ac54"},
 ]
 types-requests = [
     {file = "types-requests-2.27.9.tar.gz", hash = "sha256:7368974534d297939492efdfdab232930440b11e2203f6df1f0c40e3242a87ea"},

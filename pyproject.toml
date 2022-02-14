@@ -37,6 +37,7 @@ pytest = "^7.0.0"
 pytest-cov = "^3.0.0"
 pytest-mock = "^3.7.0"
 # types
+types-python-slugify = "^5.0.3"
 types-requests = "^2.27.9"
 
 [build-system]
@@ -75,6 +76,45 @@ warn_unreachable = true
 show_error_codes = true
 show_column_numbers = true
 show_error_context = true
+exclude = [
+    "decorators\\.py$",
+    # generic functions
+    "generic/add_missing_row\\.py$",
+    "generic/clean\\.py$",
+    "generic/combine_columns_aggregation\\.py$",
+    "generic/compute_cumsum\\.py$",
+    "generic/compute_evolution\\.py$",
+    "generic/compute_ffill_by_group\\.py$",
+    "generic/date_requester\\.py$",
+    "generic/roll_up\\.py$",
+    "generic/two_values_melt\\.py$",
+    # postprocess functions
+    "postprocess/add_aggregation_columns\\.py$",
+    "postprocess/argmax\\.py$",
+    "postprocess/categories_from_dates\\.py$",
+    "postprocess/converter\\.py$",
+    "postprocess/cumsum\\.py$",
+    "postprocess/fillna\\.py$",
+    "postprocess/filter_by_date\\.py$",
+    "postprocess/filter\\.py$",
+    "postprocess/groupby\\.py$",
+    "postprocess/if_else\\.py$",
+    "postprocess/json_to_table\\.py$",
+    "postprocess/linear_regression\\.py$",
+    "postprocess/math\\.py$",
+    "postprocess/melt\\.py$",
+    "postprocess/percentage\\.py$",
+    "postprocess/pivot\\.py$",
+    "postprocess/rank\\.py$",
+    "postprocess/rename\\.py$",
+    "postprocess/replace\\.py$",
+    "postprocess/sort\\.py$",
+    "postprocess/text\\.py$",
+    "postprocess/top\\.py$",
+    "postprocess/waterfall\\.py$",
+    # all tests
+    "^tests"
+]
 
 [tool.coverage.report]
 exclude_lines = [

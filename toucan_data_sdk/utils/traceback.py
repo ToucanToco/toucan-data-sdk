@@ -1,13 +1,13 @@
 import io
 import os
 import types
-from typing import Any, Dict
+from typing import Any, Dict, Tuple
 
 import joblib
 
 
-def _from_pickled_dict(d):
-    def from_picklable(obj):
+def _from_pickled_dict(d: Dict[str, Any]) -> Any:
+    def from_picklable(obj: Any) -> Any:
         if obj is None:
             return None
         try:
@@ -23,7 +23,7 @@ def _from_pickled_dict(d):
     return unpickled
 
 
-def _from_serializable_traceback(d):
+def _from_serializable_traceback(d: Dict[str, Any]) -> Tuple[Any, Any, Any]:
     tb = d["tb"]
     tb = types.SimpleNamespace(**tb)
     tb.tb_frame = types.SimpleNamespace(**tb.tb_frame)
@@ -33,7 +33,7 @@ def _from_serializable_traceback(d):
     return d["exc_type"], d["exc_value"], tb
 
 
-def _print_tb(exc_value, tb):
+def _print_tb(exc_value: Any, tb: Any) -> None:
     lineno = tb.tb_lineno
     lines = tb.sourcecode.splitlines()
 
@@ -43,10 +43,10 @@ def _print_tb(exc_value, tb):
 
     lines = lines[first_lineno:last_lineno]
     lines_numbers = list(range(first_lineno + 1, last_lineno + 1))
-    lines_numbers = [str(n).rjust(4) + "|" for n in lines_numbers]
-    lines_numbers[relative_err_lineno] = "====>"
+    lines_numbers_str = [str(n).rjust(4) + "|" for n in lines_numbers]
+    lines_numbers_str[relative_err_lineno] = "====>"
 
-    for lineno, line in zip(lines_numbers, lines):
+    for lineno, line in zip(lines_numbers_str, lines):
         print(lineno + line)
     print("−−−−−−−−−−−−")
     print(exc_value)
