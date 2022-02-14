@@ -1,6 +1,9 @@
 import logging
 import operator as _operator
-from typing import List
+from typing import TYPE_CHECKING, Any, List, Optional, Sequence, Union
+
+if TYPE_CHECKING:
+    import pandas as pd
 
 LOGGER = logging.getLogger(__name__)
 
@@ -9,7 +12,13 @@ DEPRECATED_COLUMN_QUOTE_CHARS = ('"', "'")
 COLUMN_QUOTE_CHARS = ("`",)
 
 
-def _basic_math_operation(df, new_column, column_1, column_2, op):
+def _basic_math_operation(
+    df: "pd.DataFrame",
+    new_column: str,
+    column_1: Union[int, float, str],
+    column_2: Union[int, float, str],
+    op: str,
+) -> "pd.DataFrame":
     """
     Basic mathematical operation to apply operator on `column_1` and `column_2`
     Both can be either a number or the name of a column of `df`
@@ -29,35 +38,55 @@ def _basic_math_operation(df, new_column, column_1, column_2, op):
     return df
 
 
-def add(df, new_column, column_1, column_2):
+def add(
+    df: "pd.DataFrame",
+    new_column: str,
+    column_1: Union[int, float, str],
+    column_2: Union[int, float, str],
+) -> "pd.DataFrame":
     """
     DEPRECATED -  use `formula` instead
     """
     return _basic_math_operation(df, new_column, column_1, column_2, op="add")
 
 
-def subtract(df, new_column, column_1, column_2):
+def subtract(
+    df: "pd.DataFrame",
+    new_column: str,
+    column_1: Union[int, float, str],
+    column_2: Union[int, float, str],
+) -> "pd.DataFrame":
     """
     DEPRECATED -  use `formula` instead
     """
     return _basic_math_operation(df, new_column, column_1, column_2, op="sub")
 
 
-def multiply(df, new_column, column_1, column_2):
+def multiply(
+    df: "pd.DataFrame",
+    new_column: str,
+    column_1: Union[int, float, str],
+    column_2: Union[int, float, str],
+) -> "pd.DataFrame":
     """
     DEPRECATED -  use `formula` instead
     """
     return _basic_math_operation(df, new_column, column_1, column_2, op="mul")
 
 
-def divide(df, new_column, column_1, column_2):
+def divide(
+    df: "pd.DataFrame",
+    new_column: str,
+    column_1: Union[int, float, str],
+    column_2: Union[int, float, str],
+) -> "pd.DataFrame":
     """
     DEPRECATED -  use `formula` instead
     """
     return _basic_math_operation(df, new_column, column_1, column_2, op="truediv")
 
 
-def is_float(x):
+def is_float(x: Any) -> bool:
     try:
         float(x)
     except ValueError:
@@ -95,7 +124,9 @@ class Token:
         return repr(self) == repr(other)
 
 
-def _parse_formula(formula_str, quote_chars=COLUMN_QUOTE_CHARS) -> List[Token]:
+def _parse_formula(
+    formula_str: str, quote_chars: Sequence[str] = COLUMN_QUOTE_CHARS
+) -> List[Token]:
     tokens = []
     current_word = ""
     quote_to_match = None
@@ -129,7 +160,7 @@ def get_new_syntax_formula(formula: str) -> str:
     return "".join(t.get_text() for t in tokens)
 
 
-def formula(df, *, new_column: str, formula: str):
+def formula(df: "pd.DataFrame", *, new_column: str, formula: str) -> "pd.DataFrame":
     """
     Do mathematic operations on columns (add, subtract, multiply or divide)
 
@@ -227,7 +258,9 @@ class FormulaError(Exception):
     """Raised when a formula is not valid"""
 
 
-def round_values(df, *, column: str, decimals: int, new_column: str = None):
+def round_values(
+    df: "pd.DataFrame", *, column: str, decimals: int, new_column: Optional[str] = None
+) -> "pd.DataFrame":
     """
     Round each value of a column
 
@@ -273,7 +306,9 @@ def round_values(df, *, column: str, decimals: int, new_column: str = None):
     return df
 
 
-def absolute_values(df, *, column: str, new_column: str = None):
+def absolute_values(
+    df: "pd.DataFrame", *, column: str, new_column: Optional[str] = None
+) -> "pd.DataFrame":
     """
     Get the absolute numeric value of each element of a column
 
