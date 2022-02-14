@@ -7,13 +7,13 @@ from .filter_by_date import parse_date
 
 
 def categories_from_dates(
-    df,
+    df: pd.DataFrame,
     date_col: str,
     new_column: str,
     range_steps: List[str],
     category_names: Optional[List[str]] = None,
     date_format: str = "%Y-%m-%d",
-):
+) -> pd.DataFrame:
     """
     Create a new column of categories based on a date column.
     This function will gather into categories dates from the date column
