@@ -1,8 +1,16 @@
+from typing import Optional
+
 import numpy as np
 import pandas as pd
 
 
-def predict_linear(df, *, variable_column: str, target_column: str, input_format: str = None):
+def predict_linear(
+    df: pd.DataFrame,
+    *,
+    variable_column: str,
+    target_column: str,
+    input_format: Optional[str] = None,
+) -> pd.DataFrame:
     """
     Compute the linear regression of a target_column from a variable_column
     (dtypes of the columns must be numeric).
