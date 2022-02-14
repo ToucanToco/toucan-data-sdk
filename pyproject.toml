@@ -78,8 +78,6 @@ show_column_numbers = true
 show_error_context = true
 exclude = [
     "decorators\\.py$",
-    # generic functions
-    "generic/two_values_melt\\.py$",
     # postprocess functions
     "postprocess/add_aggregation_columns\\.py$",
     "postprocess/argmax\\.py$",

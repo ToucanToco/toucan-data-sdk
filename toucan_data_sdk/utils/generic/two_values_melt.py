@@ -4,8 +4,12 @@ import pandas as pd
 
 
 def two_values_melt(
-    df, first_value_vars: List[str], second_value_vars: List[str], var_name: str, value_name: str
-):
+    df: pd.DataFrame,
+    first_value_vars: List[str],
+    second_value_vars: List[str],
+    var_name: str,
+    value_name: str,
+) -> pd.DataFrame:
     """
     Transforms one or multiple columns into rows.
     Unlike melt function, two value columns can be returned by
