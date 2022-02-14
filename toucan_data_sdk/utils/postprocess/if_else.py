@@ -1,10 +1,17 @@
 import inspect
 from functools import wraps
+from typing import Any, Callable, Dict, List, TypeVar, Union
 
 import pandas as pd
 
+Condition = Dict[str, Any]
 
-def _apply_condition(df, condition, new_column):
+
+def _apply_condition(
+    df: pd.DataFrame,
+    condition: Union[Condition, List[Condition], str, int, float, None],
+    new_column: str,
+) -> pd.DataFrame:
     """
     `condition` can be a simple string or integer
     but also a dictionary or a list of dictionaries with postprocesses
@@ -38,7 +45,7 @@ def _apply_condition(df, condition, new_column):
     return df
 
 
-def replace_by_reserved_keywords(f):
+def replace_by_reserved_keywords(f: Any) -> Any:
     """
     As `if`, `else` and `then` are reserved keywords, we have to
     make the mapping to accepted keywords
@@ -66,7 +73,7 @@ def replace_by_reserved_keywords(f):
         else:
             parameters_with_reserved_names.append(param)
 
-    wrapper.__signature__ = sig_with_accepted_params.replace(
+    wrapper.__signature__ = sig_with_accepted_params.replace(  # type: ignore[attr-defined]
         parameters=parameters_with_reserved_names
     )
 
@@ -74,7 +81,14 @@ def replace_by_reserved_keywords(f):
 
 
 @replace_by_reserved_keywords
-def if_else(df, *, if_, then_, else_=None, new_column):
+def if_else(
+    df: pd.DataFrame,
+    *,
+    if_: str,
+    then_: Union[str, int, float, Condition, List[Condition]],
+    else_: Union[None, str, int, float, Condition, List[Condition]] = None,
+    new_column: str,
+) -> pd.DataFrame:
     """
     The usual if...then...else... statement
 
