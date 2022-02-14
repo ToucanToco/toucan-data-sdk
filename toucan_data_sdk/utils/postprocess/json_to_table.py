@@ -1,5 +1,5 @@
 import uuid
-from typing import Any, List
+from typing import Any, List, Union
 
 from pandas import DataFrame, Series, json_normalize
 
@@ -11,7 +11,7 @@ def _first_valid_value(serie: Series) -> Any:
     return serie[first_valid_index] if first_valid_index is not None else None
 
 
-def json_to_table(df: DataFrame, columns: List[str], sep: str = ".") -> DataFrame:
+def json_to_table(df: DataFrame, columns: Union[str, List[str]], sep: str = ".") -> DataFrame:
     """
     Flatten JSON into a table shape. Add lines for each element of a nested array.
     Add columns for each keys of a nested object / dict.
