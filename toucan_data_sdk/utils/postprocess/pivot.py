@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 import numpy as np
 import pandas as pd
@@ -7,13 +7,13 @@ from toucan_data_sdk.utils.helpers import get_temp_column_name
 
 
 def pivot(
-    df,
+    df: pd.DataFrame,
     index: List[str],
     column: str,
     value: str,
     agg_function: str = "mean",
-    values_to_pivot: List[str] = None,
-):
+    values_to_pivot: Optional[List[str]] = None,
+) -> pd.DataFrame:
     """
     Pivot the data. Reverse operation of melting
 
