@@ -1,7 +1,15 @@
-from typing import List, Union
+from typing import TYPE_CHECKING, List, Optional, Union
+
+if TYPE_CHECKING:
+    import pandas as pd
 
 
-def percentage(df, column: str, group_cols: Union[str, List[str]] = None, new_column: str = None):
+def percentage(
+    df: "pd.DataFrame",
+    column: str,
+    group_cols: Union[str, List[str], None] = None,
+    new_column: Optional[str] = None,
+) -> "pd.DataFrame":
     """
     Add a column to the dataframe according to the groupby logic on group_cols
 
