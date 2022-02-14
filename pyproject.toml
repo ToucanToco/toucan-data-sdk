@@ -79,7 +79,6 @@ show_error_context = true
 exclude = [
     "decorators\\.py$",
     # postprocess functions
-    "postprocess/rename\\.py$",
     "postprocess/replace\\.py$",
     "postprocess/sort\\.py$",
     "postprocess/text\\.py$",

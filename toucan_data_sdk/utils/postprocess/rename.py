@@ -1,7 +1,15 @@
-from typing import Dict
+from typing import TYPE_CHECKING, Dict, Optional
+
+if TYPE_CHECKING:
+    import pandas as pd
 
 
-def _safe_translate(translations, locale, fallback_locale="en", default=None):
+def _safe_translate(
+    translations: Dict[str, str],
+    locale: Optional[str],
+    fallback_locale: str,
+    default: str,
+) -> str:
     """return `locale` translation from `translations`.
 
     Fallback on `fallback_locale` if `locale` translation can't be found and
@@ -16,12 +24,12 @@ def _safe_translate(translations, locale, fallback_locale="en", default=None):
 
 
 def rename(
-    df,
-    values: Dict[str, Dict[str, str]] = None,
-    columns: Dict[str, Dict[str, str]] = None,
-    locale: str = None,
-    fallback_locale="en",
-):
+    df: "pd.DataFrame",
+    values: Optional[Dict[str, Dict[str, str]]] = None,
+    columns: Optional[Dict[str, Dict[str, str]]] = None,
+    locale: Optional[str] = None,
+    fallback_locale: str = "en",
+) -> "pd.DataFrame":
     """
     Replaces data values and column names according to the locale
 
@@ -84,8 +92,8 @@ def rename(
         ]
         df = df.replace(to_replace=to_replace, value=value)
     if columns:
-        columns = {
+        translated_columns = {
             k: _safe_translate(v, locale, fallback_locale, default=k) for k, v in columns.items()
         }
-        df = df.rename(columns=columns)
+        df = df.rename(columns=translated_columns)
     return df
