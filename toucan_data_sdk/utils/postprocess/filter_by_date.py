@@ -1,8 +1,8 @@
 """date filtering helpers."""
-
 import re
 from calendar import monthrange
 from datetime import date, datetime, timedelta
+from typing import Optional, cast
 from uuid import uuid4
 
 import pandas as pd
@@ -29,12 +29,12 @@ def _norm_date(datestr: str, date_fmt: str) -> date:
     """
     try:
         days = {"TODAY": 0, "YESTERDAY": -1, "TOMORROW": 1}[datestr.upper()]
-        return date.today() + pd.Timedelta(days=days)
+        return cast(date, date.today() + pd.Timedelta(days=days))
     except KeyError:
         return datetime.strptime(datestr, date_fmt).date()
 
 
-def add_offset(dateobj, hr_offset: str, sign: str):
+def add_offset(dateobj: date, hr_offset: str, sign: str) -> date:
     """add a human readable offset to `dateobj` and return corresponding date.
 
     rely on `pandas.Timedelta` and add the following extra shortcuts:
@@ -44,7 +44,7 @@ def add_offset(dateobj, hr_offset: str, sign: str):
     """
     sign_coeff = 1 if sign == "+" else -1
     try:
-        return dateobj + sign_coeff * pd.Timedelta(hr_offset)
+        return cast(date, dateobj + sign_coeff * pd.Timedelta(hr_offset))
     except ValueError:
         # pd.Timedelta could not parse the offset, let's try harder
         match = TIMEDELTA_RGX.match(hr_offset)
@@ -65,7 +65,7 @@ def add_offset(dateobj, hr_offset: str, sign: str):
         raise
 
 
-def add_months(dateobj, nb_months: int):
+def add_months(dateobj: date, nb_months: int) -> date:
     """return `dateobj` + `nb_months`
 
     If landing date doesn't exist (e.g. february, 30th), return the last
@@ -92,7 +92,7 @@ def add_months(dateobj, nb_months: int):
     return dateobj.replace(year=year, month=month, day=min(lastday, dateobj.day))
 
 
-def add_years(dateobj, nb_years):
+def add_years(dateobj: date, nb_years: int) -> date:
     """return `dateobj` + `nb_years`
 
     If landing date doesn't exist (e.g. february, 30th), return the last
@@ -154,13 +154,13 @@ def parse_date(datestr: str, date_fmt: str) -> pd.Timestamp:
 
 
 def filter_by_date(
-    df,
+    df: pd.DataFrame,
     date_col: str,
     date_format: str = "%Y-%m-%d",
-    start: str = None,
-    stop: str = None,
-    atdate: str = None,
-):
+    start: Optional[str] = None,
+    stop: Optional[str] = None,
+    atdate: Optional[str] = None,
+) -> pd.DataFrame:
     """
     Filter dataframe your data by date.
 
