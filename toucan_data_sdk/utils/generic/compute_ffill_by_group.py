@@ -1,9 +1,14 @@
-from typing import List
+from typing import TYPE_CHECKING, List
 
 from toucan_data_sdk.utils.helpers import check_params_columns_duplicate
 
+if TYPE_CHECKING:
+    import pandas as pd
 
-def compute_ffill_by_group(df, id_cols: List[str], reference_cols: List[str], value_col: str):
+
+def compute_ffill_by_group(
+    df: "pd.DataFrame", id_cols: List[str], reference_cols: List[str], value_col: str
+) -> "pd.DataFrame":
     """
     Compute `ffill` with `groupby`
     Dedicated method as there is a performance issue with a simple groupby/fillna (2017/07)
