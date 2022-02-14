@@ -1,17 +1,27 @@
+from typing import TYPE_CHECKING, Dict, List, Optional
+
 from toucan_data_sdk.utils.helpers import slugify
 
+if TYPE_CHECKING:
+    import pandas as pd
 
-def get_category_cols(df, threshold):
+
+def get_category_cols(df: "pd.DataFrame", threshold: int) -> List[str]:
     obj_df = df.select_dtypes(include=["object"])
     return [col for col in obj_df.columns if len(obj_df[col].unique()) < threshold]
 
 
-def get_int_cols(df):
+def get_int_cols(df: "pd.DataFrame") -> List[str]:
     float_df = df.select_dtypes(include=["floating"])
     return [col for col in float_df.columns if all(x.is_integer() for x in float_df[col])]
 
 
-def clean_dataframe(df, is_slugify=True, threshold=50, rename_cols=None):
+def clean_dataframe(
+    df: "pd.DataFrame",
+    is_slugify: bool = True,
+    threshold: int = 50,
+    rename_cols: Optional[Dict[str, str]] = None,
+) -> "pd.DataFrame":
     """
     This method is used to:
     - slugify the column names (if slugify is set to True)

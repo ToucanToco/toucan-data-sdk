@@ -79,7 +79,6 @@ show_error_context = true
 exclude = [
     "decorators\\.py$",
     # generic functions
-    "generic/clean\\.py$",
     "generic/combine_columns_aggregation\\.py$",
     "generic/compute_cumsum\\.py$",
     "generic/compute_evolution\\.py$",
