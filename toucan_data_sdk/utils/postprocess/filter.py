@@ -1,7 +1,10 @@
-from typing import List, Optional
+from typing import TYPE_CHECKING, List, Optional
+
+if TYPE_CHECKING:
+    import pandas as pd
 
 
-def drop_duplicates(df, columns: Optional[List[str]]):
+def drop_duplicates(df: "pd.DataFrame", columns: Optional[List[str]]) -> "pd.DataFrame":
     """
     Remove duplicate rows
 
