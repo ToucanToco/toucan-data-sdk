@@ -1,20 +1,20 @@
-from typing import List
+from typing import List, Optional
 
 import numpy as np
 import pandas as pd
 
 
 def roll_up(
-    df,
+    df: pd.DataFrame,
     levels: List[str],
     groupby_vars: List[str],
-    extra_groupby_cols: List[str] = None,
+    extra_groupby_cols: Optional[List[str]] = None,
     var_name: str = "type",
     value_name: str = "value",
     parent_name: str = "parent",
     agg_func: str = "sum",
-    drop_levels: List[str] = None,
-):
+    drop_levels: Optional[List[str]] = None,
+) -> pd.DataFrame:
     """
     Creates aggregates following a given hierarchy
 
