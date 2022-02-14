@@ -1,7 +1,12 @@
-from typing import List, Union
+from typing import TYPE_CHECKING, List, Union
+
+if TYPE_CHECKING:
+    import pandas as pd
 
 
-def sort(df, columns: Union[str, List[str]], order: Union[str, List[str]] = "asc"):
+def sort(
+    df: "pd.DataFrame", columns: Union[str, List[str]], order: Union[str, List[str]] = "asc"
+) -> "pd.DataFrame":
     """
 
     Sort the data by the value in specified columns
