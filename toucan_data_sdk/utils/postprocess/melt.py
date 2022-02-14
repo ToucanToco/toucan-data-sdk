@@ -3,7 +3,7 @@ from typing import List
 import pandas as pd
 
 
-def melt(df, id: List[str], value: List[str], dropna=False):
+def melt(df: pd.DataFrame, id: List[str], value: List[str], dropna: bool = False) -> pd.DataFrame:
     """
     A melt will transform a dataset by creating a column "variable" and a column "value".
     This function is useful to transform a dataset into a format where one or more columns
