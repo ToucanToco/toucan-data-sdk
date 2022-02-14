@@ -9,7 +9,8 @@ install:
 
 .PHONY: format
 format:
-	poetry run pre-commit run --all-files
+	$(black)
+	$(isort)
 
 .PHONY: lint
 lint:

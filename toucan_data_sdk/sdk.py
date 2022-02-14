@@ -3,7 +3,7 @@ import os
 import shutil
 import tempfile
 import zipfile
-from typing import Any, Dict, List, Literal, Optional, Union
+from typing import Any, Dict, List, Literal, Optional
 
 import joblib
 import pandas as pd

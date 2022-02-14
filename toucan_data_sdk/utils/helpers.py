@@ -169,7 +169,9 @@ def clean_cachedir_old_entries(cachedir: StoreBackendBase, func_name: str, limit
         raise ValueError("'limit' must be greater or equal to 1")
 
     cache_entries = get_cachedir_entries(cachedir, func_name)
-    cache_entries = sorted(cache_entries, key=lambda e: e.last_access, reverse=True)  # type: ignore[no-any-return]
+    cache_entries = sorted(
+        cache_entries, key=lambda e: e.last_access, reverse=True  # type: ignore[no-any-return]
+    )
     cache_entries_to_remove = cache_entries[limit:]
     for entry in cache_entries_to_remove:
         shutil.rmtree(entry.path, ignore_errors=True)
