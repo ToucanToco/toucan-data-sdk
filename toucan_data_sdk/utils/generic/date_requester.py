@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 import pandas as pd
 
@@ -9,12 +9,12 @@ def date_requester_generator(
     df: pd.DataFrame,
     date_column: str,
     frequency: str,
-    date_column_format: str = None,
+    date_column_format: Optional[str] = None,
     format: str = "%Y-%m-%d",
-    granularities: Dict[str, str] = None,
-    others_format: Dict[str, str] = None,
-    times_delta: Dict[str, str] = None,
-    locale: str = None,
+    granularities: Optional[Dict[str, str]] = None,
+    others_format: Optional[Dict[str, str]] = None,
+    times_delta: Optional[Dict[str, str]] = None,
+    locale: Optional[str] = None,
 ) -> pd.DataFrame:
     """
     From a dataset containing dates in a column, return a dataset
