@@ -357,7 +357,7 @@ def cache(  # noqa: C901
             if limit is not None:
                 clean_cachedir_old_entries(
                     f.store_backend,  # type: ignore[attr-defined]
-                    func.__name__,
+                    f.__name__,
                     limit,
                 )
 
