@@ -348,7 +348,7 @@ def cache(  # noqa: C901
                     )
                     tmp_extra_kwargs["__check_only__"] = check_only_param_value
 
-                def f(**tmp_extra_kwargs):
+                def f(*a, **k):  # type: ignore
                     return func(*args, **kwargs)
 
                 f = current_memory.cache(f)
