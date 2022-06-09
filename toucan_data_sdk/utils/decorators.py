@@ -330,7 +330,6 @@ def cache(  # noqa: C901
                 if applied_on_method:
                     self_arg, args = args[0], args[1:]
 
-                @wraps(func)
                 def f(*args, **kwargs):
                     # delete the extra parameters that the underlying function doesnt expect:
                     for k in tmp_extra_kwargs.keys():
@@ -349,7 +348,6 @@ def cache(  # noqa: C901
                     )
                     tmp_extra_kwargs["__check_only__"] = check_only_param_value
 
-                @wraps(func)
                 def f(**tmp_extra_kwargs):
                     return func(*args, **kwargs)
 
