@@ -77,7 +77,7 @@ def roll_up(
     extra_groupby_cols = extra_groupby_cols or []
     drop_levels = drop_levels or []
     previous_level = None
-    for (idx, top_level) in enumerate(levels_cpy):
+    for idx, top_level in enumerate(levels_cpy):
         # Aggregation
         gb_df = getattr(
             df.groupby(groupby_cols_cpy + extra_groupby_cols)[groupby_vars], agg_func
