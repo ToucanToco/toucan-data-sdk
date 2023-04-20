@@ -38,7 +38,6 @@ def json_to_table(df: DataFrame, columns: Union[str, List[str]], sep: str = ".")
     ret_data = df.copy()
 
     for col in columns:
-
         serie = df[col]
         first_valid_value = _first_valid_value(serie)
 
