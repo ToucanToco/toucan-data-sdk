@@ -72,3 +72,13 @@ def test_if_else(df):
     config = {"if": 'country == "France"', "then": "F", "new_column": "new"}
     res = if_else(df, **config)
     assert res["new"].tolist() == ["F", None, "F", None]
+
+
+def test_if_else_missing_args() -> None:
+    df = pd.DataFrame(rows1)
+
+    with pytest.raises(ValueError, match="if"):
+        if_else(df, new_column="coucou")
+
+    with pytest.raises(ValueError, match="then"):
+        if_else(df, new_column="coucou", **{"if": "a"})
