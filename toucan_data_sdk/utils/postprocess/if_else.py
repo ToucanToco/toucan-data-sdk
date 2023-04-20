@@ -1,6 +1,7 @@
-from typing import Any, Dict, List, TypeAlias, Union
+from typing import Any, Dict, List, Union
 
 import pandas as pd
+from typing_extensions import TypeAlias
 
 Condition = Dict[str, Any]
 
@@ -48,7 +49,9 @@ _Then: TypeAlias = Union[str, int, float, Condition, List[Condition]]
 _Else: TypeAlias = Union[None, str, int, float, Condition, List[Condition]]
 
 
-def if_else(df: pd.DataFrame, *, new_column: str, **kwargs: _If | _Then | _Else) -> pd.DataFrame:
+def if_else(
+    df: pd.DataFrame, *, new_column: str, **kwargs: Union[_If, _Then, _Else]
+) -> pd.DataFrame:
     """
     The usual if...then...else... statement
 
