@@ -24,7 +24,7 @@ engarde = "^0.4.0"
 joblib = "^1"
 pandas = "^1.4.1"
 python-slugify = ">=5.0.2,<7.0.0"
-tabulate = "^0.8.9"
+tabulate = ">=0.8.9,<0.10.0"
 toucan-client = "^1.1.0"
 
 [tool.poetry.dev-dependencies]
