@@ -72,7 +72,7 @@ def test_compute_evolution():
     assert input_df["populationA-1"].equals(evolution_df["population_offseted"])
     assert input_df["evolution_pct"].equals(evolution_df["evolution_computed"])
     assert (input_df.shape[1] + 1) == evolution_df.shape[1]
-    assert evolution_df["Date"].dtype == pd.np.object
+    assert evolution_df["Date"].dtype == object
 
     evolution_df = compute_evolution_by_frequency(
         input_df,
