@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "toucan_data_sdk"
-version = "7.5.0"
+version = "7.6.0"
 description = "Toucan data SDK"
 authors = ["Toucan Toco <dev@toucantoco.com>"]
 readme = "README.md"
