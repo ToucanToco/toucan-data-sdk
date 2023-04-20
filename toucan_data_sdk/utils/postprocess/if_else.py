@@ -1,6 +1,4 @@
-import inspect
-from functools import wraps
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, TypeAlias, Union
 
 import pandas as pd
 
@@ -45,50 +43,12 @@ def _apply_condition(
     return df
 
 
-def replace_by_reserved_keywords(f: Any) -> Any:
-    """
-    As `if`, `else` and `then` are reserved keywords, we have to
-    make the mapping to accepted keywords
-    """
-    reserved_keywords_mapping = {"if_": "if", "then_": "then", "else_": "else"}
-
-    @wraps(f)
-    def wrapper(*args, **kwargs):
-        # Update the params to be sent to `if_else` as `if_`, `else_`, `then_`
-        for accepted, reserved in reserved_keywords_mapping.items():
-            if reserved in kwargs:
-                kwargs[accepted] = kwargs.pop(reserved)
-        return f(*args, **kwargs)
-
-    # Update the signature of the wrapper to still have the right documentation
-    # and the excepted `if`, `else`, `then` params
-    sig_with_accepted_params = inspect.signature(f)
-    parameters_with_reserved_names = []
-
-    for param_name, param in sig_with_accepted_params.parameters.items():
-        if param_name in reserved_keywords_mapping:
-            parameters_with_reserved_names.append(
-                param.replace(name=reserved_keywords_mapping[param_name])
-            )
-        else:
-            parameters_with_reserved_names.append(param)
-
-    wrapper.__signature__ = sig_with_accepted_params.replace(  # type: ignore[attr-defined]
-        parameters=parameters_with_reserved_names
-    )
-
-    return wrapper
+_If: TypeAlias = str
+_Then: TypeAlias = Union[str, int, float, Condition, List[Condition]]
+_Else: TypeAlias = Union[None, str, int, float, Condition, List[Condition]]
 
 
-@replace_by_reserved_keywords
-def if_else(
-    df: pd.DataFrame,
-    *,
-    if_: str,
-    then_: Union[str, int, float, Condition, List[Condition]],
-    else_: Union[None, str, int, float, Condition, List[Condition]] = None,
-    new_column: str,
-) -> pd.DataFrame:
+def if_else(df: pd.DataFrame, *, new_column: str, **kwargs: _If | _Then | _Else) -> pd.DataFrame:
     """
     The usual if...then...else... statement
 
@@ -145,6 +105,12 @@ def if_else(
     # of multiple dataframes), recompute it
     if not df.index.is_unique:
         df.index = pd.RangeIndex(len(df.index))
+
+    if not (if_ := kwargs.get("if")):
+        raise ValueError("'if' parameter is mandatory")
+    if not (then_ := kwargs.get("then")):
+        raise ValueError("'then' parameter is mandatory")
+    else_ = kwargs.get("else")
 
     if_sub_df = df.query(if_)
     else_sub_df = df[~df.index.isin(if_sub_df.index)]
