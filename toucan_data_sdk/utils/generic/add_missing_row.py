@@ -94,8 +94,8 @@ def add_missing_row(
             date_format = complete_index["format"]
             start = complete_index["start"]
             end = complete_index["end"]
-            if isinstance(freq, dict):  # type: ignore[unreachable]
-                freq = pd.DateOffset(**{k: int(v) for k, v in freq.items()})  # type: ignore[unreachable]
+            if isinstance(freq, dict):
+                freq = pd.DateOffset(**{k: int(v) for k, v in freq.items()})
             new_index = pd.date_range(start=start, end=end, freq=freq)
             complex_index_values = new_index.strftime(date_format).values
         else:
