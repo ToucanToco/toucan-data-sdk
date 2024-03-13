@@ -30,7 +30,7 @@ toucan-client = "^1.1.0"
 [tool.poetry.dev-dependencies]
 black = "^23.3.0"
 flake8 = "^5.0.4"
-isort = "^5.10.1"
+isort = "^5.13.2"
 mypy = "^1.2.0"
 pre-commit = "^3.3.3"
 pytest = "^7.0.0"
