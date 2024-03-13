@@ -892,13 +892,13 @@ requests = ">=2.23,<3.0"
 
 [[package]]
 name = "types-python-slugify"
-version = "5.0.4"
+version = "8.0.2.20240310"
 description = "Typing stubs for python-slugify"
 optional = false
-python-versions = "*"
+python-versions = ">=3.8"
 files = [
-    {file = "types-python-slugify-5.0.4.tar.gz", hash = "sha256:a9d44edf034d5ceab8442ce602f976b7880ee935baeff7443964aed93f7e21d4"},
-    {file = "types_python_slugify-5.0.4-py3-none-any.whl", hash = "sha256:d0564feb7e21bd9ab646e692ae93eb9bf1b36e9b9bf7bf38d52eab43d29de2f6"},
+    {file = "types-python-slugify-8.0.2.20240310.tar.gz", hash = "sha256:5157b508c7fed587520c70d77f62aea0fafdc6620893c2ec8972f13a1faf5560"},
+    {file = "types_python_slugify-8.0.2.20240310-py3-none-any.whl", hash = "sha256:0efec18b802c69ebd22dcee55c91afaeaa80e1e40ddd66ccabf69fd42ce87b74"},
 ]
 
 [[package]]
@@ -976,4 +976,4 @@ test = ["covdefaults (>=2.3)", "coverage (>=7.2.3)", "coverage-enable-subprocess
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "674856f4e9170c6f45f070b8631d5069395c752a4f9f420403f03be48a0e8661"
+content-hash = "7f04a83b7874850228e8c9df47e9a2d6f5cde85c3177c821735f7fb4261a35e4"
